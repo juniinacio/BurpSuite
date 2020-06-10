@@ -8,7 +8,7 @@ schema: 2.0.0
 # Connect-BurpSuite
 
 ## SYNOPSIS
-Connects BurpSuite to your BurpSuite Enterprise server.
+Connects BurpSuite to BurpSuite Enterprise.
 
 ## SYNTAX
 
@@ -17,7 +17,7 @@ Connect-BurpSuite [-ApiKey] <String> [-Uri] <String> [-WhatIf] [-Confirm] [<Comm
 ```
 
 ## DESCRIPTION
-Connects BurpSuite to your BurpSuite Enterprise server.
+Connects BurpSuite to BurpSuite Enterprise.
 
 ## EXAMPLES
 
@@ -26,12 +26,12 @@ Connects BurpSuite to your BurpSuite Enterprise server.
 PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
 ```
 
-This example shows how to connect the module to a BurpSuite Enterprise.
+This example shows how to connect the module with BurpSuite Enterprise.
 
 ## PARAMETERS
 
 ### -ApiKey
-Specifies the API key to use for accessing your BurpSuite Enterprise server.
+Specifies the API key to use for accessing BurpSuite Enterprise.
 
 ```yaml
 Type: String
@@ -61,7 +61,7 @@ Accept wildcard characters: False
 ```
 
 ### -Uri
-Specifies the URL to your BurpSuite Enterprise server.
+Specifies the URL to BurpSuite Enterprise.
 
 ```yaml
 Type: String
