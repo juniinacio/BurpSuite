@@ -16,13 +16,11 @@ $commands = Get-Command -Module (Get-Module $env:BHProjectName) -CommandType Cmd
 ## To test, restart session.
 
 foreach ($command in $commands) {
-    $script:commandName = $command.Name
+    $commandName = $command.Name
 
     $script:help = Get-Help $commandName -ErrorAction SilentlyContinue
 
     Describe "Test help for $commandName" {
-        BeforeAll {
-        }
 
         # If help is not found, synopsis in auto-generated help is the syntax diagram
         It 'should not be auto-generated' {
