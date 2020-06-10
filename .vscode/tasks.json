@@ -31,16 +31,6 @@
 
     "tasks": [
         {
-            "label": "RunTest",
-            "type": "shell",
-            "command": "${cwd}/build.ps1 -Task RunTest -Verbose",
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "problemMatcher": "$pester"
-        },
-        {
             "label": "Clean",
             "type": "shell",
             "command": "${cwd}/build.ps1 -Task Clean -Verbose"
@@ -48,7 +38,7 @@
         {
             "label": "Test",
             "type": "shell",
-            "command": "${cwd}/build.ps1 -Task Test -Verbose",
+            "command": "${cwd}/build.ps1 -Task RunTest -Verbose",
             "group": {
                 "kind": "test",
                 "isDefault": true

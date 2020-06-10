@@ -18,19 +18,16 @@ properties {
     $PSBPreference.Build.ModuleOutDir = $outputModVerDir
     $PSBPreference.Build.CompileModule = $true
 
-    $PSBPreference.Test.Enabled = $true
-    $PSBPreference.Test.RootDir = Join-Path -Path $projectRoot -ChildPath 'unit\tests'
-
     if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
 
     $PesterPreference = [PesterConfiguration]::Default
-    $PesterPreference.Run.Path = Join-Path -Path $projectRoot -ChildPath 'unit\tests\Meta*.ps1'
+    $PesterPreference.Run.Path = Join-Path -Path $projectRoot -ChildPath 'unit\tests\'
     $PesterPreference.Run.PassThru = $true
     $PesterPreference.TestResult.Enabled = $true
-    $PesterPreference.TestResult.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-testResults.xml"
+    $PesterPreference.TestResult.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-TestsResults.xml"
     $PesterPreference.CodeCoverage.Enabled = $true
     $PesterPreference.CodeCoverage.Path = Join-Path -Path $outputModVerDir -ChildPath '*.psm1'
-    $PesterPreference.CodeCoverage.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-coverage.xml"
+    $PesterPreference.CodeCoverage.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-Coverage.xml"
     $null = $PesterPreference
 }
 
@@ -56,17 +53,20 @@ task InvokePester -depends Build -precondition $invokePesterPreReqs {
     }
 
     try {
+        $pathSeperator = [IO.Path]::PathSeparator
+
         $origModulePath = $env:PSModulePath
         if ($env:PSModulePath.split($pathSeperator) -notcontains $outputDir) {
             $env:PSModulePath = ($outputDir + $pathSeperator + $origModulePath)
         }
 
-        Remove-Module $PSBPreference.General.ModuleName -ErrorAction SilentlyContinue -Verbose:$false
-        Import-Module -Name $outputModDir -Force -Verbose:$false
+        Remove-Module $PSBPreference.General.ModuleName -ErrorAction SilentlyContinue
+        Import-Module -Name $PSBPreference.General.ModuleName -Force
 
         $testResults = Invoke-Pester -Configuration $PesterPreference
         Write-Host 'Pester results:' -ForegroundColor Yellow
-        $testResults | Select-Object -ExcludeProperty Containers -Property * | Format-Table -AutoSize
+        $tableProperties = 'Result', 'FailedCount', 'FailedBlocksCount', 'FailedContainersCount', 'PassedCount', 'SkippedCount', 'NotRunCount', 'TotalCount', 'Duration'
+        $testResults | Format-Table -AutoSize -Property $tableProperties
 
         if ($testResults.FailedCount -gt 0) {
             throw 'One or more Pester tests failed'
