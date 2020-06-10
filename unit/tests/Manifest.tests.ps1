@@ -7,8 +7,6 @@ $outputModVerDir    = Join-Path -Path $outputModDir -ChildPath $manifest.ModuleV
 $outputManifestPath = Join-Path -Path $outputModVerDir -Child "$($moduleName).psd1"
 $changelogPath      = Join-Path -Path $env:BHProjectPath -Child 'CHANGELOG.md'
 
-write-host $outputManifestPath
-
 Describe 'Module manifest' {
     Context 'Validation' {
 
