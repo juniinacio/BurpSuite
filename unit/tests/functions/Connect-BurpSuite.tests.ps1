@@ -1,9 +1,3 @@
-$outputDir       = Join-Path -Path $ENV:BHProjectPath -ChildPath '.out'
-$outputModDir    = Join-Path -Path $outputDir -ChildPath $env:BHProjectName
-$manifest        = Import-PowerShellDataFile -Path $env:BHPSModuleManifest
-$outputModVerDir = Join-Path -Path $outputModDir -ChildPath $manifest.ModuleVersion
-
-Import-Module -Name (Join-Path -Path $outputModVerDir -ChildPath "$($env:BHProjectName).psd1") -ErrorAction Stop
 InModuleScope $env:BHProjectName {
     Describe "Connect-BurpSuite" {
         It "uses the correct Uri" {
