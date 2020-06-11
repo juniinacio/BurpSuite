@@ -6,7 +6,7 @@ function Connect-BurpSuite {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $ApiKey,
+        $APIKey,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -15,23 +15,24 @@ function Connect-BurpSuite {
     )
 
     begin {
-        $builder = New-Object -TypeName System.UriBuilder -ArgumentList $Uri
-        $builder.Path = '/graphql/v1'
+        $uriBuilder = New-Object -TypeName System.UriBuilder -ArgumentList $Uri
+        $uriBuilder.Path = '/graphql/v1'
 
-        $body = @{
-            query = "{ __schema { queryType { name } } }"
-        } | ConvertTo-Json -Compress
+        $graphQLUri = $uriBuilder.ToString()
 
-        $headers = @{
-            Authorization  = $ApiKey
-            Accept         = 'application/json'
-            'Content-Type' = 'application/json'
-        }
+        $graphQLRequest = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
     }
 
     process {
-        if ($PSCmdlet.ShouldProcess($builder.ToString(), "Connect-BurpSuite")) {
-            Invoke-RestMethod -Method POST -Uri $builder.ToString() -Headers $headers -Body $body
+        if ($PSCmdlet.ShouldProcess($graphQLUri, "Connect-BurpSuite")) {
+            try {
+                _createSession -APIUrl $graphQLUri -APIKey $APIKey
+                _callAPI -GraphQLRequest $graphQLRequest
+            } catch {
+                _removeSession
+                $e = [Exception]::new("Cannot access BurpSuite API using key $APIKey and Uri $Uri")
+                throw $e
+            }
         }
     }
 
