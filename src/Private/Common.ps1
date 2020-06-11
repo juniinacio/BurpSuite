@@ -20,7 +20,7 @@ function _callAPI {
     Param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [GraphQLRequest]
+        [object]
         $GraphQLRequest
     )
 
@@ -28,9 +28,12 @@ function _callAPI {
 
     $params = @{ }
     $params.Add('Uri', [Session]::APIUrl)
+    $params.Add('Method', 'Post')
 
     $params.Add('Headers', @{ })
     $params['Headers'].Add('Authorization', [Session]::APIKey)
+    $params['Headers'].Add('Content-Type', 'application/json')
+    $params['Headers'].Add('Accept', 'application/json')
 
     $params['Body'] = $GraphQLRequest | ConvertTo-Json
 

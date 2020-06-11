@@ -3,6 +3,8 @@ InModuleScope BurpSuite {
         Context "_createSession" {
             It "should set session url and API key" {
                 # arrange
+                [Session]::Dispose()
+
                 $apiKey = 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX'
                 $uri = 'https://burpsuite.example.org:443/graphql/v1'
 
@@ -12,9 +14,7 @@ InModuleScope BurpSuite {
                 # assert
                 [Session]::APIKey | Should -Be $apiKey
                 [Session]::APIUrl | Should -Be $uri
-            }
 
-            AfterAll {
                 [Session]::Dispose()
             }
         }
@@ -80,8 +80,64 @@ InModuleScope BurpSuite {
                 }
             }
 
-            AfterEach {
-                [Session]::Dispose()
+            It "should set method to post" {
+                # arrange
+                $apiKey = 'xxxAAAxxxx'
+
+                [Session]::APIKey = $apiKey
+                [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
+
+                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+
+                Mock -CommandName Invoke-RestMethod
+
+                # act
+                _callAPI -GraphQLRequest $request
+
+                # assert
+                Should -Invoke Invoke-RestMethod -ParameterFilter {
+                    $Method -eq "Post"
+                }
+            }
+
+            It "should set content type" {
+                # arrange
+                $apiKey = 'xxxAAAxxxx'
+
+                [Session]::APIKey = $apiKey
+                [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
+
+                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+
+                Mock -CommandName Invoke-RestMethod
+
+                # act
+                _callAPI -GraphQLRequest $request
+
+                # assert
+                Should -Invoke Invoke-RestMethod -ParameterFilter {
+                    $Headers.'Content-Type' -eq "application/json"
+                }
+            }
+
+            It "should accept" {
+                # arrange
+                $apiKey = 'xxxAAAxxxx'
+
+                [Session]::APIKey = $apiKey
+                [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
+
+                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+
+                Mock -CommandName Invoke-RestMethod
+
+                # act
+                _callAPI -GraphQLRequest $request
+
+                # assert
+                Should -Invoke Invoke-RestMethod -ParameterFilter {
+                    $Headers.Accept -eq "application/json"
+                }
             }
         }
 
@@ -97,9 +153,7 @@ InModuleScope BurpSuite {
                 # assert
                 [Session]::APIKey | Should -BeNullOrEmpty
                 [Session]::APIUrl | Should -BeNullOrEmpty
-            }
 
-            AfterAll {
                 [Session]::Dispose()
             }
         }

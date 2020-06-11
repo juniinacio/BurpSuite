@@ -24,10 +24,10 @@ function Connect-BurpSuite {
     }
 
     process {
-        if ($PSCmdlet.ShouldProcess($graphQLUri, "Connect-BurpSuite")) {
+        if ($PSCmdlet.ShouldProcess($graphQLUri, "Connect to BurpSuite")) {
             try {
                 _createSession -APIUrl $graphQLUri -APIKey $APIKey
-                _callAPI -GraphQLRequest $graphQLRequest
+                $null = _callAPI -GraphQLRequest $graphQLRequest
             } catch {
                 _removeSession
                 $e = [Exception]::new("Cannot access BurpSuite API using key $APIKey and Uri $Uri")
