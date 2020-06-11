@@ -20,7 +20,7 @@ function _callAPI {
     Param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [object]
+        [GraphQLRequest]
         $GraphQLRequest
     )
 
@@ -32,7 +32,7 @@ function _callAPI {
     $params.Add('Headers', @{ })
     $params['Headers'].Add('Authorization', [Session]::APIKey)
 
-    $params['Body'] = $Request | ConvertTo-Json
+    $params['Body'] = $GraphQLRequest | ConvertTo-Json
 
     Invoke-RestMethod @params
 }
