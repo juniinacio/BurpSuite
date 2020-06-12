@@ -57,6 +57,7 @@ class QueryStringBuilder {
                 }
             }
         }
+        if ($query.Fields.Count -gt 0) { $this.QueryString.Length-- }
     }
 
     [string] Build([IQuery] $query) {
