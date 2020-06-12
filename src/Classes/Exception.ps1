@@ -5,9 +5,9 @@ class Exception : System.Exception {
     ) : base($Message) {
     }
 
-    Exception (
-        [string]$Message,
-        [System.Exception]$InnerException
-    ) : base($Message, $InnerException) {
-    }
+    # Exception (
+    #     [string]$Message,
+    #     [System.Exception]$InnerException
+    # ) : base($Message, $InnerException) {
+    # }
 }
