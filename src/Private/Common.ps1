@@ -21,21 +21,24 @@ function _callAPI {
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [object]
-        $GraphQLRequest
+        $GraphRequest
     )
 
-    _hasUri
+    _assertAPIKey
+    _assertAPIUrl
 
     $params = @{ }
-    $params.Add('Uri', [Session]::APIUrl)
-    $params.Add('Method', 'Post')
 
-    $params.Add('Headers', @{ })
-    $params['Headers'].Add('Authorization', [Session]::APIKey)
-    $params['Headers'].Add('Content-Type', 'application/json')
-    $params['Headers'].Add('Accept', 'application/json')
+    $params['uri'] = [Session]::APIUrl
+    $params['method'] = 'Post'
 
-    $params['Body'] = $GraphQLRequest | ConvertTo-Json
+    $params['headers'] = @{ }
+
+    $params['headers']['authorization'] = [Session]::APIKey
+    $params['headers']['content-type'] = 'application/json'
+    $params['headers']['accept'] = 'application/json'
+
+    $params['body'] = $GraphRequest | ConvertTo-Json
 
     Invoke-RestMethod @params
 }
@@ -48,9 +51,20 @@ function _removeSession {
     [Session]::Dispose()
 }
 
-function _hasUri {
+function _assertAPIKey {
     param (
     )
+
+    if (-not [Session]::APIKey) {
+        $e = [Exception]::New('You must call Connect-BurpSuite before calling any other function in this module.')
+        throw $e
+    }
+}
+
+function _assertAPIUrl {
+    param (
+    )
+
     if (-not [Session]::APIUrl) {
         $e = [Exception]::New('You must call Connect-BurpSuite before calling any other function in this module.')
         throw $e

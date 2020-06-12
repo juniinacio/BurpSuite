@@ -6,9 +6,9 @@ using namespace System.Management.Automation
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls13
 
 [ReflectionCache]::TypeAccelerators::Add(
-    'GraphQLRequest',
-    [GraphQLRequest])
+    'GraphRequest',
+    [GraphRequest])
 
 $ExecutionContext.SessionState.Module.OnRemove = {
-    [ReflectionCache]::TypeAccelerators::Remove('GraphQLRequest')
+    [ReflectionCache]::TypeAccelerators::Remove('GraphRequest')
 }

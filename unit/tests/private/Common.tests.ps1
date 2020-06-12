@@ -27,12 +27,12 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod
 
                 # act
-                _callAPI -GraphQLRequest $request
+                _callAPI -GraphRequest $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -47,12 +47,12 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod
 
                 # act
-                _callAPI -GraphQLRequest $request
+                _callAPI -GraphRequest $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -67,12 +67,12 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod
 
                 # act
-                _callAPI -GraphQLRequest $request
+                _callAPI -GraphRequest $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -87,12 +87,12 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod
 
                 # act
-                _callAPI -GraphQLRequest $request
+                _callAPI -GraphRequest $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -107,12 +107,12 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod
 
                 # act
-                _callAPI -GraphQLRequest $request
+                _callAPI -GraphRequest $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -127,12 +127,12 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod
 
                 # act
-                _callAPI -GraphQLRequest $request
+                _callAPI -GraphRequest $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -155,6 +155,50 @@ InModuleScope BurpSuite {
                 [Session]::APIUrl | Should -BeNullOrEmpty
 
                 [Session]::Dispose()
+            }
+        }
+
+        Context "_assertAPIKey" {
+            It "should throw exception if API key is not set" {
+                # arrange
+                [Session]::APIKey = ''
+
+                # act
+                { _assertAPIKey } | Should -Throw
+
+                # assert
+            }
+
+            It "should not throw exception if API key is set" {
+                # arrange
+                [Session]::APIKey = 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX'
+
+                # act
+                { _assertAPIKey } | Should -Not -Throw
+
+                # assert
+            }
+        }
+
+        Context "_assertAPIUrl" {
+            It "should throw exception if API url is not set" {
+                # arrange
+                [Session]::APIUrl = 'https://burpsuite.example.org'
+
+                # act
+                { _assertAPIUrl } | Should -Throw
+
+                # assert
+            }
+
+            It "should not throw exception if API url is set" {
+                # arrange
+                [Session]::APIUrl = 'https://burpsuite.example.org'
+
+                # act
+                { _assertAPIUrl } | Should -Not -Throw
+
+                # assert
             }
         }
     }
