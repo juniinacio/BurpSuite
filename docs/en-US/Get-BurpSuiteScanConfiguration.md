@@ -13,8 +13,7 @@ Gets BurpSuite scan configurations.
 ## SYNTAX
 
 ```
-Get-BurpSuiteScanConfiguration [[-Fields] <String[]>] [[-ID] <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Get-BurpSuiteScanConfiguration [[-Fields] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,17 +30,10 @@ The above example shows how to list all scan configurations.
 
 ### Example 2
 ```powershell
-PS C:\> Get-BurpSuiteScanConfiguration -ID 1
+PS C:\> Get-BurpSuiteScanConfiguration -Fields 'id', 'name', 'scan_configuration_fragment_json'
 ```
 
-The above example shows how to get a scan configuration by id.
-
-### Example 3
-```powershell
-PS C:\> Get-BurpSuiteScanConfiguration -ID 1 -Fields 'id', 'name', 'scan_configuration_fragment_json'
-```
-
-The above example shows how to get a scan configuration by id and also how to request more fields to return.
+The above example shows how to get scan configurations and also how to request more fields.
 
 ## PARAMETERS
 
@@ -71,21 +63,6 @@ Accepted values: id, name, scan_configuration_fragment_json, built_in, last_modi
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ID
-Specifies the scan configuration ID.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
