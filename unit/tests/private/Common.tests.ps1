@@ -100,7 +100,7 @@ InModuleScope BurpSuite {
                 }
             }
 
-            It "should set content type" {
+            It "should set content type header" {
                 # arrange
                 $apiKey = 'xxxAAAxxxx'
 
@@ -120,7 +120,7 @@ InModuleScope BurpSuite {
                 }
             }
 
-            It "should accept" {
+            It "should accept header" {
                 # arrange
                 $apiKey = 'xxxAAAxxxx'
 
