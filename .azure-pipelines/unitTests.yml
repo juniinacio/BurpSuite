@@ -4,7 +4,7 @@ parameters:
 
 steps:
 - task: PowerShell@2
-  displayName: 'Build $(ModuleName)'
+  displayName: 'Build Module $(ModuleName)'
   inputs:
     targetType: 'inline'
     script: './build.ps1 -Bootstrap'
