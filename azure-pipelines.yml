@@ -29,14 +29,24 @@ stages:
   - job: Windows_Phase
     displayName: Build Windows
     pool:
+      vmImage: windows-latest
+
+    steps:
+    - template: .azure-pipelines/unitTests.yml
+      parameters:
+        os: 'Windows'
+        pwsh: false
+
+  - job: Windows_Phase_Core
+    displayName: Build Windows (PowerShell Core)
+    pool:
       vmImage: 'windows-latest'
 
     steps:
     - template: .azure-pipelines/unitTests.yml
       parameters:
         os: 'Windows'
-        buildHelp: 'true'
-        codeCoverage: 'true'
+        pwsh: true
 
     - task: PowerShell@2
       displayName: 'Run Static Code Analysis'

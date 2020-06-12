@@ -17,7 +17,7 @@ steps:
     script: |
       $outputModVerDir = Split-Path -Path (Resolve-Path -Path ./.out/$(ModuleName)/*/*.psd1)
       Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
-    pwsh: true
+    pwsh: ${{ parameters.pwsh }}
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage'
