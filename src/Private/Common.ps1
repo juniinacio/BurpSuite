@@ -38,12 +38,14 @@ function _callAPI {
     $params['headers']['content-type'] = 'application/json'
     $params['headers']['accept'] = 'application/json'
 
-    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json
+    $convertToJsonArgs = @{}
+    if (_testIsPowerShellCore) { $convertToJsonArgs['Compress'] = $true }
+
+    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json @convertToJsonArgs
+
     $params['body'] = $body
 
-    if (_testIsPowerShellCore) {
-        $params.Add('SkipCertificateCheck', $true)
-    }
+    if (_testIsPowerShellCore) { $params.Add('SkipCertificateCheck', $true) }
 
     Invoke-RestMethod @params
 }
