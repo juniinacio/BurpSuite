@@ -5,43 +5,43 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-BurpSuiteScanConfiguration
+# Get-BurpSuiteAgent
 
 ## SYNOPSIS
-Gets BurpSuite scan configurations.
+Gets BurpSuite agents.
 
 ## SYNTAX
 
 ```
-Get-BurpSuiteScanConfiguration [[-Fields] <String[]>] [[-ID] <String>] [-WhatIf] [-Confirm]
+Get-BurpSuiteAgent [[-Fields] <String[]>] [[-ErrorFields] <String[]>] [[-ID] <String>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets BurpSuite scan configurations.
+Gets BurpSuite agents.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> Get-BurpSuiteScanConfiguration
+PS C:\> Get-BurpSuiteAgent
 ```
 
-The above example shows how to list all scan configurations.
+This example shows how to retrieve all agents.
 
 ### Example 2
 ```powershell
-PS C:\> Get-BurpSuiteScanConfiguration -ID 1
+PS C:\> Get-BurpSuiteAgent -ID 1
 ```
 
-The above example shows how to get a scan configuration by id.
+This example shows how to retrieve an agent by id.
 
 ### Example 3
 ```powershell
-PS C:\> Get-BurpSuiteScanConfiguration -ID 1 -Fields 'id', 'name', 'scan_configuration_fragment_json'
+PS C:\> Get-BurpSuiteAgent -ID 1 -ErrorFields 'code', 'error'
 ```
 
-The above example shows how to get a scan configuration by id and also how to request more fields to return.
+This example shows how to retrieve an agent by id together with errors.
 
 ## PARAMETERS
 
@@ -60,14 +60,30 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Fields
-Specifies the scan configuration fields to retrieve, by default the cmdlet only retrieves the 'id', 'name' properties of scan configurations.
+### -ErrorFields
+Specifies the error fields to retrieve for the agent.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
 Aliases:
-Accepted values: id, name, scan_configuration_fragment_json, built_in, last_modified_time, last_modified_by
+Accepted values: code, error
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Fields
+Specifies the agents fields to retrieve.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: id, machine_id, current_scan_count, ip, name, state, enabled, max_concurrent_scans
 
 Required: False
 Position: 0
@@ -77,7 +93,7 @@ Accept wildcard characters: False
 ```
 
 ### -ID
-Specifies the scan configuration ID.
+Specifies the ID of the agent to retrieve.
 
 ```yaml
 Type: String
@@ -85,7 +101,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

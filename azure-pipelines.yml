@@ -104,7 +104,7 @@ stages:
   condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
   jobs:
   - deployment: Release
-    displayName: Azure DevOps Artifacts Release
+    displayName: Artifacts Release
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'Artifacts'
@@ -148,7 +148,7 @@ stages:
               pwsh: true
 
           - task: NuGetCommand@2
-            displayName: 'Pack Module'
+            displayName: 'Pack Module $(ModuleName)'
             inputs:
               command: pack
               packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
@@ -157,7 +157,7 @@ stages:
               versionEnvVar: 'PACKAGE_VERSION'
 
           - task: NuGetCommand@2
-            displayName: 'Push Module'
+            displayName: 'Push Module $(ModuleName)'
             inputs:
               command: push
               packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
@@ -241,14 +241,14 @@ stages:
 #               workingDirectory: '$(Pipeline.Workspace)/Module'
 
 #           - task: NuGetCommand@2
-#             displayName: 'Pack Module'
+#             displayName: 'Pack Module $(ModuleName)'
 #             inputs:
 #               command: pack
 #               packagesToPack: '$(Pipeline.Workspace)/Module/$(Folder)/Barracuda.WAF.nuspec'
 #               packDestination: '$(Pipeline.Workspace)/Module/$(Folder)'
 
 #           - task: NuGetCommand@2
-#             displayName: 'Push Module'
+#             displayName: 'Push Module $(ModuleName)'
 #             inputs:
 #               command: push
 #               packagesToPush: '$(Pipeline.Workspace)/Module/$(Folder)/*.nupkg'

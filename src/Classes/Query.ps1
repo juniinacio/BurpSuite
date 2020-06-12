@@ -10,10 +10,10 @@ class Query: IQuery {
         $this.Name = $newName
     }
 
-    [Query] Alias([string] $alias) {
-        $this.AliasName = $alias
-        return $this
-    }
+    # [Query] Alias([string] $alias) {
+    #     $this.AliasName = $alias
+    #     return $this
+    # }
 
     [string] Build() {
         $this.QueryStringBuilder.Clear()
@@ -35,11 +35,11 @@ class Query: IQuery {
         return $this
     }
 
-    [Query] AddField([string] $field, [Query] $query) {
-        $subQuery = [Query]::New($field)
-        $subQuery.AddField($query)
-        $this.Fields.Add($subQuery)
-        return $this
-    }
+    # [Query] AddField([string] $field, [Query] $query) {
+    #     $subQuery = [Query]::New($field)
+    #     $subQuery.AddField($query)
+    #     $this.Fields.Add($subQuery)
+    #     return $this
+    # }
 }
 
