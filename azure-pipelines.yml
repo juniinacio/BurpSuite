@@ -2,6 +2,7 @@
 
 trigger:
 - develop
+- feature/*
 
 resources:
 - repo: self
