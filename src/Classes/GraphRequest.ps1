@@ -3,6 +3,9 @@ class GraphRequest {
     [string] $OperationName = [string]::Empty
     [hashtable] $Variables = @{}
 
+    GraphRequest() {
+    }
+
     GraphRequest([string] $query) {
         $this.Query = $Query
     }
