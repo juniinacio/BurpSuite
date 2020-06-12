@@ -36,7 +36,7 @@ PS C:\> Get-BurpSuiteScanConfiguration -ID 1
 
 The above example shows how to get a scan configuration by id.
 
-### Example 2
+### Example 3
 ```powershell
 PS C:\> Get-BurpSuiteScanConfiguration -ID 1 -Fields 'id', 'name', 'scan_configuration_fragment_json'
 ```
