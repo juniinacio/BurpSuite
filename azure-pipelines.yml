@@ -8,6 +8,8 @@ resources:
 
 variables:
 - group: BurpSuite
+- name: ModuleName
+  value: BurpSuite
 
 stages:
 - stage: BurpSuite
@@ -40,7 +42,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: |
-          $r = Invoke-ScriptAnalyzer –Path ./.out/BurpSuite –Recurse | Where-Object severity -ne "Information"
+          $r = Invoke-ScriptAnalyzer –Path ./.out/$(ModuleName) –Recurse | Where-Object severity -ne "Information"
           $r | ForEach-Object {Write-Host "##vso[task.logissue type=$($_.Severity);sourcepath=$($_.ScriptPath);linenumber=$($_.Line);columnnumber=$($_.Column);]$($_.Message)"}
         pwsh: true
 
@@ -71,7 +73,7 @@ stages:
         targetType: 'inline'
         script: |
           New-Item -Path $(Build.ArtifactStagingDirectory)\module -ItemType Directory -Force
-          Move-Item -Path $(Build.SourcesDirectory)\.out\BurpSuite\ -Destination $(Build.ArtifactStagingDirectory)\module\BurpSuite -Force
+          Move-Item -Path $(Build.SourcesDirectory)\.out\$(ModuleName)\ -Destination $(Build.ArtifactStagingDirectory)\module\$(ModuleName) -Force
         pwsh: true
 
     - task: PublishPipelineArtifact@1
@@ -115,7 +117,7 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/BurpSuite/*/*.psd1")
+                $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
                 Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
               pwsh: true
 
@@ -130,7 +132,7 @@ stages:
               targetType: 'inline'
               script: |
                 # Load the psd1 file so you can read the version
-                $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/BurpSuite.psd1
+                $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
                 Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion).$(Build.BuildId)"
               workingDirectory: '$(Pipeline.Workspace)/module'
               pwsh: true
@@ -141,7 +143,7 @@ stages:
               targetType: 'inline'
               script: |
                 Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
-                ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/BurpSuite.psd1
+                ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
               workingDirectory: '$(Pipeline.Workspace)/module'
               pwsh: true
 
@@ -149,7 +151,7 @@ stages:
             displayName: 'Pack Module'
             inputs:
               command: pack
-              packagesToPack: '$(outputModVerDir)/BurpSuite.nuspec'
+              packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
               packDestination: '$(Pipeline.Workspace)/module/dist'
               versioningScheme: byEnvVar
               versionEnvVar: 'PACKAGE_VERSION'
@@ -257,7 +259,7 @@ stages:
 #             displayName: 'Create GitHub Release'
 #             inputs:
 #               gitHubConnection: JuniInacio
-#               repositoryName: juniinacio/BurpSuite
+#               repositoryName: juniinacio/$(ModuleName)
 #               tagSource: manual
 #               tag: v$(PACKAGE_VERSION)
 #               addChangeLog: true
