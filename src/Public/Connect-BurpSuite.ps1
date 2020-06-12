@@ -18,16 +18,15 @@ function Connect-BurpSuite {
         $uriBuilder = New-Object -TypeName System.UriBuilder -ArgumentList $Uri
         $uriBuilder.Path = '/graphql/v1'
 
-        $graphQLUri = $uriBuilder.ToString()
-
-        $graphQLRequest = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
+        $graphUrl = $uriBuilder.ToString()
+        $graphRequest = [GraphQLRequest]::new('{ __schema { queryType { name } } }')
     }
 
     process {
-        if ($PSCmdlet.ShouldProcess($graphQLUri, "Connect to BurpSuite")) {
+        if ($PSCmdlet.ShouldProcess($graphUrl, "Connect to BurpSuite")) {
             try {
-                _createSession -APIUrl $graphQLUri -APIKey $APIKey
-                $null = _callAPI -GraphQLRequest $graphQLRequest
+                _createSession -APIUrl $graphUrl -APIKey $APIKey
+                $null = _callAPI -GraphQLRequest $graphRequest
             } catch {
                 _removeSession
                 $e = [Exception]::new("Cannot access BurpSuite API using key $APIKey and Uri $Uri")
