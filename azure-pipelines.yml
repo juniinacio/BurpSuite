@@ -102,7 +102,7 @@ stages:
   condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
   jobs:
   - deployment: Publish
-    displayName: Publish Module
+    displayName: Azure DevOps Artifacts Release
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'Artifacts'
