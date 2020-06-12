@@ -38,7 +38,8 @@ function _callAPI {
     $params['headers']['content-type'] = 'application/json'
     $params['headers']['accept'] = 'application/json'
 
-    $params['body'] = $GraphRequest | ConvertTo-Json
+    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json
+    $params['body'] = $body
 
     if (_testIsPowerShellCore) {
         $params.Add('SkipCertificateCheck', $true)
@@ -81,6 +82,36 @@ function _uregisterAccelerators {
 
     [ReflectionCache]::TypeAccelerators::Remove(
         'GraphRequest')
+}
+
+function _preProcessRequest {
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNull()]
+        [Alias('GraphRequest')]
+        [object]
+        $InputObject
+    )
+
+    $properties = @{}
+    $InputObject | Get-Member -MemberType Properties | ForEach-Object {
+        $propertyName = $_.Name
+        $propertyValue = $InputObject.$propertyName
+        switch ($propertyValue) {
+            { $_ -is [IEnumerable] -or $_ -is [IDictionary] } {
+                if ($propertyValue.Count -gt 0) {
+                    $properties[$propertyName.ToLowerInvariant()] = $propertyValue
+                }
+            }
+            default {
+                if ($null -ne $propertyValue) {
+                    $properties[$propertyName.ToLowerInvariant()] = $propertyValue
+                }
+            }
+        }
+    }
+    [PSCustomObject]$properties
 }
 
 # function _createErrorRecord {

@@ -1,7 +1,7 @@
 class GraphRequest {
-    hidden [string] $Query = [string]::Empty
-    hidden [string] $OperationName = [string]::Empty
-    hidden [hashtable] $Variables = @{}
+    [string] $Query = [string]::Empty
+    [string] $OperationName = [string]::Empty
+    [hashtable] $Variables = @{}
 
     GraphRequest([string] $query) {
         $this.Query = $Query
