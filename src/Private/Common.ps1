@@ -71,6 +71,14 @@ function _assertAPIUrl {
     }
 }
 
+function _uregisterAccelerators {
+    param (
+    )
+
+    [ReflectionCache]::TypeAccelerators::Remove(
+        'GraphRequest')
+}
+
 # function _createErrorRecord {
 #     [CmdletBinding()]
 #     Param (

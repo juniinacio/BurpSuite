@@ -5,10 +5,17 @@ using namespace System.Management.Automation
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls13
 
-[ReflectionCache]::TypeAccelerators::Add(
-    'GraphRequest',
-    [GraphRequest])
+function _registerAccelerators {
+    param (
+    )
+
+    [ReflectionCache]::TypeAccelerators::Add(
+        'GraphRequest',
+        [GraphRequest])
+}
+_registerAccelerators
 
 $ExecutionContext.SessionState.Module.OnRemove = {
-    [ReflectionCache]::TypeAccelerators::Remove('GraphRequest')
+    _uregisterAccelerators
 }
+

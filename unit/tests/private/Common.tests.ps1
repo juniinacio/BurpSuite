@@ -201,5 +201,33 @@ InModuleScope BurpSuite {
                 # assert
             }
         }
+
+        Context "_registerAccelerators" {
+            It "should register type accelerators" {
+                # arrange
+                $typeAccelerators = [ReflectionCache]::TypeAccelerators
+
+                # act
+                _registerAccelerators
+
+                # assert
+                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'GraphRequest' } ) | Should -Not -BeNullOrEmpty
+            }
+        }
+
+        Context "_unregisterAccelerators" {
+            It "should unregister type accelerators" {
+                # arrange
+                $typeAccelerators = [ReflectionCache]::TypeAccelerators
+
+                _registerAccelerators
+
+                # act
+                _uregisterAccelerators
+
+                # assert
+                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'GraphRequest' } ) | Should -BeNullOrEmpty
+            }
+        }
     }
 }
