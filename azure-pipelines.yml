@@ -102,6 +102,7 @@ stages:
   condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
   jobs:
   - deployment: Publish
+    displayName: Publish Module
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'Artifacts'
@@ -250,13 +251,13 @@ stages:
 #               command: push
 #               packagesToPush: '$(Pipeline.Workspace)/Module/$(Folder)/*.nupkg'
 #               nuGetFeedType: external
-#               publishFeedCredentials: 'PowerShell Gallery'
+#               publishFeedCredentials: 'PowerShellGalleryKey'
 
 #           - task: GithubRelease@0
 #             displayName: 'Create GitHub Release'
 #             inputs:
 #               gitHubConnection: JuniInacio
-#               repositoryName: juniinacio/BarracudaWAF
+#               repositoryName: juniinacio/BurpSuite
 #               tagSource: manual
 #               tag: v$(PACKAGE_VERSION)
 #               addChangeLog: true
