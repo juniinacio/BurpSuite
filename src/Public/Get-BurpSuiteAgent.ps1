@@ -34,7 +34,7 @@ function Get-BurpSuiteAgent {
 
         if ($PSBoundParameters.ContainsKey('ErrorFields')) {
             $errorField = [Query]::New('error')
-
+            
             $PSBoundParameters['ErrorFields'] | ForEach-Object { $errorField.AddField($_) | Out-Null }
 
             $agentFields.AddField($errorField) | Out-Null
