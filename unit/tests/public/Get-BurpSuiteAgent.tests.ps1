@@ -56,7 +56,8 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetAgent" `
-                    -and $GraphRequest.Query -eq 'query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }'
+                    -and $GraphRequest.Query -eq 'query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }' `
+                    -and $GraphRequest.Variables.id -eq 12345
             }
         }
     }

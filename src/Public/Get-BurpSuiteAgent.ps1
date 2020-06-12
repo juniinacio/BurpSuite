@@ -51,7 +51,9 @@ function Get-BurpSuiteAgent {
 
         $graphRequest = [GraphRequest]::new($query, $operationName)
 
-        if ($PSCmdlet.ShouldProcess($graphRequest.Query, "Invoke-BurpSuiteAPI")) {
+        if ($PSBoundParameters.ContainsKey('ID')) { $graphRequest.Variables.id = $ID }
+
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
                 $response
