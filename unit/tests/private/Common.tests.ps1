@@ -305,5 +305,41 @@ InModuleScope BurpSuite {
                 $assert | Should -Be $true
             }
         }
+
+        Context '_preProcessRequest' {
+            It 'should convert object properties names to lower case' {
+                # Arrange
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+
+                # Act
+                $assert = _preProcessRequest -GraphRequest $request
+
+                # Assert
+                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -cmatch "[A-Z]+"} | Should -BeNullOrEmpty
+            }
+
+            It 'should keep object properties' {
+                # Arrange
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }', '__schema')
+
+                # Act
+                $assert = _preProcessRequest -GraphRequest $request
+
+                # Assert
+                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -eq "query"} | Should -Not -BeNullOrEmpty
+                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -eq "operationname"} | Should -Not -BeNullOrEmpty
+            }
+
+            It 'should remove object properties' {
+                # Arrange
+                $request = [GraphRequest]::new('{ __schema { queryType { name } } }', '__schema')
+
+                # Act
+                $assert = _preProcessRequest -GraphRequest $request
+
+                # Assert
+                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -eq "variables"} | Should -BeNullOrEmpty
+            }
+        }
     }
 }

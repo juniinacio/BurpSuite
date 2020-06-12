@@ -26,7 +26,7 @@ function Get-BurpSuiteUnauthorizedAgent {
 
         $graphRequest = [GraphRequest]::new($query, $operationName)
 
-        if ($PSCmdlet.ShouldProcess($graphRequest.Query, "Invoke-BurpSuiteAPI")) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
                 $response

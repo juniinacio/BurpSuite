@@ -27,14 +27,16 @@ function Get-BurpSuiteAgent {
         $operationName = 'GetAgents'
         if ($PSBoundParameters.ContainsKey('ID')) { $operationName = 'GetAgent' }
 
-        $agentFields = [Query]::New('agent')
+        $agentFields = [Query]::New('agents')
+        if ($PSBoundParameters.ContainsKey('ID')) { $agentFields = [Query]::New('agent') }
+
         $PSBoundParameters['Fields'] | ForEach-Object { $agentFields.AddField($_) | Out-Null }
 
         if ($PSBoundParameters.ContainsKey('ID')) { $agentFields.AddArgument('id', '$id') | Out-Null }
 
         if ($PSBoundParameters.ContainsKey('ErrorFields')) {
             $errorField = [Query]::New('error')
-            
+
             $PSBoundParameters['ErrorFields'] | ForEach-Object { $errorField.AddField($_) | Out-Null }
 
             $agentFields.AddField($errorField) | Out-Null
@@ -49,7 +51,9 @@ function Get-BurpSuiteAgent {
 
         $graphRequest = [GraphRequest]::new($query, $operationName)
 
-        if ($PSCmdlet.ShouldProcess($graphRequest.Query, "Invoke-BurpSuiteAPI")) {
+        if ($PSBoundParameters.ContainsKey('ID')) { $graphRequest.Variables.id = $ID }
+
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
                 $response

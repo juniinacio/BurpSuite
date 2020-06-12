@@ -10,7 +10,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetAgents" `
-                    -and $GraphRequest.Query -eq "query GetAgents { agent { id name state enabled } }"
+                    -and $GraphRequest.Query -eq "query GetAgents { agents { id name state enabled } }"
             }
         }
 
@@ -26,7 +26,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetAgents" `
-                    -and $GraphRequest.Query -eq "query GetAgents { agent { $($fields -join ' ') } }"
+                    -and $GraphRequest.Query -eq "query GetAgents { agents { $($fields -join ' ') } }"
             }
         }
 
@@ -42,7 +42,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetAgents" `
-                    -and $GraphRequest.Query -eq "query GetAgents { agent { id name state enabled error { $($fields -join ' ') } } }"
+                    -and $GraphRequest.Query -eq "query GetAgents { agents { id name state enabled error { $($fields -join ' ') } } }"
             }
         }
 
@@ -56,7 +56,8 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetAgent" `
-                    -and $GraphRequest.Query -eq 'query GetAgent($id:"ID!") { agent(id:"$id") { id name state enabled } }'
+                    -and $GraphRequest.Query -eq 'query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }' `
+                    -and $GraphRequest.Variables.id -eq 12345
             }
         }
     }
