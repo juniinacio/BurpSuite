@@ -33,7 +33,7 @@
     Description       = 'PowerShell module for managing your BurpSuite Enterprise server configuration.'
 
     # Minimum version of the PowerShell engine required by this module
-    # PowerShellVersion = ''
+    PowerShellVersion = '5.1'
 
     # Name of the PowerShell host required by this module
     # PowerShellHostName = ''
@@ -95,19 +95,19 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            # Tags = @()
+            Tags = @('BurpSuite', 'BurpSuite Enterprise', 'PowerShell')
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://github.com/juniinacio/BurpSuite/blob/master/LICENSE'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/juniinacio/BurpSuite/'
 
             # A URL to an icon representing this module.
             # IconUri = ''
 
             # ReleaseNotes of this module
-            # ReleaseNotes = ''
+            ReleaseNotes = 'https://github.com/juniinacio/BurpSuite/blob/master/CHANGELOG.md'
 
             # Prerelease string of this module
             # Prerelease = ''

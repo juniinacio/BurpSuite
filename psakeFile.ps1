@@ -18,6 +18,8 @@ properties {
     $PSBPreference.Build.ModuleOutDir = $outputModVerDir
     $PSBPreference.Build.CompileModule = $true
 
+    $PSBPreference.Help.DefaultLocale = 'en-US'
+
     if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
 
     $PesterPreference = [PesterConfiguration]::Default

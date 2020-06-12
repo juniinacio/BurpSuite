@@ -8,3 +8,7 @@ using namespace System.Management.Automation
 [ReflectionCache]::TypeAccelerators::Add(
     'GraphQLRequest',
     [GraphQLRequest])
+
+$ExecutionContext.SessionState.Module.OnRemove = {
+    [ReflectionCache]::TypeAccelerators::Remove('GraphQLRequest')
+}
