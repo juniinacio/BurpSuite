@@ -40,7 +40,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetScanConfiguration" `
-                    -and $GraphRequest.Query -eq 'query GetScanConfiguration($scanId:"ID!") { scan_configurations(scan_id:"$scanId") { id name } }'
+                    -and $GraphRequest.Query -eq 'query GetScanConfiguration($scanId:ID!) { scan_configurations(scan_id:$scanId) { id name } }'
             }
         }
     }
