@@ -12,8 +12,14 @@ Invokes BurpSuite GraphQL API.
 
 ## SYNTAX
 
+### Default (Default)
 ```
-Invoke-BurpSuiteAPI [-GraphRequest] <GraphRequest> [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-BurpSuiteAPI -GraphRequest <GraphRequest> [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### FreeForm
+```
+Invoke-BurpSuiteAPI -Query <String> [-Variables <Hashtable>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -47,6 +53,13 @@ PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
 
 This example shows how to use Invoke-BurpSuiteAPI to query BurpSuite scan configurations.
 
+### Example 4
+```powershell
+PS C:\> Invoke-BurpSuiteAPI -Query 'query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }' -Variables @{id = 1}
+```
+
+This example shows how to use Invoke-BurpSuiteAPI in free form mode.
+
 ## PARAMETERS
 
 ### -Confirm
@@ -69,13 +82,43 @@ Specifies the request to send, use the `[GraphRequest]` type accelerator to craf
 
 ```yaml
 Type: GraphRequest
-Parameter Sets: (All)
+Parameter Sets: Default
 Aliases: Request
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Query
+{{ Fill Query Description }}
+
+```yaml
+Type: String
+Parameter Sets: FreeForm
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Variables
+{{ Fill Variables Description }}
+
+```yaml
+Type: Hashtable
+Parameter Sets: FreeForm
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

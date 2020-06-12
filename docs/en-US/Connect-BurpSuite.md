@@ -13,7 +13,7 @@ Connects BurpSuite to BurpSuite Enterprise.
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-ApiKey] <String> [-Uri] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -30,7 +30,7 @@ This example shows how to connect the module with BurpSuite Enterprise.
 
 ## PARAMETERS
 
-### -ApiKey
+### -APIKey
 Specifies the API key to use for accessing BurpSuite Enterprise.
 
 ```yaml
