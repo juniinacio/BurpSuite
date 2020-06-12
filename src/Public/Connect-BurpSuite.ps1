@@ -23,7 +23,7 @@ function Connect-BurpSuite {
     }
 
     process {
-        if ($PSCmdlet.ShouldProcess($graphUrl, "Connect to BurpSuite")) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 _createSession -APIUrl $graphUrl -APIKey $APIKey
                 $null = _callAPI -GraphRequest $graphRequest
