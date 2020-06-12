@@ -183,7 +183,7 @@ InModuleScope BurpSuite {
         Context "_assertAPIUrl" {
             It "should throw exception if API url is not set" {
                 # arrange
-                [Session]::APIUrl = 'https://burpsuite.example.org'
+                [Session]::APIUrl = ''
 
                 # act
                 { _assertAPIUrl } | Should -Throw
