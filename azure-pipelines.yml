@@ -99,11 +99,11 @@ stages:
       condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
 
 - stage: Artifacts
-  displayName: Azure DevOps Artifacts
+  displayName: Artifacts
   dependsOn: BurpSuite
   condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
   jobs:
-  - deployment: Publish
+  - deployment: Release
     displayName: Azure DevOps Artifacts Release
     pool:
       vmImage: 'ubuntu-latest'
@@ -200,7 +200,7 @@ stages:
 # - stage: PSGallery
 #   dependsOn: Testing
 #   jobs:
-#   - deployment: Publish
+#   - deployment: Release
 #     displayName: PowerShell Gallery / GitHub Release
 #     pool:
 #       vmImage: 'windows-latest'
