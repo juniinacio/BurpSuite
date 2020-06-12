@@ -79,3 +79,4 @@ class QueryStringBuilder {
         return $this.QueryString.ToString()
     }
 }
+

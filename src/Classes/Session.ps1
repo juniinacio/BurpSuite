@@ -12,3 +12,4 @@ class Session {
         [Session]::APIUrl = $null
     }
 }
+

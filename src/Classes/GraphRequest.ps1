@@ -23,3 +23,4 @@ class GraphRequest {
         $this.Variables = $Variables
     }
 }
+

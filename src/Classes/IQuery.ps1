@@ -14,3 +14,4 @@ class IQuery {
 
     [string] ToString() { return $this.Build() }
 }
+

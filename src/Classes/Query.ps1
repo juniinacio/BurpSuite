@@ -42,3 +42,4 @@ class Query: IQuery {
         return $this
     }
 }
+
