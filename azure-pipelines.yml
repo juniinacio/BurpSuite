@@ -13,15 +13,15 @@ stages:
 - stage: BurpSuite
 
   jobs:
-  # - job: macOS_Linux_Phase
-  #   displayName: Build Linux
-  #   pool:
-  #     vmImage: ubuntu-latest
+  - job: macOS_Linux_Phase
+    displayName: Build Linux
+    pool:
+      vmImage: ubuntu-latest
 
-  #   steps:
-  #   - template: .azure-pipelines/unitTests.yml
-  #     parameters:
-  #       os: 'Linux'
+    steps:
+    - template: .azure-pipelines/unitTests.yml
+      parameters:
+        os: 'Linux'
 
   - job: Windows_Phase
     displayName: Build Windows
