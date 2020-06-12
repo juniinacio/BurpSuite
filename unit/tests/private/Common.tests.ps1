@@ -38,6 +38,8 @@ InModuleScope BurpSuite {
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
                     $Headers.Authorization -eq $apiKey
                 }
+
+                [Session]::Dispose()
             }
 
             It "should set request uri" {
@@ -58,6 +60,8 @@ InModuleScope BurpSuite {
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
                     $Uri -eq "https://burpsuite.foo.org:443/graphql/v1"
                 }
+
+                [Session]::Dispose()
             }
 
             It "should set request body" {
@@ -78,6 +82,8 @@ InModuleScope BurpSuite {
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
                     $Body -like "*query*{ __schema { queryType { name } } }*"
                 }
+
+                [Session]::Dispose()
             }
 
             It "should set method to post" {
@@ -98,6 +104,8 @@ InModuleScope BurpSuite {
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
                     $Method -eq "Post"
                 }
+
+                [Session]::Dispose()
             }
 
             It "should set content type header" {
@@ -118,6 +126,8 @@ InModuleScope BurpSuite {
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
                     $Headers.'Content-Type' -eq "application/json"
                 }
+
+                [Session]::Dispose()
             }
 
             It "should accept header" {
@@ -137,6 +147,32 @@ InModuleScope BurpSuite {
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
                     $Headers.Accept -eq "application/json"
+                }
+
+                [Session]::Dispose()
+            }
+
+            if ((_testIsPowerShellCore)) {
+                It 'should set skip certificate checks' {
+                    # arrange
+                    $apiKey = 'xxxAAAxxxx'
+
+                    [Session]::APIKey = $apiKey
+                    [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
+
+                    $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+
+                    Mock -CommandName Invoke-RestMethod
+
+                    # act
+                    _callAPI -GraphRequest $request
+
+                    # assert
+                    Should -Invoke Invoke-RestMethod -ParameterFilter {
+                        $SkipCertificateCheck -eq $true
+                    }
+
+                    [Session]::Dispose()
                 }
             }
         }
@@ -227,6 +263,46 @@ InModuleScope BurpSuite {
 
                 # assert
                 $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'GraphRequest' } ) | Should -BeNullOrEmpty
+            }
+        }
+
+        Context '_getPowerShellVersion' {
+            It 'should output the correct version' {
+                # Arrange
+
+                # Act
+                $assert = _getPowerShellVersion
+
+                # Assert
+                $assert | Should -BeExactly $PSVersionTable.PSVersion
+            }
+        }
+
+        Context '_testIsPowerShellCore' {
+            It 'should output false' {
+                # Arrange
+                Mock _getPowerShellVersion -MockWith {
+                    [version]"5.1"
+                }
+
+                # Act
+                $assert = _testIsPowerShellCore
+
+                # Assert
+                $assert | Should -Be $false
+            }
+
+            It 'should output true' {
+                # Arrange
+                Mock _getPowerShellVersion -MockWith {
+                    [version]"6.0"
+                }
+
+                # Act
+                $assert = _testIsPowerShellCore
+
+                # Assert
+                $assert | Should -Be $true
             }
         }
     }

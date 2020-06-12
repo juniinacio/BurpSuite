@@ -40,6 +40,10 @@ function _callAPI {
 
     $params['body'] = $GraphRequest | ConvertTo-Json
 
+    if (_testIsPowerShellCore) {
+        $params.Add('SkipCertificateCheck', $true)
+    }
+
     Invoke-RestMethod @params
 }
 
