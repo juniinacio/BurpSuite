@@ -25,7 +25,7 @@ stages:
 
   jobs:
   - job: macOS_Linux_Phase
-    displayName: Build Linux (Pwsh.exe)
+    displayName: Build Linux (Pwsh)
     pool:
       vmImage: ubuntu-latest
 
@@ -233,7 +233,7 @@ stages:
   - template: .azure-pipelines/integrationTests.yml
     parameters:
       name: 'Linux'
-      displayName: Linux (Pwsh.exe)
+      displayName: Linux (Pwsh)
       pool: 'ubuntu-latest'
       environment: Linux
       apiVersion: '$(BurpSuiteAPIVersion)'
