@@ -100,7 +100,7 @@ jobs:
               displayName: 'Install Pester'
               inputs:
                 targetType: 'inline'
-                script: 'Install-Module -Name Pester -Repository PSGallery -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck'
+                script: 'Install-Module -Name Pester -Repository PSGallery -MinimumVersion 5.0.2 -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck'
                 pwsh: ${{ parameters.pwsh }}
 
             - task: PowerShell@2
