@@ -50,7 +50,7 @@ jobs:
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "$(ARTIFACTS_EMAIL)"
                   $url = "$(ARTIFACTS_URL)"
-                  $pwd = ConvertTo-SecureString $Env:ARTIFACTSPAT -AsPlainText -Force
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -60,7 +60,7 @@ jobs:
                   if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ARTIFACTS_PAT)
+                ARTIFACTS_PAT: $(ARTIFACTS_PAT)
 
             - task: PowerShell@2
               displayName: 'Install $(BURPSUITE_MODULENAME) Module'
