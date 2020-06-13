@@ -8,6 +8,7 @@ parameters:
   depends: ''
   moduleName: ''
   artifactsUrl: ''
+  artifactsPAT: ''
   artifactsEmail: ''
   pwsh: true
 
@@ -20,6 +21,7 @@ jobs:
       BURPSUITE_MODULENAME: ${{ parameters.moduleName }}
       ARTIFACTS_URL: ${{ parameters.artifactsUrl }}
       ARTIFACTS_EMAIL: ${{ parameters.artifactsEmail }}
+      ARTIFACTS_PAT: ${{ parameters.artifactsPAT }}
     ${{ if eq(parameters['depends'], true) }}:
     dependsOn: ${{ parameters.depends }}
     pool:
@@ -58,7 +60,7 @@ jobs:
                   if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ArtifactsPAT)
+                ARTIFACTSPAT: $(ARTIFACTS_PAT)
 
             - task: PowerShell@2
               displayName: 'Install $(BURPSUITE_MODULENAME) Module'

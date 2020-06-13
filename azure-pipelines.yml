@@ -253,6 +253,7 @@ stages:
       moduleName: '$(ModuleName)'
       artifactsUrl: '$(ArtifactsUrl)'
       artifactsEmail: '$(ArtifactsEmail)'
+      artifactsPAT: '$(ArtifactsPAT)'
       pwsh: false
 
 # - stage: PSGallery_Stage
