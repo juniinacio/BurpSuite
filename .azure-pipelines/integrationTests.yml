@@ -46,10 +46,10 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $n = $env:BURPSUITE_MODULENAME
+                  $n = $(BURPSUITE_MODULENAME)
                   $e = "example@example.org"
-                  $url = $env:ARTIFACTS_URL
-                  $pwd = ConvertTo-SecureString $env:ARTIFACTSPAT -AsPlainText -Force
+                  $url = $(ARTIFACTS_URL)
+                  $pwd = ConvertTo-SecureString $(ARTIFACTS_PAT) -AsPlainText -Force
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -67,19 +67,19 @@ jobs:
                 targetType: 'inline'
                 script: |
                   # Load the psd1 file so you can read the version
-                  $manifest = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$($env:BURPSUITE_MODULENAME)/*/*.psd1")
+                  $manifest = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(BURPSUITE_MODULENAME)/*/*.psd1")
 
-                  $n = $env:BURPSUITE_MODULENAME
+                  $n = $(BURPSUITE_MODULENAME)
                   $e = "example@example.org"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString $env:ARTIFACTSPAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $(ARTIFACTS_PAT) -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
                   $env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
                   $env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
-                  Install-Module -Name $env:BURPSUITE_MODULENAME -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
+                  Install-Module -Name $(BURPSUITE_MODULENAME) -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
                 workingDirectory: '$(Pipeline.Workspace)/test'
                 pwsh: ${{ parameters.pwsh }}
               env:
@@ -97,17 +97,17 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $env:BURPSUITE_URL = $env:BURPSUITE_URL
-                  $env:BURPSUITE_APIKEY = $env:BURPSUITE_APIKEY
-                  $env:BURPSUITE_APIVERSION = $env:BURPSUITE_APIVERSION
+                  $env:BURPSUITE_URL = $(BURPSUITE_URL)
+                  $env:BURPSUITE_APIKEY = $(BURPSUITE_APIKEY)
+                  $env:BURPSUITE_APIVERSION = $(BURPSUITE_APIVERSION)
 
-                  Import-Module $env:BURPSUITE_MODULENAME
+                  Import-Module $(BURPSUITE_MODULENAME)
                   if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
 
                   $PesterPreference = [PesterConfiguration]::Default
                   $PesterPreference.Run.PassThru = $true
                   $PesterPreference.TestResult.Enabled = $true
-                  $PesterPreference.TestResult.OutputPath = Join-Path -Path "$(Pipeline.Workspace)/test/integration" -ChildPath "$($env:BURPSUITE_MODULENAME)-TestsResults.xml"
+                  $PesterPreference.TestResult.OutputPath = Join-Path -Path "$(Pipeline.Workspace)/test/integration" -ChildPath "$(BURPSUITE_MODULENAME)-TestsResults.xml"
 
                   $testResults = Invoke-Pester -Configuration $PesterPreference
                   Write-Host 'Pester results:' -ForegroundColor Yellow
