@@ -338,14 +338,14 @@ stages:
               nuGetFeedType: external
               publishFeedCredentials: 'PowerShellGallery'
 
-          # - task: GithubRelease@0
-          #   displayName: 'Create GitHub Release'
-          #   inputs:
-          #     gitHubConnection: JuniInacio
-          #     repositoryName: juniinacio/$(ModuleName)
-          #     tagSource: manual
-          #     tag: v$(PACKAGE_VERSION)
-          #     addChangeLog: true
-          #     compareWith: 'lastFullRelease'
-          #     assets: |
-          #       $(Pipeline.Workspace)/module/dist/*.nupkg
+          - task: GithubRelease@0
+            displayName: 'Create GitHub Release'
+            inputs:
+              gitHubConnection: juniinacio
+              repositoryName: juniinacio/$(ModuleName)
+              tagSource: manual
+              tag: v$(PACKAGE_VERSION)
+              addChangeLog: true
+              compareWith: 'lastFullRelease'
+              assets: |
+                $(Pipeline.Workspace)/module/dist/*.nupkg
