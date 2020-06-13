@@ -228,20 +228,20 @@ stages:
   dependsOn: AzureDevOps_Stage
   jobs:
 
-  # - template: .azure-pipelines/integrationTests.yml
-  #   parameters:
-  #     name: 'Linux'
-  #     displayName: 'Linux'
-  #     pool: 'ubuntu-latest'
-  #     apiVersion: '$(BurpSuiteAPIVersion)'
-  #     apiUrl: '$(BurpSuiteAPIUri)'
-  #     apiKey: '$(BurpSuiteAPIKey)'
-  #     os: 'Linux'
-  #     moduleName: '$(ModuleName)'
-  #     artifactsUrl: '$(ArtifactsUrl)'
-  #     artifactsEmail: '$(ArtifactsEmail)'
-  #     artifactsPAT: '$(ArtifactsPAT)'
-  #     pwsh: true
+  - template: .azure-pipelines/integrationTests.yml
+    parameters:
+      name: 'Linux'
+      displayName: 'Linux'
+      pool: 'ubuntu-latest'
+      apiVersion: '$(BurpSuiteAPIVersion)'
+      apiUrl: '$(BurpSuiteAPIUri)'
+      apiKey: '$(BurpSuiteAPIKey)'
+      os: 'Linux'
+      moduleName: '$(ModuleName)'
+      artifactsUrl: '$(ArtifactsUrl)'
+      artifactsEmail: '$(ArtifactsEmail)'
+      artifactsPAT: '$(ArtifactsPAT)'
+      pwsh: true
 
   - template: .azure-pipelines/integrationTests.yml
     parameters:
@@ -252,7 +252,7 @@ stages:
       apiUrl: '$(BurpSuiteAPIUri)'
       apiKey: '$(BurpSuiteAPIKey)'
       os: 'Windows'
-      # depends: 'Linux'
+      depends: 'Linux'
       moduleName: '$(ModuleName)'
       artifactsUrl: '$(ArtifactsUrl)'
       artifactsEmail: '$(ArtifactsEmail)'
