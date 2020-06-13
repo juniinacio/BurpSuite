@@ -151,8 +151,8 @@ stages:
       in(variables['Build.Reason'], 'PullRequest')
     )
   jobs:
-  - deployment: Release
-    displayName: Artifacts Release
+  - deployment: AzureDevOps
+    displayName: Azure DevOps
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'Artifacts'
