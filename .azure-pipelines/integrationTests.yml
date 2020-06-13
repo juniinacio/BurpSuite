@@ -46,7 +46,7 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $n = $(BURPSUITE_MODULENAME)
+                  $n = "$(BURPSUITE_MODULENAME)"
                   $e = "example@example.org"
                   $url = $(ARTIFACTS_URL)
                   $pwd = ConvertTo-SecureString $(ARTIFACTS_PAT) -AsPlainText -Force
@@ -69,7 +69,7 @@ jobs:
                   # Load the psd1 file so you can read the version
                   $manifest = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(BURPSUITE_MODULENAME)/*/*.psd1")
 
-                  $n = $(BURPSUITE_MODULENAME)
+                  $n = "$(BURPSUITE_MODULENAME)"
                   $e = "example@example.org"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
                   $pwd = ConvertTo-SecureString $(ARTIFACTS_PAT) -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
@@ -79,7 +79,7 @@ jobs:
                   $env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
                   $env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
-                  Install-Module -Name $(BURPSUITE_MODULENAME) -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
+                  Install-Module -Name "$(BURPSUITE_MODULENAME)" -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
                 workingDirectory: '$(Pipeline.Workspace)/test'
                 pwsh: ${{ parameters.pwsh }}
               env:
@@ -101,7 +101,7 @@ jobs:
                   $env:BURPSUITE_APIKEY = $(BURPSUITE_APIKEY)
                   $env:BURPSUITE_APIVERSION = $(BURPSUITE_APIVERSION)
 
-                  Import-Module $(BURPSUITE_MODULENAME)
+                  Import-Module "$(BURPSUITE_MODULENAME)"
                   if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
 
                   $PesterPreference = [PesterConfiguration]::Default
