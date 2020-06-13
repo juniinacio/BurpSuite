@@ -215,7 +215,7 @@ stages:
 
 - stage: Testing_Stage
   displayName: Testing
-  dependsOn: Package_Management_Stage
+  dependsOn: Packaging_Stage
   jobs:
 
   - template: .azure-pipelines/integrationTests.yml
