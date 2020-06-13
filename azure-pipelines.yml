@@ -264,6 +264,7 @@ stages:
       pwsh: false
 
 - stage: PSGallery_Stage
+  displayName: PowerShell Gallery
   dependsOn: Build_Stage
   condition: |
     and
@@ -347,4 +348,4 @@ stages:
           #     addChangeLog: true
           #     compareWith: 'lastFullRelease'
           #     assets: |
-          #       $(Pipeline.Workspace)/Module/$(Folder)/*.nupkg
+          #       $(Pipeline.Workspace)/module/dist/*.nupkg
