@@ -233,8 +233,9 @@ stages:
   - template: .azure-pipelines/integrationTests.yml
     parameters:
       name: 'Linux'
-      displayName: 'Linux (Pwsh.exe)'
+      displayName: Linux (Pwsh.exe)
       pool: 'ubuntu-latest'
+      environment: Linux
       apiVersion: '$(BurpSuiteAPIVersion)'
       apiUrl: '$(BurpSuiteAPIUri)'
       apiKey: '$(BurpSuiteAPIKey)'
@@ -248,8 +249,9 @@ stages:
   - template: .azure-pipelines/integrationTests.yml
     parameters:
       name: 'Windows'
-      displayName: 'Windows (PowerShell.exe)'
+      displayName: Windows (PowerShell.exe)
       pool: 'windows-latest'
+      environment: Windows
       apiVersion: '$(BurpSuiteAPIVersion)'
       apiUrl: '$(BurpSuiteAPIUri)'
       apiKey: '$(BurpSuiteAPIKey)'

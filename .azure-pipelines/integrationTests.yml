@@ -12,6 +12,7 @@ parameters:
   artifactsPAT: ''
   artifactsEmail: ''
   pwsh: true
+  environment: ''
 
 jobs:
   - deployment: ${{ parameters.name }}
@@ -28,7 +29,7 @@ jobs:
     dependsOn: ${{ parameters.depends }}
     pool:
       vmImage: ${{ parameters.pool }}
-    environment: '${{ parameters.displayName }}'
+    environment: '${{ parameters.environment }}'
     strategy:
       runOnce:
         deploy:
