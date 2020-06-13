@@ -233,12 +233,10 @@ stages:
   #     name: 'Linux'
   #     displayName: 'Linux'
   #     pool: 'ubuntu-latest'
-  #     apiKey: $(BurpSuiteAPIKey)
   #     apiVersion: '$(BurpSuiteAPIVersion)'
   #     apiUrl: '$(BurpSuiteAPIUri)'
   #     os: 'Linux'
   #     moduleName: '$(ModuleName)'
-  #     artifactsPAT: '$(artifactsPAT)'
   #     artifactsUrl: '$(artifactsUrl)'
   #     artifactsEmail: '$(ArtifactsEmail)'
   #     pwsh: true
@@ -248,13 +246,11 @@ stages:
       name: 'Windows'
       displayName: 'Windows (PowerShell)'
       pool: 'windows-latest'
-      apiKey: $(BurpSuiteAPIKey)
       apiVersion: '$(BurpSuiteAPIVersion)'
       apiUrl: '$(BurpSuiteAPIUri)'
       os: 'Windows'
       # depends: 'Linux'
       moduleName: '$(ModuleName)'
-      artifactsPAT: '$(artifactsPAT)'
       artifactsUrl: '$(artifactsUrl)'
       artifactsEmail: '$(ArtifactsEmail)'
       pwsh: false
