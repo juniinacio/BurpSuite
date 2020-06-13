@@ -34,17 +34,6 @@ jobs:
         deploy:
           steps:
             - task: PowerShell@2
-              displayName: 'Display Variables'
-              inputs:
-                targetType: 'inline'
-                script: |
-                  dir env:
-                pwsh: ${{ parameters.pwsh }}
-              env:
-                ARTIFACTS_PAT: $(ARTIFACTS_PAT)
-                BURPSUITE_APIKEY: $(BURPSUITE_APIKEY)
-
-            - task: PowerShell@2
               displayName: 'Register Private Repository'
               inputs:
                 targetType: 'inline'
