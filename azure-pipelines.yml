@@ -141,8 +141,8 @@ stages:
           in(variables['Build.Reason'], 'PullRequest', 'Manual')
         )
 
-- stage: Package_Management_Stage
-  displayName: Package Management
+- stage: Packaging_Stage
+  displayName: Packaging
   dependsOn: Build_Stage
   condition: |
     and
