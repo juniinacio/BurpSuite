@@ -238,8 +238,8 @@ stages:
   #     apiUrl: '$(BurpSuiteAPIUri)'
   #     os: 'Linux'
   #     moduleName: '$(ModuleName)'
-  #     artifactsPAT: '$(ArtifactsUrl)'
-  #     artifactsUrl: '$(ArtifactsPAT)'
+  #     artifactsPAT: '$(artifactsPAT)'
+  #     artifactsUrl: '$(artifactsUrl)'
   #     artifactsEmail: '$(ArtifactsEmail)'
   #     pwsh: true
 
@@ -254,8 +254,8 @@ stages:
       os: 'Windows'
       # depends: 'Linux'
       moduleName: '$(ModuleName)'
-      artifactsPAT: '$(ArtifactsUrl)'
-      artifactsUrl: '$(ArtifactsPAT)'
+      artifactsPAT: '$(artifactsPAT)'
+      artifactsUrl: '$(artifactsUrl)'
       artifactsEmail: '$(ArtifactsEmail)'
       pwsh: false
 
