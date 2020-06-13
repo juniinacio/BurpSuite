@@ -126,7 +126,7 @@ stages:
         and
         (
           succeeded(),
-          in(variables['Build.Reason'], 'PullRequest')
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
         )
 
     - task: PublishPipelineArtifact@1
@@ -138,7 +138,7 @@ stages:
         and
         (
           succeeded(),
-          in(variables['Build.Reason'], 'PullRequest')
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
         )
 
 - stage: Package_Management_Stage
@@ -148,7 +148,7 @@ stages:
     and
     (
       succeeded(),
-      in(variables['Build.Reason'], 'PullRequest')
+      in(variables['Build.Reason'], 'PullRequest', 'Manual')
     )
   jobs:
   - deployment: AzureDevOps
