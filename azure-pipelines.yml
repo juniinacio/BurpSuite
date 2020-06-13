@@ -133,7 +133,7 @@ stages:
       displayName: 'Publish Integration Tests'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/integration'
-        artifact: 'test'
+        artifact: 'integration'
       condition: |
         and
         (
