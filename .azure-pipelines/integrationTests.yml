@@ -34,6 +34,15 @@ jobs:
         deploy:
           steps:
             - task: PowerShell@2
+              displayName: 'Set Pipeline Variables'
+              inputs:
+              targetType: 'inline'
+              script: |
+                  $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                  Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
+              pwsh: true
+
+            - task: PowerShell@2
               displayName: 'Register Private Repository'
               inputs:
                 targetType: 'inline'
@@ -59,7 +68,7 @@ jobs:
                 targetType: 'inline'
                 script: |
                   # Load the psd1 file so you can read the version
-                  $manifest = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(BURPSUITE_MODULENAME)/*/*.psd1")
+                  $manifest = Import-PowerShellDataFile $Env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "$(ARTIFACTS_EMAIL)"
