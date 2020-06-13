@@ -109,12 +109,12 @@ stages:
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/module'
         artifact: 'module'
-      condition: |
-        and
-        (
-          succeeded(),
-          in(variables['Build.Reason'], 'PullRequest', 'Manual')
-        )
+      # condition: |
+      #   and
+      #   (
+      #     succeeded(),
+      #     in(variables['Build.Reason'], 'PullRequest', 'Manual')
+      #   )
 
     - task: CopyFiles@2
       displayName: 'Copy Integration Tests to Artifacts Folder'
@@ -122,24 +122,24 @@ stages:
         Contents: |
           integration/**
         TargetFolder: '$(build.artifactstagingdirectory)/'
-      condition: |
-        and
-        (
-          succeeded(),
-          in(variables['Build.Reason'], 'PullRequest', 'Manual')
-        )
+      # condition: |
+      #   and
+      #   (
+      #     succeeded(),
+      #     in(variables['Build.Reason'], 'PullRequest', 'Manual')
+      #   )
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Integration Tests'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/integration'
         artifact: 'integration'
-      condition: |
-        and
-        (
-          succeeded(),
-          in(variables['Build.Reason'], 'PullRequest', 'Manual')
-        )
+      # condition: |
+      #   and
+      #   (
+      #     succeeded(),
+      #     in(variables['Build.Reason'], 'PullRequest', 'Manual')
+      #   )
 
 # - stage: AzureDevOps_Stage
 #   displayName: Azure DevOps
