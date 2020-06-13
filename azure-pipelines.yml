@@ -266,12 +266,12 @@ stages:
 - stage: PSGallery_Stage
   displayName: PowerShell Gallery
   dependsOn: Build_Stage
-  condition: |
-    and
-    (
-      succeeded(),
-      eq(variables['Build.SourceBranchName'], 'master')
-    )
+  # condition: |
+  #   and
+  #   (
+  #     succeeded(),
+  #     eq(variables['Build.SourceBranchName'], 'master')
+  #   )
   jobs:
   - deployment: Release
     displayName: PowerShell Gallery / GitHub Release
