@@ -48,8 +48,8 @@ jobs:
                 script: |
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "example@example.org"
-                  $url = $(ARTIFACTS_URL)
-                  $pwd = ConvertTo-SecureString $(ARTIFACTS_PAT) -AsPlainText -Force
+                  $url = "$(ARTIFACTS_URL)"
+                  $pwd = ConvertTo-SecureString $env:ARTIFACTS_PAT -AsPlainText -Force
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -72,7 +72,7 @@ jobs:
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "example@example.org"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString $(ARTIFACTS_PAT) -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $env:ARTIFACTS_PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
