@@ -82,7 +82,7 @@ jobs:
                   $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
                   Install-Module -Name "$(BURPSUITE_MODULENAME)" -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
-                workingDirectory: '$(Pipeline.Workspace)/test'
+                workingDirectory: '$(Pipeline.Workspace)/module'
                 pwsh: ${{ parameters.pwsh }}
               env:
                 ARTIFACTS_PAT: $(ARTIFACTS_PAT)
