@@ -40,7 +40,7 @@ jobs:
                 script: |
                   $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
                   Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
-                pwsh: true
+                pwsh: ${{ parameters.pwsh }}
 
             - task: PowerShell@2
               displayName: 'Register Private Repository'
