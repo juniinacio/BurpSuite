@@ -29,7 +29,7 @@ InModuleScope BurpSuite {
         }
 
         Context 'Connect-BurpSuite' {
-            It 'should add environment variables' {
+            It 'should connect to BurpSuite' {
                 # Arrange
 
                 # Act
@@ -40,7 +40,7 @@ InModuleScope BurpSuite {
         }
 
         Context 'Disconnect-BurpSuite' {
-            It 'should remove environment variables' {
+            It 'should disconnect from BurpSuite' {
                 # Arrange
 
                 # Act
