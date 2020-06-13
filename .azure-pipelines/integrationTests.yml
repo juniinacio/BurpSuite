@@ -99,9 +99,9 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $Env:BURPSUITE_URL = $(BURPSUITE_URL)
-                  $Env:BURPSUITE_APIKEY = $(BURPSUITE_APIKEY)
-                  $Env:BURPSUITE_APIVERSION = $(BURPSUITE_APIVERSION)
+                  $Env:BURPSUITE_URL = "$(BURPSUITE_URL)"
+                  $Env:BURPSUITE_APIKEY = "$(BURPSUITE_APIKEY)"
+                  $Env:BURPSUITE_APIVERSION = "$(BURPSUITE_APIVERSION)"
 
                   Import-Module "$(BURPSUITE_MODULENAME)"
                   if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
