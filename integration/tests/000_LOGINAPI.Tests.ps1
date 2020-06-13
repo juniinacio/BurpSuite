@@ -23,9 +23,9 @@ Set-StrictMode -Version Latest
 InModuleScope BurpSuite {
     Describe 'Login API' -Tag 'CD' {
         BeforeAll {
-            $BURPSUITE_APIKEY = $Env:BURPSUITE_APIKEY
-            $BURPSUITE_APIVERSION = $Env:BURPSUITE_APIVERSION
-            $BURPSUITE_URL = $Env:BURPSUITE_URL
+            $BURPSUITE_APIKEY = $env:BURPSUITE_APIKEY
+            $BURPSUITE_APIVERSION = $env:BURPSUITE_APIVERSION
+            $BURPSUITE_URL = $env:BURPSUITE_URL
         }
 
         Context 'Connect-BurpSuite' {
