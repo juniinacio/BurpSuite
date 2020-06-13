@@ -37,7 +37,7 @@ jobs:
                   dir env:
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(artifactsPAT)
+                PAT: $(ArtifactsPAT)
                 BURPSUITE_APIKEY: $(BurpSuiteAPIKey)
 
             - task: PowerShell@2
@@ -48,7 +48,7 @@ jobs:
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "$(ARTIFACTS_EMAIL)"
                   $url = "$(ARTIFACTS_URL)"
-                  $pwd = ConvertTo-SecureString $($Env:ARTIFACTS_PAT) -AsPlainText -Force
+                  $pwd = ConvertTo-SecureString $Env:PAT -AsPlainText -Force
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -58,7 +58,7 @@ jobs:
                   if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(artifactsPAT)
+                PAT: $(ArtifactsPAT)
 
             - task: PowerShell@2
               displayName: 'Install $(BURPSUITE_MODULENAME) Module'
@@ -71,7 +71,7 @@ jobs:
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "$(ARTIFACTS_EMAIL)"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $Env:PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -82,7 +82,7 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(artifactsPAT)
+                PAT: $(ArtifactsPAT)
 
             - task: PowerShell@2
               displayName: 'Install Pester'
@@ -117,7 +117,6 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test/integration'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(artifactsPAT)
                 BURPSUITE_APIKEY: $(BurpSuiteAPIKey)
 
             - task: PublishTestResults@2

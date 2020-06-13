@@ -237,7 +237,7 @@ stages:
   #     apiUrl: '$(BurpSuiteAPIUri)'
   #     os: 'Linux'
   #     moduleName: '$(ModuleName)'
-  #     artifactsUrl: '$(artifactsUrl)'
+  #     artifactsUrl: '$(ArtifactsUrl)'
   #     artifactsEmail: '$(ArtifactsEmail)'
   #     pwsh: true
 
@@ -251,7 +251,7 @@ stages:
       os: 'Windows'
       # depends: 'Linux'
       moduleName: '$(ModuleName)'
-      artifactsUrl: '$(artifactsUrl)'
+      artifactsUrl: '$(ArtifactsUrl)'
       artifactsEmail: '$(ArtifactsEmail)'
       pwsh: false
 
