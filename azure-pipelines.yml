@@ -35,7 +35,7 @@ stages:
         os: 'Linux'
 
   - job: Windows_Phase
-    displayName: Build Windows (Windows PowerShell)
+    displayName: Build Windows (PowerShell)
     pool:
       vmImage: windows-latest
 
@@ -46,7 +46,7 @@ stages:
         pwsh: false
 
   - job: Windows_PowerShellCore_Phase
-    displayName: Build Windows (PowerShell Core)
+    displayName: Build Windows (Pwsh)
     dependsOn:
       - macOS_Linux_Phase
       - Windows_Phase
@@ -235,7 +235,7 @@ stages:
   - template: .azure-pipelines/integrationTests.yml
     parameters:
       name: 'Windows'
-      displayName: 'Windows'
+      displayName: 'Windows (PowerShell)'
       pool: 'windows-latest'
       apiKey: $(BurpSuiteAPIKey)
       apiVersion: '$(BurpSuiteAPIVersion)'
