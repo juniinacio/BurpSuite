@@ -10,6 +10,7 @@ parameters:
   moduleName: ''
   artifactsPAT: ''
   artifactsUrl: ''
+  artifactsEmail: ''
   pwsh: true
 
 jobs:
@@ -22,6 +23,7 @@ jobs:
       BURPSUITE_MODULENAME: ${{ parameters.moduleName }}
       ARTIFACTS_PAT: ${{ parameters.artifactsPAT }}
       ARTIFACTS_URL: ${{ parameters.artifactsUrl }}
+      ARTIFACTS_EMAIL: ${{ parameters.artifactsEmail }}
     ${{ if eq(parameters['depends'], true) }}:
     dependsOn: ${{ parameters.depends }}
     pool:
@@ -47,14 +49,14 @@ jobs:
                 targetType: 'inline'
                 script: |
                   $n = "$(BURPSUITE_MODULENAME)"
-                  $e = "example@example.org"
+                  $e = "$(ARTIFACTS_EMAIL)"
                   $url = "$(ARTIFACTS_URL)"
-                  $pwd = ConvertTo-SecureString $env:ARTIFACTS_PAT -AsPlainText -Force
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
-                  $env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
-                  $env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
+                  $Env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
+                  $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
                   if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
                 pwsh: ${{ parameters.pwsh }}
@@ -70,14 +72,14 @@ jobs:
                   $manifest = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(BURPSUITE_MODULENAME)/*/*.psd1")
 
                   $n = "$(BURPSUITE_MODULENAME)"
-                  $e = "example@example.org"
+                  $e = "$(ARTIFACTS_EMAIL)"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString $env:ARTIFACTS_PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
-                  $env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
-                  $env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
+                  $Env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
+                  $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
                   Install-Module -Name "$(BURPSUITE_MODULENAME)" -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
                 workingDirectory: '$(Pipeline.Workspace)/test'
@@ -97,9 +99,9 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $env:BURPSUITE_URL = $(BURPSUITE_URL)
-                  $env:BURPSUITE_APIKEY = $(BURPSUITE_APIKEY)
-                  $env:BURPSUITE_APIVERSION = $(BURPSUITE_APIVERSION)
+                  $Env:BURPSUITE_URL = $(BURPSUITE_URL)
+                  $Env:BURPSUITE_APIKEY = $(BURPSUITE_APIKEY)
+                  $Env:BURPSUITE_APIVERSION = $(BURPSUITE_APIVERSION)
 
                   Import-Module "$(BURPSUITE_MODULENAME)"
                   if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
