@@ -17,11 +17,11 @@ jobs:
   - deployment: ${{ parameters.name }}
     displayName: ${{ parameters.displayName }}
     variables:
-      BURPSUITE_APIKEY: ${{ parameters.apiKey }}
+    #   BURPSUITE_APIKEY: ${{ parameters.apiKey }}
       BURPSUITE_APIVERSION: ${{ parameters.apiVerion }}
       BURPSUITE_URL: ${{ parameters.apiUrl }}
       BURPSUITE_MODULENAME: ${{ parameters.moduleName }}
-      ARTIFACTS_PAT: ${{ parameters.artifactsPAT }}
+    #   ARTIFACTS_PAT: ${{ parameters.artifactsPAT }}
       ARTIFACTS_URL: ${{ parameters.artifactsUrl }}
       ARTIFACTS_EMAIL: ${{ parameters.artifactsEmail }}
     ${{ if eq(parameters['depends'], true) }}:
@@ -41,7 +41,8 @@ jobs:
                   dir env:
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ARTIFACTS_PAT)
+                ARTIFACTSPAT: ${{ parameters.artifactsPAT }}
+                BURPSUITE_APIKEY: ${{ parameters.apiKey }}
 
             - task: PowerShell@2
               displayName: 'Register Private Repository'
@@ -61,7 +62,7 @@ jobs:
                   if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ARTIFACTS_PAT)
+                ARTIFACTSPAT: ${{ parameters.artifactsPAT }}
 
             - task: PowerShell@2
               displayName: 'Install $(BURPSUITE_MODULENAME) Module'
@@ -85,7 +86,7 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ARTIFACTS_PAT)
+                ARTIFACTSPAT: ${{ parameters.artifactsPAT }}
 
             - task: PowerShell@2
               displayName: 'Install Pester'
@@ -100,7 +101,6 @@ jobs:
                 targetType: 'inline'
                 script: |
                   $Env:BURPSUITE_URL = "$(BURPSUITE_URL)"
-                  $Env:BURPSUITE_APIKEY = "$(BURPSUITE_APIKEY)"
                   $Env:BURPSUITE_APIVERSION = "$(BURPSUITE_APIVERSION)"
 
                   Import-Module "$(BURPSUITE_MODULENAME)"
@@ -121,7 +121,8 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test/integration'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ARTIFACTS_PAT)
+                ARTIFACTSPAT: ${{ parameters.artifactsPAT }}
+                BURPSUITE_APIKEY: ${{ parameters.apiKey }}
 
             - task: PublishTestResults@2
               displayName: 'Publish Test Results'
