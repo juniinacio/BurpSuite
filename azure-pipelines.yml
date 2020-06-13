@@ -20,7 +20,8 @@ variables:
   value: BurpSuite
 
 stages:
-- stage: BurpSuite
+- stage: Build_Stage
+  displayName: BurpSuite
 
   jobs:
   - job: macOS_Linux_Phase
@@ -34,7 +35,7 @@ stages:
         os: 'Linux'
 
   - job: Windows_Phase
-    displayName: Build Windows
+    displayName: Build Windows (Windows PowerShell)
     pool:
       vmImage: windows-latest
 
@@ -44,7 +45,7 @@ stages:
         os: 'Windows'
         pwsh: false
 
-  - job: Windows_Phase_Core
+  - job: Windows_PowerShellCore_Phase
     displayName: Build Windows (PowerShell Core)
     dependsOn:
       - macOS_Linux_Phase
@@ -140,9 +141,9 @@ stages:
           in(variables['Build.Reason'], 'PullRequest')
         )
 
-- stage: Artifacts
-  displayName: Artifacts
-  dependsOn: BurpSuite
+- stage: Package_Management_Stage
+  displayName: Package Management
+  dependsOn: Build_Stage
   condition: |
     and
     (
@@ -212,8 +213,9 @@ stages:
               publishVstsFeed: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8/5ed74c16-db4e-4e0b-9af0-3af6937d0d49'
               allowPackageConflicts: true
 
-- stage: Testing
-  dependsOn: Artifacts
+- stage: Testing_Stage
+  displayName: Testing
+  dependsOn: Package_Management_Stage
   jobs:
 
   - template: .azure-pipelines/integrationTests.yml
@@ -243,10 +245,10 @@ stages:
       moduleName: '$(ModuleName)'
       artifactsPAT: '$(ArtifactsUrl)'
       artifactsUrl: '$(ArtifactsPAT)'
-      pwsh: true
+      pwsh: false
 
-# - stage: PSGallery
-#   dependsOn: Testing
+# - stage: PSGallery_Stage
+#   dependsOn: Testing_Stage
 #   jobs:
 #   - deployment: Release
 #     displayName: PowerShell Gallery / GitHub Release
