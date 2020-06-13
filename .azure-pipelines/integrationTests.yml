@@ -37,7 +37,7 @@ jobs:
                   dir env:
                 pwsh: ${{ parameters.pwsh }}
               env:
-                PAT: $(ArtifactsPAT)
+                ARTIFACTSPAT: $(ArtifactsPAT)
                 BURPSUITE_APIKEY: $(BurpSuiteAPIKey)
 
             - task: PowerShell@2
@@ -71,7 +71,7 @@ jobs:
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "$(ARTIFACTS_EMAIL)"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString $Env:PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTSPAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -82,7 +82,7 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                PAT: $(ArtifactsPAT)
+                ARTIFACTSPAT: $(ArtifactsPAT)
 
             - task: PowerShell@2
               displayName: 'Install Pester'
