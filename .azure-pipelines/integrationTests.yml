@@ -47,9 +47,9 @@ jobs:
                   $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
                   if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
-                env:
-                  ARTIFACTSPAT: $(ARTIFACTS_PAT)
                 pwsh: ${{ parameters.pwsh }}
+              env:
+                ARTIFACTSPAT: $(ARTIFACTS_PAT)
 
             - task: PowerShell@2
               displayName: 'Install $(BURPSUITE_MODULENAME) Module'
@@ -71,9 +71,9 @@ jobs:
 
                   Install-Module -Name $Env:BURPSUITE_MODULENAME -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
                 workingDirectory: '$(Pipeline.Workspace)/test'
-                env:
-                  ARTIFACTSPAT: $(ARTIFACTS_PAT)
                 pwsh: ${{ parameters.pwsh }}
+              env:
+                ARTIFACTSPAT: $(ARTIFACTS_PAT)
 
             - task: PowerShell@2
               displayName: 'Install Pester'
@@ -107,9 +107,9 @@ jobs:
                   if ($testResults.FailedCount -gt 0) { throw 'One or more Pester tests failed' }
                 failOnStderr: true
                 workingDirectory: '$(Pipeline.Workspace)/test/integration'
-                env:
-                  BURPSUITE_APIKEY: $(BURPSUITE_APIKEY)
                 pwsh: ${{ parameters.pwsh }}
+              env:
+                ARTIFACTSPAT: $(ARTIFACTS_PAT)
 
             - task: PublishTestResults@2
               displayName: 'Publish Test Results'
