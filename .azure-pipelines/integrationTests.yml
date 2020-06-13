@@ -33,6 +33,16 @@ jobs:
       runOnce:
         deploy:
           steps:
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                buildType: 'specific'
+                project: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8'
+                definition: '12'
+                buildVersionToDownload: 'specific'
+                pipelineId: '296'
+                # artifactName: 'module'
+                targetPath: '$(Pipeline.Workspace)'
+
             - task: PowerShell@2
               displayName: 'Set Pipeline Variables'
               inputs:
