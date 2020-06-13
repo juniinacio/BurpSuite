@@ -1,25 +1,27 @@
 parameters:
-  azureSubscription: ''
-  resourceGroupName: ''
   name: ''
   displayName: ''
   pool: ''
-  uri: ''
-  password: ''
+  apiKey: ''
   apiVersion: ''
+  apiUrl: ''
   os: ''
   depends: ''
-  start: 'false'
-  stop: 'false'
-  pwsh: false
+  moduleName: ''
+  artifactsPAT: ''
+  artifactsUrl: ''
+  pwsh: true
 
 jobs:
   - deployment: ${{ parameters.name }}
     displayName: ${{ parameters.displayName }}
     variables:
-      BWAF_URI: ${{ parameters.uri }}
-      BWAF_VERSION: ${{ parameters.apiVersion }}
-      BWAF_PASSWORD: ${{ parameters.password }}
+      BURPSUITE_APIKEY: ${{ parameters.apiKey }}
+      BURPSUITE_APIVERSION: ${{ parameters.apiVerion }}
+      BURPSUITE_URL: ${{ parameters.apiUrl }}
+      BURPSUITE_MODULENAME: ${{ parameters.moduleName }}
+      ARTIFACTS_PAT: ${{ parameters.artifactsPAT }}
+      ARTIFACTS_URL: ${{ parameters.artifactsUrl }}
     ${{ if eq(parameters['depends'], true) }}:
     dependsOn: ${{ parameters.depends }}
     pool:
@@ -29,54 +31,48 @@ jobs:
       runOnce:
         deploy:
           steps:
-            - task: AzureResourceGroupDeployment@2
-              displayName: 'Start Barracuda WAF'
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                action: Start
-                resourceGroupName: ${{ parameters.resourceGroupName }}
-              condition: and(succeeded(), eq('${{ parameters.start }}', 'true'))
-
             - task: PowerShell@2
               displayName: 'Register Private Repository'
               inputs:
                 targetType: 'inline'
                 script: |
-                  $n = 'BarracudaWAF'
-                  $e = "$(email)"
-                  $url = "$(artifactsUrl)"
-                  $pwd = ConvertTo-SecureString "$(artifactsPAT)" -AsPlainText -Force
+                  $n = $Env:BURPSUITE_MODULENAME
+                  $e = "example@example.org"
+                  $url = $Env:ARTIFACTS_URL
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTSPAT -AsPlainText -Force
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
                   $Env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
                   $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
-                  if(-not (Get-PSRepository | ? Name -eq $n)) {
-                    Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose
-                  }
+                  if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
+                env:
+                  ARTIFACTSPAT: $(ARTIFACTS_PAT)
                 pwsh: ${{ parameters.pwsh }}
 
             - task: PowerShell@2
-              displayName: 'Install Barracuda.WAF Module'
+              displayName: 'Install $(BURPSUITE_MODULENAME) Module'
               inputs:
                 targetType: 'inline'
                 script: |
                   # Load the psd1 file so you can read the version
-                  $manifest = Import-PowerShellDataFile .\$(Folder)\*.psd1
+                  $manifest = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$($Env:BURPSUITE_MODULENAME)/*/*.psd1")
 
-                  $n = 'BarracudaWAF'
-                  $e = "$(email)"
+                  $n = $Env:BURPSUITE_MODULENAME
+                  $e = "example@example.org"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString "$(artifactsPAT)" -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTSPAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
                   $Env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
                   $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
 
-                  Install-Module -Name Barracuda.WAF -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
+                  Install-Module -Name $Env:BURPSUITE_MODULENAME -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
                 workingDirectory: '$(Pipeline.Workspace)/test'
+                env:
+                  ARTIFACTSPAT: $(ARTIFACTS_PAT)
                 pwsh: ${{ parameters.pwsh }}
 
             - task: PowerShell@2
@@ -91,13 +87,28 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                  $env:BWAF_URI = '$(BWAF_URI)'
-                  $env:BWAF_VERSION = '$(BWAF_VERSION)'
-                  $env:BWAF_PASSWORD = '$(BWAF_PASSWORD)'
-                  Import-Module Barracuda.WAF
-                  Invoke-Pester -EnableExit -Strict -OutputFile test-results.xml -OutputFormat NUnitXml
+                  $env:BURPSUITE_URL = $env:BURPSUITE_URL
+                  $env:BURPSUITE_APIKEY = $env:BURPSUITE_APIKEY
+                  $env:BURPSUITE_APIVERSION = $env:BURPSUITE_APIVERSION
+
+                  Import-Module $Env:BURPSUITE_MODULENAME
+                  if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
+
+                  $PesterPreference = [PesterConfiguration]::Default
+                  $PesterPreference.Run.PassThru = $true
+                  $PesterPreference.TestResult.Enabled = $true
+                  $PesterPreference.TestResult.OutputPath = Join-Path -Path "$(Pipeline.Workspace)/test/integration" -ChildPath "$($Env:BURPSUITE_MODULENAME)-TestsResults.xml"
+
+                  $testResults = Invoke-Pester -Configuration $PesterPreference
+                  Write-Host 'Pester results:' -ForegroundColor Yellow
+                  $tableProperties = 'Result', 'FailedCount', 'FailedBlocksCount', 'FailedContainersCount', 'PassedCount', 'SkippedCount', 'NotRunCount', 'TotalCount', 'Duration'
+                  $testResults | Format-Table -AutoSize -Property $tableProperties
+
+                  if ($testResults.FailedCount -gt 0) { throw 'One or more Pester tests failed' }
                 failOnStderr: true
                 workingDirectory: '$(Pipeline.Workspace)/test/integration'
+                env:
+                  BURPSUITE_APIKEY: $(BURPSUITE_APIKEY)
                 pwsh: ${{ parameters.pwsh }}
 
             - task: PublishTestResults@2
@@ -109,11 +120,3 @@ jobs:
                 testRunTitle: '${{ parameters.os }} Tests'
               continueOnError: true
               condition: succeededOrFailed()
-
-            - task: AzureResourceGroupDeployment@2
-              displayName: 'Stop and Deallocate Barracuda WAF'
-              inputs:
-                azureSubscription: ${{ parameters.azureSubscription }}
-                action: StopWithDeallocate
-                resourceGroupName: ${{ parameters.resourceGroupName }}
-              condition: and(succeeded(), eq('${{ parameters.stop }}', 'true'))
