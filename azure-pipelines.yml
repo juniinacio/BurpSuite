@@ -335,7 +335,7 @@ stages:
               command: push
               packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
               nuGetFeedType: external
-              publishFeedCredentials: 'PowerShellGalleryKey'
+              publishFeedCredentials: 'PowerShellGallery'
 
           # - task: GithubRelease@0
           #   displayName: 'Create GitHub Release'
