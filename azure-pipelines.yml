@@ -141,91 +141,91 @@ stages:
 #           in(variables['Build.Reason'], 'PullRequest', 'Manual')
 #         )
 
-# - stage: AzureDevOps_Stage
-#   displayName: Azure DevOps
-#   # dependsOn: Build_Stage
-#   # condition: |
-#   #   and
-#   #   (
-#   #     succeeded(),
-#   #     in(variables['Build.Reason'], 'PullRequest', 'Manual')
-#   #   )
-#   jobs:
-#   - deployment: Artifacts
-#     displayName: Artifacts
-#     pool:
-#       vmImage: 'ubuntu-latest'
-#     environment: 'Artifacts'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: DownloadPipelineArtifact@2
-#             inputs:
-#               buildType: 'specific'
-#               project: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8'
-#               definition: '12'
-#               buildVersionToDownload: 'specific'
-#               pipelineId: '296'
-#               # artifactName: 'module'
-#               targetPath: '$(Pipeline.Workspace)'
+- stage: AzureDevOps_Stage
+  displayName: Azure DevOps
+  # dependsOn: Build_Stage
+  # condition: |
+  #   and
+  #   (
+  #     succeeded(),
+  #     in(variables['Build.Reason'], 'PullRequest', 'Manual')
+  #   )
+  jobs:
+  - deployment: Artifacts
+    displayName: Artifacts
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'Artifacts'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'specific'
+              project: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8'
+              definition: '12'
+              buildVersionToDownload: 'specific'
+              pipelineId: '296'
+              # artifactName: 'module'
+              targetPath: '$(Pipeline.Workspace)'
 
-#           - task: PowerShell@2
-#             displayName: 'Set Pipeline Variables'
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
-#                 Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
-#               pwsh: true
+          - task: PowerShell@2
+            displayName: 'Set Pipeline Variables'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
+              pwsh: true
 
-#           - task: NuGetToolInstaller@0
-#             displayName: 'Install NuGet 5.2.0'
-#             inputs:
-#               versionSpec: 5.2.0
+          - task: NuGetToolInstaller@0
+            displayName: 'Install NuGet 5.2.0'
+            inputs:
+              versionSpec: 5.2.0
 
-#           - task: PowerShell@2
-#             displayName: 'Compute Version Number'
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 # Load the psd1 file so you can read the version
-#                 $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-#                 Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion).$(Build.BuildId)"
-#               workingDirectory: '$(Pipeline.Workspace)/module'
-#               pwsh: true
+          - task: PowerShell@2
+            displayName: 'Compute Version Number'
+            inputs:
+              targetType: 'inline'
+              script: |
+                # Load the psd1 file so you can read the version
+                $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
+                Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion).$(Build.BuildId)"
+              workingDirectory: '$(Pipeline.Workspace)/module'
+              pwsh: true
 
-#           - task: PowerShell@2
-#             displayName: 'Create NuSpec from PSD1'
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
-#                 ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-#               workingDirectory: '$(Pipeline.Workspace)/module'
-#               pwsh: true
+          - task: PowerShell@2
+            displayName: 'Create NuSpec from PSD1'
+            inputs:
+              targetType: 'inline'
+              script: |
+                Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
+                ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
+              workingDirectory: '$(Pipeline.Workspace)/module'
+              pwsh: true
 
-#           - task: NuGetCommand@2
-#             displayName: 'Pack Module $(ModuleName)'
-#             inputs:
-#               command: pack
-#               packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
-#               packDestination: '$(Pipeline.Workspace)/module/dist'
-#               versioningScheme: byEnvVar
-#               versionEnvVar: 'PACKAGE_VERSION'
+          - task: NuGetCommand@2
+            displayName: 'Pack Module $(ModuleName)'
+            inputs:
+              command: pack
+              packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
+              packDestination: '$(Pipeline.Workspace)/module/dist'
+              versioningScheme: byEnvVar
+              versionEnvVar: 'PACKAGE_VERSION'
 
-#           - task: NuGetCommand@2
-#             displayName: 'Push Module $(ModuleName)'
-#             inputs:
-#               command: push
-#               packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
-#               nuGetFeedType: 'internal'
-#               publishVstsFeed: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8/5ed74c16-db4e-4e0b-9af0-3af6937d0d49'
-#               allowPackageConflicts: true
+          - task: NuGetCommand@2
+            displayName: 'Push Module $(ModuleName)'
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
+              nuGetFeedType: 'internal'
+              publishVstsFeed: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8/5ed74c16-db4e-4e0b-9af0-3af6937d0d49'
+              allowPackageConflicts: true
 
 - stage: Testing_Stage
   displayName: Testing
-  # dependsOn: AzureDevOps_Stage
+  dependsOn: AzureDevOps_Stage
   jobs:
 
   # - template: .azure-pipelines/integrationTests.yml
@@ -235,10 +235,12 @@ stages:
   #     pool: 'ubuntu-latest'
   #     apiVersion: '$(BurpSuiteAPIVersion)'
   #     apiUrl: '$(BurpSuiteAPIUri)'
+  #     apiKey: '$(BurpSuiteAPIKey)'
   #     os: 'Linux'
   #     moduleName: '$(ModuleName)'
   #     artifactsUrl: '$(ArtifactsUrl)'
   #     artifactsEmail: '$(ArtifactsEmail)'
+  #     artifactsPAT: '$(ArtifactsPAT)'
   #     pwsh: true
 
   - template: .azure-pipelines/integrationTests.yml
@@ -248,6 +250,7 @@ stages:
       pool: 'windows-latest'
       apiVersion: '$(BurpSuiteAPIVersion)'
       apiUrl: '$(BurpSuiteAPIUri)'
+      apiKey: '$(BurpSuiteAPIKey)'
       os: 'Windows'
       # depends: 'Linux'
       moduleName: '$(ModuleName)'

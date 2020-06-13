@@ -4,6 +4,7 @@ parameters:
   pool: ''
   apiVersion: ''
   apiUrl: ''
+  apiKey: ''
   os: ''
   depends: ''
   moduleName: ''
@@ -18,6 +19,7 @@ jobs:
     variables:
       BURPSUITE_APIVERSION: ${{ parameters.apiVerion }}
       BURPSUITE_URL: ${{ parameters.apiUrl }}
+      BURPSUITE_APIKEY: ${{ parameters.apiKey }}
       BURPSUITE_MODULENAME: ${{ parameters.moduleName }}
       ARTIFACTS_URL: ${{ parameters.artifactsUrl }}
       ARTIFACTS_EMAIL: ${{ parameters.artifactsEmail }}
@@ -39,8 +41,8 @@ jobs:
                   dir env:
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ArtifactsPAT)
-                BURPSUITE_APIKEY: $(BurpSuiteAPIKey)
+                ARTIFACTS_PAT: $(ARTIFACTS_PAT)
+                BURPSUITE_APIKEY: $(BURPSUITE_APIKEY)
 
             - task: PowerShell@2
               displayName: 'Register Private Repository'
@@ -73,7 +75,7 @@ jobs:
                   $n = "$(BURPSUITE_MODULENAME)"
                   $e = "$(ARTIFACTS_EMAIL)"
                   $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
-                  $pwd = ConvertTo-SecureString $Env:ARTIFACTSPAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
                   $creds = New-Object PSCredential($e, $pwd)
 
                   # LINK: https://github.com/Microsoft/artifacts-credprovider
@@ -84,7 +86,7 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                ARTIFACTSPAT: $(ArtifactsPAT)
+                ARTIFACTS_PAT: $(ARTIFACTS_PAT)
 
             - task: PowerShell@2
               displayName: 'Install Pester'
@@ -119,7 +121,7 @@ jobs:
                 workingDirectory: '$(Pipeline.Workspace)/test/integration'
                 pwsh: ${{ parameters.pwsh }}
               env:
-                BURPSUITE_APIKEY: $(BurpSuiteAPIKey)
+                BURPSUITE_APIKEY: $(BURPSUITE_APIKEY)
 
             - task: PublishTestResults@2
               displayName: 'Publish Test Results'
