@@ -39,6 +39,15 @@ stages:
 
   - job: Windows_Phase_Core
     displayName: Build Windows (PowerShell Core)
+    dependsOn:
+      - macOS_Linux_Phase
+      - Windows_Phase
+    condition: |
+      and
+      (
+        in(dependencies.macOS_Linux_Phase.result, 'Succeeded', 'Skipped'),
+        in(dependencies.Windows_Phase.result, 'Succeeded', 'Skipped')
+      )
     pool:
       vmImage: 'windows-latest'
 
@@ -92,7 +101,12 @@ stages:
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/module'
         artifact: 'module'
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest')
+        )
 
     - task: CopyFiles@2
       displayName: 'Copy Integration Tests to Artifacts Folder'
@@ -100,19 +114,34 @@ stages:
         Contents: |
           integration/**
         TargetFolder: '$(build.artifactstagingdirectory)/tests'
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest')
+        )
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Integration Tests'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/tests'
         artifact: 'test'
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest')
+        )
 
 - stage: Artifacts
   displayName: Artifacts
   dependsOn: BurpSuite
-  condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+  condition: |
+    and
+    (
+      succeeded(),
+      in(variables['Build.Reason'], 'PullRequest')
+    )
   jobs:
   - deployment: Release
     displayName: Artifacts Release
