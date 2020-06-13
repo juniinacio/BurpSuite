@@ -167,7 +167,7 @@ stages:
               definition: '12'
               buildVersionToDownload: 'specific'
               pipelineId: '296'
-              artifactName: 'module'
+              # artifactName: 'module'
               targetPath: '$(Pipeline.Workspace)'
 
           - task: PowerShell@2
