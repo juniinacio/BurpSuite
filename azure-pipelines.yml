@@ -20,136 +20,136 @@ variables:
   value: BurpSuite
 
 stages:
-# - stage: Build_Stage
-#   displayName: BurpSuite
+- stage: Build_Stage
+  displayName: BurpSuite
 
-#   jobs:
-#   - job: macOS_Linux_Phase
-#     displayName: Build Linux
-#     pool:
-#       vmImage: ubuntu-latest
+  jobs:
+  - job: macOS_Linux_Phase
+    displayName: Build Linux
+    pool:
+      vmImage: ubuntu-latest
 
-#     steps:
-#     - template: .azure-pipelines/unitTests.yml
-#       parameters:
-#         os: 'Linux'
+    steps:
+    - template: .azure-pipelines/unitTests.yml
+      parameters:
+        os: 'Linux'
 
-#   - job: Windows_Phase
-#     displayName: Build Windows (PowerShell)
-#     pool:
-#       vmImage: windows-latest
+  - job: Windows_Phase
+    displayName: Build Windows (PowerShell)
+    pool:
+      vmImage: windows-latest
 
-#     steps:
-#     - template: .azure-pipelines/unitTests.yml
-#       parameters:
-#         os: 'Windows'
-#         pwsh: false
+    steps:
+    - template: .azure-pipelines/unitTests.yml
+      parameters:
+        os: 'Windows'
+        pwsh: false
 
-#   - job: Windows_PowerShellCore_Phase
-#     displayName: Build Windows (Pwsh)
-#     dependsOn:
-#       - macOS_Linux_Phase
-#       - Windows_Phase
-#     condition: |
-#       and
-#       (
-#         in(dependencies.macOS_Linux_Phase.result, 'Succeeded', 'Skipped'),
-#         in(dependencies.Windows_Phase.result, 'Succeeded', 'Skipped')
-#       )
-#     pool:
-#       vmImage: 'windows-latest'
+  - job: Windows_PowerShellCore_Phase
+    displayName: Build Windows (Pwsh)
+    dependsOn:
+      - macOS_Linux_Phase
+      - Windows_Phase
+    condition: |
+      and
+      (
+        in(dependencies.macOS_Linux_Phase.result, 'Succeeded', 'Skipped'),
+        in(dependencies.Windows_Phase.result, 'Succeeded', 'Skipped')
+      )
+    pool:
+      vmImage: 'windows-latest'
 
-#     steps:
-#     - template: .azure-pipelines/unitTests.yml
-#       parameters:
-#         os: 'Windows'
-#         pwsh: true
+    steps:
+    - template: .azure-pipelines/unitTests.yml
+      parameters:
+        os: 'Windows'
+        pwsh: true
 
-#     - task: PowerShell@2
-#       displayName: 'Run Static Code Analysis'
-#       inputs:
-#         targetType: 'inline'
-#         script: |
-#           $r = Invoke-ScriptAnalyzer –Path ./.out/$(ModuleName) –Recurse | Where-Object severity -ne "Information"
-#           $r | ForEach-Object {Write-Host "##vso[task.logissue type=$($_.Severity);sourcepath=$($_.ScriptPath);linenumber=$($_.Line);columnnumber=$($_.Column);]$($_.Message)"}
-#         pwsh: true
+    - task: PowerShell@2
+      displayName: 'Run Static Code Analysis'
+      inputs:
+        targetType: 'inline'
+        script: |
+          $r = Invoke-ScriptAnalyzer –Path ./.out/$(ModuleName) –Recurse | Where-Object severity -ne "Information"
+          $r | ForEach-Object {Write-Host "##vso[task.logissue type=$($_.Severity);sourcepath=$($_.ScriptPath);linenumber=$($_.Line);columnnumber=$($_.Column);]$($_.Message)"}
+        pwsh: true
 
-#     # - task: CredScan@2
-#     #   displayName: 'Run CredScan'
-#     #   inputs:
-#     #     toolMajorVersion: 'V2'
-#     #     suppressionsFile: '$(Build.SourcesDirectory)/pipelines/credscan-supression.json'
+    # - task: CredScan@2
+    #   displayName: 'Run CredScan'
+    #   inputs:
+    #     toolMajorVersion: 'V2'
+    #     suppressionsFile: '$(Build.SourcesDirectory)/pipelines/credscan-supression.json'
 
-#     # - task: SdtReport@1
-#     #   displayName: 'Create Security Analysis Report'
-#     #   inputs:
-#     #     AllTools: false
-#     #     CredScan: true
+    # - task: SdtReport@1
+    #   displayName: 'Create Security Analysis Report'
+    #   inputs:
+    #     AllTools: false
+    #     CredScan: true
 
-#     # - task: PublishSecurityAnalysisLogs@2
-#     #   displayName: 'Publish Security Analysis Logs'
+    # - task: PublishSecurityAnalysisLogs@2
+    #   displayName: 'Publish Security Analysis Logs'
 
-#     # - task: PostAnalysis@1
-#     #   displayName: 'Post Analysis'
-#     #   inputs:
-#     #     AllTools: false
-#     #     CredScan: true
+    # - task: PostAnalysis@1
+    #   displayName: 'Post Analysis'
+    #   inputs:
+    #     AllTools: false
+    #     CredScan: true
 
-#     - task: PowerShell@2
-#       displayName: 'Copy Module to Artifacts Folder'
-#       inputs:
-#         targetType: 'inline'
-#         script: |
-#           New-Item -Path $(Build.ArtifactStagingDirectory)\module -ItemType Directory -Force
-#           Move-Item -Path $(Build.SourcesDirectory)\.out\$(ModuleName)\ -Destination $(Build.ArtifactStagingDirectory)\module\$(ModuleName) -Force
-#         pwsh: true
+    - task: PowerShell@2
+      displayName: 'Copy Module to Artifacts Folder'
+      inputs:
+        targetType: 'inline'
+        script: |
+          New-Item -Path $(Build.ArtifactStagingDirectory)\module -ItemType Directory -Force
+          Move-Item -Path $(Build.SourcesDirectory)\.out\$(ModuleName)\ -Destination $(Build.ArtifactStagingDirectory)\module\$(ModuleName) -Force
+        pwsh: true
 
-#     - task: PublishPipelineArtifact@1
-#       displayName: 'Publish Module $(ModuleName)'
-#       inputs:
-#         targetPath: '$(Build.ArtifactStagingDirectory)/module'
-#         artifact: 'module'
-#       condition: |
-#         and
-#         (
-#           succeeded(),
-#           in(variables['Build.Reason'], 'PullRequest', 'Manual')
-#         )
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Module $(ModuleName)'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/module'
+        artifact: 'module'
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
+        )
 
-#     - task: CopyFiles@2
-#       displayName: 'Copy Integration Tests to Artifacts Folder'
-#       inputs:
-#         Contents: |
-#           integration/**
-#         TargetFolder: '$(build.artifactstagingdirectory)/tests'
-#       condition: |
-#         and
-#         (
-#           succeeded(),
-#           in(variables['Build.Reason'], 'PullRequest', 'Manual')
-#         )
+    - task: CopyFiles@2
+      displayName: 'Copy Integration Tests to Artifacts Folder'
+      inputs:
+        Contents: |
+          integration/**
+        TargetFolder: '$(build.artifactstagingdirectory)/'
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
+        )
 
-#     - task: PublishPipelineArtifact@1
-#       displayName: 'Publish Integration Tests'
-#       inputs:
-#         targetPath: '$(Build.ArtifactStagingDirectory)/tests'
-#         artifact: 'test'
-#       condition: |
-#         and
-#         (
-#           succeeded(),
-#           in(variables['Build.Reason'], 'PullRequest', 'Manual')
-#         )
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Integration Tests'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/integration'
+        artifact: 'test'
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
+        )
 
 - stage: AzureDevOps_Stage
   displayName: Azure DevOps
-  # dependsOn: Build_Stage
-  # condition: |
-  #   and
-  #   (
-  #     succeeded(),
-  #     in(variables['Build.Reason'], 'PullRequest', 'Manual')
-  #   )
+  dependsOn: Build_Stage
+  condition: |
+    and
+    (
+      succeeded(),
+      in(variables['Build.Reason'], 'PullRequest', 'Manual')
+    )
   jobs:
   - deployment: Artifacts
     displayName: Artifacts
@@ -160,16 +160,6 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'specific'
-              project: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8'
-              definition: '12'
-              buildVersionToDownload: 'specific'
-              pipelineId: '296'
-              # artifactName: 'module'
-              targetPath: '$(Pipeline.Workspace)'
-
           - task: PowerShell@2
             displayName: 'Set Pipeline Variables'
             inputs:
