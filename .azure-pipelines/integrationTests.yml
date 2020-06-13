@@ -38,8 +38,8 @@ jobs:
               inputs:
                 targetType: 'inline'
                 script: |
-                    $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
-                    Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
+                  $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                  Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
                 pwsh: true
 
             - task: PowerShell@2
