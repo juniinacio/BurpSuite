@@ -1,8 +1,15 @@
 # name: $(Build.BuildID)
 
 trigger:
-- develop
-- feature/*
+  batch: true
+  branches:
+    include:
+    - develop
+    - feature/*
+    - hotfix/*
+    - bugfix/*
+    exclude:
+    - master
 
 resources:
 - repo: self
