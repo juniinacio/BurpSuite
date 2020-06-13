@@ -341,7 +341,7 @@ stages:
           - task: GithubRelease@0
             displayName: 'Create GitHub Release'
             inputs:
-              gitHubConnection: juniinacio
+              gitHubConnection: GitHub
               repositoryName: juniinacio/$(ModuleName)
               tagSource: manual
               tag: v$(PACKAGE_VERSION)
