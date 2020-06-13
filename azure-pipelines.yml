@@ -327,8 +327,8 @@ stages:
               command: pack
               packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
               packDestination: '$(Pipeline.Workspace)/module/dist'
-              versioningScheme: byEnvVar
-              versionEnvVar: 'PACKAGE_VERSION'
+              # versioningScheme: byEnvVar
+              # versionEnvVar: 'PACKAGE_VERSION'
 
           - task: NuGetCommand@2
             displayName: 'Push Module $(ModuleName)'
