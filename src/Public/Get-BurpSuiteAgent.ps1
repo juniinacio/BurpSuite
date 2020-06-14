@@ -22,36 +22,8 @@ function Get-BurpSuiteAgent {
     }
 
     process {
-        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $PSBoundParameters['Fields'] = 'id', 'name', 'state', 'enabled' }
 
-        $operationName = 'GetAgents'
-        if ($PSBoundParameters.ContainsKey('ID')) { $operationName = 'GetAgent' }
-
-        $agentFields = [Query]::New('agents')
-        if ($PSBoundParameters.ContainsKey('ID')) { $agentFields = [Query]::New('agent') }
-
-        $PSBoundParameters['Fields'] | ForEach-Object { $agentFields.AddField($_) | Out-Null }
-
-        if ($PSBoundParameters.ContainsKey('ID')) { $agentFields.AddArgument('id', '$id') | Out-Null }
-
-        if ($PSBoundParameters.ContainsKey('ErrorFields')) {
-            $errorField = [Query]::New('error')
-
-            $PSBoundParameters['ErrorFields'] | ForEach-Object { $errorField.AddField($_) | Out-Null }
-
-            $agentFields.AddField($errorField) | Out-Null
-        }
-
-        $agentQuery = [Query]::New($operationName)
-        $agentQuery.AddField($agentFields) | Out-Null
-
-        if ($PSBoundParameters.ContainsKey('ID')) { $agentQuery.AddArgument('$id', 'ID!') | Out-Null }
-
-        $query = 'query {0}' -f $agentQuery
-
-        $graphRequest = [GraphRequest]::new($query, $operationName)
-
-        if ($PSBoundParameters.ContainsKey('ID')) { $graphRequest.Variables.id = $ID }
+        $graphRequest = _buildAgentQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {

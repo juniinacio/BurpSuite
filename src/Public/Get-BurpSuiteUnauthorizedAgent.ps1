@@ -12,19 +12,8 @@ function Get-BurpSuiteUnauthorizedAgent {
     }
 
     process {
-        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $PSBoundParameters['Fields'] = 'ip' }
 
-        $operationName = 'GetUnauthorizedAgents'
-
-        $unauthorizedAgentsField = [Query]::New('unauthorized_agents')
-        $PSBoundParameters['Fields'] | ForEach-Object { $unauthorizedAgentsField.AddField($_) | Out-Null }
-
-        $unauthorizedAgentsQuery = [Query]::New($operationName)
-        $unauthorizedAgentsQuery.AddField($unauthorizedAgentsField) | Out-Null
-
-        $query = 'query {0}' -f $unauthorizedAgentsQuery
-
-        $graphRequest = [GraphRequest]::new($query, $operationName)
+        $graphRequest = _buildUnauthorizedAgentQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {

@@ -12,20 +12,8 @@ function Get-BurpSuiteScanConfiguration {
     }
 
     process {
-        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $PSBoundParameters['Fields'] = 'id', 'name' }
 
-        $operationName = 'GetScanConfigurations'
-
-        $scanConfigurationsField = [Query]::New('scan_configurations')
-
-        $PSBoundParameters['Fields'] | ForEach-Object { $scanConfigurationsField.AddField($_) | Out-Null }
-
-        $scanConfigurationQuery = [Query]::New($operationName)
-        $scanConfigurationQuery.AddField($scanConfigurationsField) | Out-Null
-
-        $query = 'query {0}' -f $scanConfigurationQuery.ToString()
-
-        $graphRequest = [GraphRequest]::new($query, $operationName)
+        $graphRequest = _buildScanConfigurationQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
