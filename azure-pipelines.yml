@@ -319,7 +319,7 @@ stages:
                 $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
                 Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion)"
-              workingDirectory: '$(Pipeline.Workspace)/Module'
+              workingDirectory: '$(Pipeline.Workspace)/module'
 
           - task: NuGetCommand@2
             displayName: 'Pack Module $(ModuleName)'
