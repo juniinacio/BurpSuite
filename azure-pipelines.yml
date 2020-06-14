@@ -1,8 +1,15 @@
-# name: $(Build.BuildID)
+name: $(Build.BuildID)
 
 trigger:
-- develop
-- feature/*
+  batch: true
+  branches:
+    include:
+    - develop
+    - feature/*
+    - hotfix/*
+    - bugfix/*
+    exclude:
+    - master
 
 resources:
 - repo: self
@@ -13,11 +20,12 @@ variables:
   value: BurpSuite
 
 stages:
-- stage: BurpSuite
+- stage: Build_Stage
+  displayName: BurpSuite
 
   jobs:
   - job: macOS_Linux_Phase
-    displayName: Build Linux
+    displayName: Build Linux (Pwsh)
     pool:
       vmImage: ubuntu-latest
 
@@ -27,7 +35,7 @@ stages:
         os: 'Linux'
 
   - job: Windows_Phase
-    displayName: Build Windows
+    displayName: Build Windows (PowerShell.exe)
     pool:
       vmImage: windows-latest
 
@@ -37,8 +45,17 @@ stages:
         os: 'Windows'
         pwsh: false
 
-  - job: Windows_Phase_Core
-    displayName: Build Windows (PowerShell Core)
+  - job: Windows_PowerShellCore_Phase
+    displayName: Build Windows (Pwsh.exe)
+    dependsOn:
+      - macOS_Linux_Phase
+      - Windows_Phase
+    condition: |
+      and
+      (
+        in(dependencies.macOS_Linux_Phase.result, 'Succeeded', 'Skipped'),
+        in(dependencies.Windows_Phase.result, 'Succeeded', 'Skipped')
+      )
     pool:
       vmImage: 'windows-latest'
 
@@ -92,30 +109,50 @@ stages:
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)/module'
         artifact: 'module'
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
+        )
 
     - task: CopyFiles@2
       displayName: 'Copy Integration Tests to Artifacts Folder'
       inputs:
         Contents: |
           integration/**
-        TargetFolder: '$(build.artifactstagingdirectory)/tests'
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+        TargetFolder: '$(build.artifactstagingdirectory)/'
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
+        )
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Integration Tests'
       inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/tests'
-        artifact: 'test'
-      condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+        targetPath: '$(Build.ArtifactStagingDirectory)/integration'
+        artifact: 'integration'
+      condition: |
+        and
+        (
+          succeeded(),
+          in(variables['Build.Reason'], 'PullRequest', 'Manual')
+        )
 
-- stage: Artifacts
-  displayName: Artifacts
-  dependsOn: BurpSuite
-  condition: and(succeeded(), eq(variables['System.PullRequest.IsFork'], false))
+- stage: AzureDevOps_Stage
+  displayName: Azure DevOps
+  dependsOn: Build_Stage
+  condition: |
+    and
+    (
+      succeeded(),
+      in(variables['Build.Reason'], 'PullRequest', 'Manual')
+    )
   jobs:
-  - deployment: Release
-    displayName: Artifacts Release
+  - deployment: Artifacts
+    displayName: Artifacts
     pool:
       vmImage: 'ubuntu-latest'
     environment: 'Artifacts'
@@ -136,6 +173,18 @@ stages:
             displayName: 'Install NuGet 5.2.0'
             inputs:
               versionSpec: 5.2.0
+
+          # - task: PowerShell@2
+          #   displayName: 'Install Module Dependencies'
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       # Load the psd1 file so you can read the required modules and install them
+          #       $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
+
+          #       # Install each module
+          #       $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
+          #     workingDirectory: '$(Pipeline.Workspace)/module'
 
           - task: PowerShell@2
             displayName: 'Compute Version Number'
@@ -176,104 +225,127 @@ stages:
               publishVstsFeed: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8/5ed74c16-db4e-4e0b-9af0-3af6937d0d49'
               allowPackageConflicts: true
 
-# - stage: Testing
-#   dependsOn: Artifacts
-#   jobs:
+- stage: Testing_Stage
+  displayName: Testing
+  dependsOn: AzureDevOps_Stage
+  jobs:
 
-#   - template: .azure-pipelines/integrationTests.yml
-#     parameters:
-#       displayName: 'Linux WAF API Version 31'
-#       os: 'Linux'
-#       name: 'LinuxWAFAPIVersion31'
-#       pool: 'ubuntu-latest'
-#       stop: '$(deallocateVM)'
-#       apiVersion: '3.1'
-#       depends: 'WindowsWAFAPIVersion31'
-#       uri: 'https://bwaf-lb-dev-mgt-pip.westeurope.cloudapp.azure.com:8443'
-#       password: $(adminPassword)
-#       azureSubscription: 'MOS - Team Cloud'
-#       resourceGroupName: 'rg-weu-bwaf-mcw-dev'
+  - template: .azure-pipelines/integrationTests.yml
+    parameters:
+      name: 'Linux'
+      displayName: Linux (Pwsh)
+      pool: 'ubuntu-latest'
+      environment: Linux
+      apiVersion: '$(BurpSuiteAPIVersion)'
+      apiUrl: '$(BurpSuiteAPIUri)'
+      apiKey: '$(BurpSuiteAPIKey)'
+      os: 'Linux'
+      moduleName: '$(ModuleName)'
+      artifactsUrl: '$(ArtifactsUrl)'
+      artifactsEmail: '$(ArtifactsEmail)'
+      artifactsPAT: '$(ArtifactsPAT)'
+      pwsh: true
 
-#   - template: .azure-pipelines/integrationTests.yml
-#     parameters:
-#       displayName: 'Windows WAF API Version 31'
-#       os: 'Windows'
-#       name: 'WindowsWAFAPIVersion31'
-#       pool: 'windows-latest'
-#       start: 'true'
-#       apiVersion: '3.1'
-#       uri: 'https://bwaf-lb-dev-mgt-pip.westeurope.cloudapp.azure.com:8443'
-#       password: $(adminPassword)
-#       azureSubscription: 'MOS - Team Cloud'
-#       resourceGroupName: 'rg-weu-bwaf-mcw-dev'
-#       pwsh: true
+  - template: .azure-pipelines/integrationTests.yml
+    parameters:
+      name: 'Windows'
+      displayName: Windows (PowerShell.exe)
+      pool: 'windows-latest'
+      environment: Windows
+      apiVersion: '$(BurpSuiteAPIVersion)'
+      apiUrl: '$(BurpSuiteAPIUri)'
+      apiKey: '$(BurpSuiteAPIKey)'
+      os: 'Windows'
+      depends: 'Linux'
+      moduleName: '$(ModuleName)'
+      artifactsUrl: '$(ArtifactsUrl)'
+      artifactsEmail: '$(ArtifactsEmail)'
+      artifactsPAT: '$(ArtifactsPAT)'
+      pwsh: false
 
-# - stage: PSGallery
-#   dependsOn: Testing
-#   jobs:
-#   - deployment: Release
-#     displayName: PowerShell Gallery / GitHub Release
-#     pool:
-#       vmImage: 'windows-latest'
-#     environment: 'PowerShell Gallery'
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
-#           - task: NuGetToolInstaller@0
-#             displayName: 'Install NuGet 5.2.0'
-#             inputs:
-#               versionSpec: 5.2.0
+- stage: PSGallery_Stage
+  displayName: PowerShell Gallery
+  dependsOn: Build_Stage
+  condition: |
+    and
+    (
+      succeeded(),
+      eq(variables['Build.SourceBranchName'], 'master')
+    )
+  jobs:
+  - deployment: Release
+    displayName: PowerShell Gallery / GitHub Release
+    pool:
+      vmImage: 'windows-latest'
+    environment: 'PowerShell Gallery'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: PowerShell@2
+            displayName: 'Set Pipeline Variables'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
 
-#           - task: PowerShell@2
-#             displayName: 'Install Module Dependencies'
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 # Load the psd1 file so you can read the required modules and install them
-#                 $manifest = Import-PowerShellDataFile .\$(Folder)\*.psd1
+          - task: NuGetToolInstaller@0
+            displayName: 'Install NuGet 5.2.0'
+            inputs:
+              versionSpec: 5.2.0
 
-#                 # Install each module
-#                 $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
-#               workingDirectory: '$(Pipeline.Workspace)/Module'
+          # - task: PowerShell@2
+          #   displayName: 'Install Module Dependencies'
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       # Load the psd1 file so you can read the required modules and install them
+          #       $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
-#           - task: PowerShell@2
-#             displayName: 'Create NuSpec from PSD1'
-#             inputs:
-#               targetType: 'inline'
-#               script: |
-#                 Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
-#                 ConvertTo-NuSpec -Path ./$(Folder)/Barracuda.WAF.psd1
+          #       # Install each module
+          #       $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
+          #     workingDirectory: '$(Pipeline.Workspace)/module'
 
-#                 # Load the psd1 file so you can read the version
-#                 $manifest = Import-PowerShellDataFile ./$(Folder)/Barracuda.WAF.psd1
+          - task: PowerShell@2
+            displayName: 'Create NuSpec from PSD1'
+            inputs:
+              targetType: 'inline'
+              script: |
+                Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
+                ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
-#                 Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion)"
-#               workingDirectory: '$(Pipeline.Workspace)/Module'
+                # Load the psd1 file so you can read the version
+                $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
-#           - task: NuGetCommand@2
-#             displayName: 'Pack Module $(ModuleName)'
-#             inputs:
-#               command: pack
-#               packagesToPack: '$(Pipeline.Workspace)/Module/$(Folder)/Barracuda.WAF.nuspec'
-#               packDestination: '$(Pipeline.Workspace)/Module/$(Folder)'
+                Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion)"
+              workingDirectory: '$(Pipeline.Workspace)/module'
 
-#           - task: NuGetCommand@2
-#             displayName: 'Push Module $(ModuleName)'
-#             inputs:
-#               command: push
-#               packagesToPush: '$(Pipeline.Workspace)/Module/$(Folder)/*.nupkg'
-#               nuGetFeedType: external
-#               publishFeedCredentials: 'PowerShellGalleryKey'
+          - task: NuGetCommand@2
+            displayName: 'Pack Module $(ModuleName)'
+            inputs:
+              command: pack
+              packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
+              packDestination: '$(Pipeline.Workspace)/module/dist'
+              # versioningScheme: byEnvVar
+              # versionEnvVar: 'PACKAGE_VERSION'
 
-#           - task: GithubRelease@0
-#             displayName: 'Create GitHub Release'
-#             inputs:
-#               gitHubConnection: JuniInacio
-#               repositoryName: juniinacio/$(ModuleName)
-#               tagSource: manual
-#               tag: v$(PACKAGE_VERSION)
-#               addChangeLog: true
-#               compareWith: 'lastFullRelease'
-#               assets: |
-#                 $(Pipeline.Workspace)/Module/$(Folder)/*.nupkg
+          - task: NuGetCommand@2
+            displayName: 'Push Module $(ModuleName)'
+            inputs:
+              command: push
+              packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
+              nuGetFeedType: external
+              publishFeedCredentials: 'PowerShellGallery'
+
+          - task: GithubRelease@0
+            displayName: 'Create GitHub Release'
+            inputs:
+              gitHubConnection: GitHub
+              repositoryName: juniinacio/$(ModuleName)
+              tagSource: manual
+              tag: v$(PACKAGE_VERSION)
+              addChangeLog: true
+              compareWith: 'lastFullRelease'
+              assets: |
+                $(Pipeline.Workspace)/module/dist/*.nupkg
