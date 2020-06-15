@@ -55,7 +55,7 @@ function _buildAgentQuery {
 
     $graphRequest = [GraphRequest]::new($query, $operationName)
 
-    if ($parameters.ContainsKey('ID')) { $graphRequest.Variables.id = $ID }
+    if ($parameters.ContainsKey('ID')) { $graphRequest.Variables.id = $parameters.ID }
 
     return $graphRequest
 }
@@ -145,7 +145,7 @@ function _buildUnauthorizedAgentQuery {
 }
 
 function _buildScanQuery {
-    param ([hashtable] $parameters)
+    param ([hashtable] $parameters, [string]$queryType)
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'status' }
     if (-not ($parameters.ContainsKey('AgentFields'))) { $parameters['AgentFields'] = 'id', 'name' }
@@ -156,6 +156,9 @@ function _buildScanQuery {
     if (-not ($parameters.ContainsKey('ScanConfigurationsFields'))) { $parameters['ScanConfigurationsFields'] = 'id', 'name' }
 
     $operationName = 'GetScan'
+    if ($queryType -eq 'List') {
+        $operationName = 'GetScans'
+    }
 
     $agentField = [Query]::New('agent')
     $parameters['AgentFields'] | ForEach-Object { $agentField.AddField($_) | Out-Null }
@@ -166,18 +169,27 @@ function _buildScanQuery {
     $siteApplicationLoginsField = [Query]::New('site_application_logins')
     $parameters['SiteApplicationLoginsFields'] | ForEach-Object { $siteApplicationLoginsField.AddField($_) | Out-Null }
 
-    $IssueCountsField = [Query]::New('issue_counts')
-    $parameters['IssueCountsFields'] | ForEach-Object { $IssueCountsField.AddField($_) | Out-Null }
+    $issueCountsField = [Query]::New('issue_counts')
+    $parameters['IssueCountsFields'] | ForEach-Object { $issueCountsField.AddField($_) | Out-Null }
 
     $auditItemsField = [Query]::New('audit_items')
     $parameters['AuditItemsField'] | ForEach-Object { $auditItemsField.AddField($_) | Out-Null }
-    $auditItemsField.AddField($IssueCountsField) | Out-Null
+    $auditItemsField.AddField($issueCountsField) | Out-Null
 
     $scanConfigurationsField = [Query]::New('scan_configurations')
     $parameters['ScanConfigurationsFields'] | ForEach-Object { $scanConfigurationsField.AddField($_) | Out-Null }
 
-    $scanField = [Query]::New("scan")
-    $scanField.AddArgument('id', '$id') | Out-Null
+    if ($queryType -eq 'List') {
+        $scanField = [Query]::New("scans")
+        $scanField.AddArgument('offset', '$offset') | Out-Null
+        $scanField.AddArgument('limit', '$limit') | Out-Null
+        $scanField.AddArgument('sort_column', '$sort_column') | Out-Null
+        $scanField.AddArgument('sort_order', '$sort_order') | Out-Null
+        $scanField.AddArgument('scan_status', '$scan_status') | Out-Null
+    } else {
+        $scanField = [Query]::New("scan")
+        $scanField.AddArgument('id', '$id') | Out-Null
+    }
 
     $parameters['Fields'] | ForEach-Object { $scanField.AddField($_) | Out-Null }
     $scanField.AddField($agentField) | Out-Null
@@ -187,14 +199,29 @@ function _buildScanQuery {
     $scanField.AddField($scanConfigurationsField) | Out-Null
 
     $scanQuery = [Query]::New($operationName)
-    $scanQuery.AddArgument('$id', 'ID!') | Out-Null
+    if ($queryType -eq 'List') {
+        $scanQuery.AddArgument('$offset', 'int') | Out-Null
+        $scanQuery.AddArgument('$limit', 'int') | Out-Null
+        $scanQuery.AddArgument('$sort_column', 'string') | Out-Null
+        $scanQuery.AddArgument('$sort_order', 'string') | Out-Null
+        $scanQuery.AddArgument('$scan_status', 'string') | Out-Null
+    } else {
+        $scanQuery.AddArgument('$id', 'ID!') | Out-Null
+    }
     $scanQuery.AddField($scanField) | Out-Null
 
     $query = 'query {0}' -f $scanQuery
 
     $graphRequest = [GraphRequest]::new($query, $operationName)
 
-    if ($parameters.ContainsKey('ID')) { $graphRequest.Variables.id = $ID }
+    if ($queryType -eq 'List') {
+        $graphRequest.Variables.offset = $parameters.Offset
+        $graphRequest.Variables.limit = $parameters.Limit
+        $graphRequest.Variables.sort_column = $parameters.SortColumn
+        $graphRequest.Variables.sort_order = $parameters.SortOrder
+        $graphRequest.Variables.scan_status = $parameters.ScanStatus
+    }
+    else { $graphRequest.Variables.id = $parameters.ID }
 
     return $graphRequest
 }

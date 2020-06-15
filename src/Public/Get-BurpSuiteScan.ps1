@@ -7,7 +7,37 @@ function Get-BurpSuiteScan {
             ParameterSetName = 'Specific')]
         [ValidateNotNullOrEmpty()]
         [string]
-        $ID
+        $ID,
+
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'List')]
+        [ValidateNotNullOrEmpty()]
+        [int]
+        $Offset,
+
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'List')]
+        [ValidateNotNullOrEmpty()]
+        [int]
+        $Limit,
+
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'List')]
+        [ValidateSet('start', 'end', 'status', 'site', 'id')]
+        [string]
+        $SortColumn,
+
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'List')]
+        [ValidateSet('asc', 'desc')]
+        [string]
+        $SortOrder,
+
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'List')]
+        [ValidateSet('queued', 'running', 'succeeded', 'cancelled', 'failed')]
+        [string]
+        $ScanStatus
     )
 
     begin {
@@ -15,7 +45,7 @@ function Get-BurpSuiteScan {
 
     process {
 
-        $graphRequest = _buildScanQuery -Parameters $PSBoundParameters
+        $graphRequest = _buildScanQuery -Parameters $PSBoundParameters -QueryType $PSCmdlet.ParameterSetName
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
