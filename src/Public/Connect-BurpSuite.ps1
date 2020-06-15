@@ -19,10 +19,11 @@ function Connect-BurpSuite {
         $uriBuilder.Path = '/graphql/v1'
 
         $graphUrl = $uriBuilder.ToString()
-        $graphRequest = [GraphRequest]::new('{ __schema { queryType { name } } }')
     }
 
     process {
+        $graphRequest = _buildIntrospectionQuery
+
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 _createSession -APIUrl $graphUrl -APIKey $APIKey

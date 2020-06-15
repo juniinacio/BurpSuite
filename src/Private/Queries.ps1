@@ -1,5 +1,30 @@
+function _buildIntrospectionQuery {
+    param()
+
+    $operationName = 'IntrospectionQuery'
+
+    $queryTypeField = [Query]::New('queryType')
+    $queryTypeField.AddField("name") | Out-Null
+
+    $mutationTypeField = [Query]::New('mutationType')
+    $mutationTypeField.AddField("name") | Out-Null
+
+    $schemaField = [Query]::New('__schema')
+    $schemaField.AddField($queryTypeField) | Out-Null
+    $schemaField.AddField($mutationTypeField) | Out-Null
+
+    $introspectionQuery = [Query]::New($operationName)
+    $introspectionQuery.AddField($schemaField) | Out-Null
+
+    $query = 'query {0}' -f $introspectionQuery
+
+    $graphRequest = [GraphRequest]::new($query, $operationName)
+
+    return $graphRequest
+}
+
 function _buildAgentQuery {
-    Param ([hashtable] $parameters)
+    param ([hashtable] $parameters)
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'name', 'state', 'enabled' }
 
@@ -36,7 +61,7 @@ function _buildAgentQuery {
 }
 
 function _buildIssueQuery {
-    Param ([hashtable] $parameters)
+    param ([hashtable] $parameters)
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'confidence', 'serial_number', 'severity', 'novelty' }
 
@@ -80,7 +105,7 @@ function _buildIssueQuery {
 }
 
 function _buildScanConfigurationQuery {
-    Param ([hashtable] $parameters)
+    param ([hashtable] $parameters)
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'name' }
 
@@ -100,7 +125,7 @@ function _buildScanConfigurationQuery {
 }
 
 function _buildUnauthorizedAgentQuery {
-    Param ([hashtable] $parameters)
+    param ([hashtable] $parameters)
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'ip' }
 

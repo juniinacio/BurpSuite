@@ -10,7 +10,8 @@ InModuleScope $env:BHProjectName {
 
                 # assert
                 Should -Invoke _callAPI -ParameterFilter {
-                    $GraphRequest.query -eq "{ __schema { queryType { name } } }"
+                    $GraphRequest.Query -eq "query IntrospectionQuery { __schema { queryType { name } mutationType { name } } }" `
+                        -and $GraphRequest.OperationName -eq "IntrospectionQuery"
                 }
             }
 
