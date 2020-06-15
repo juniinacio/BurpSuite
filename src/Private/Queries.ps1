@@ -227,7 +227,7 @@ function _buildScanQuery {
 }
 
 
-function _buildQueryObject {
+function _buildObjectQuery {
     param([string]$name, [string]$objectType)
 
     $query = [Query]::New($name)
@@ -254,7 +254,7 @@ function _buildQueryObject {
         #     $query.AddField('number_of_errors') | Out-Null
         #     $query.AddField('number_of_insertion_points') | Out-Null
         #     $query.AddField((
-        #         _buildQueryObject -name 'issue_types' -objectType 'IssueType')) | Out-Null
+        #         _buildObjectQuery -name 'issue_types' -objectType 'IssueType')) | Out-Null
         # }
 
         CountsByConfidence {
@@ -266,10 +266,10 @@ function _buildQueryObject {
 
         IssueCounts {
             $query.AddField('total') | Out-Null
-            $query.AddField((_buildQueryObject -name 'high' -objectType 'CountsByConfidence')) | Out-Null
-            $query.AddField((_buildQueryObject -name 'medium' -objectType 'CountsByConfidence')) | Out-Null
-            $query.AddField((_buildQueryObject -name 'low' -objectType 'CountsByConfidence')) | Out-Null
-            $query.AddField((_buildQueryObject -name 'info' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildObjectQuery -name 'high' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildObjectQuery -name 'medium' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildObjectQuery -name 'low' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildObjectQuery -name 'info' -objectType 'CountsByConfidence')) | Out-Null
         }
 
         IssueType {
