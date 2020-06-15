@@ -1,0 +1,134 @@
+parameters:
+  name: ''
+  displayName: ''
+  pool: ''
+  apiVersion: ''
+  apiUrl: ''
+  apiKey: ''
+  os: ''
+  depends: ''
+  moduleName: ''
+  artifactsUrl: ''
+  artifactsPAT: ''
+  artifactsEmail: ''
+  pwsh: true
+  environment: ''
+
+jobs:
+  - deployment: ${{ parameters.name }}
+    displayName: ${{ parameters.displayName }}
+    variables:
+      BURPSUITE_APIVERSION: ${{ parameters.apiVerion }}
+      BURPSUITE_URL: ${{ parameters.apiUrl }}
+      BURPSUITE_APIKEY: ${{ parameters.apiKey }}
+      BURPSUITE_MODULENAME: ${{ parameters.moduleName }}
+      ARTIFACTS_URL: ${{ parameters.artifactsUrl }}
+      ARTIFACTS_EMAIL: ${{ parameters.artifactsEmail }}
+      ARTIFACTS_PAT: ${{ parameters.artifactsPAT }}
+    ${{ if eq(parameters['depends'], true) }}:
+    dependsOn: ${{ parameters.depends }}
+    pool:
+      vmImage: ${{ parameters.pool }}
+    environment: '${{ parameters.environment }}'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: PowerShell@2
+              displayName: 'Set Pipeline Variables'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                  Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
+                pwsh: ${{ parameters.pwsh }}
+
+            - task: PowerShell@2
+              displayName: 'Register Private Repository'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $n = "$(BURPSUITE_MODULENAME)"
+                  $e = "$(ARTIFACTS_EMAIL)"
+                  $url = "$(ARTIFACTS_URL)"
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force
+                  $creds = New-Object PSCredential($e, $pwd)
+
+                  # LINK: https://github.com/Microsoft/artifacts-credprovider
+                  $Env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
+                  $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
+
+                  if(-not (Get-PSRepository | ? Name -eq $n)) { Register-PSRepository -Credential $creds -Name $n -SourceLocation $url -PublishLocation $url -InstallationPolicy Trusted -Verbose }
+                pwsh: ${{ parameters.pwsh }}
+              env:
+                ARTIFACTS_PAT: $(ARTIFACTS_PAT)
+
+            - task: PowerShell@2
+              displayName: 'Install $(BURPSUITE_MODULENAME) Module'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Load the psd1 file so you can read the version
+                  $manifest = Import-PowerShellDataFile $Env:OUTPUTMODVERDIR/$(ModuleName).psd1
+
+                  $n = "$(BURPSUITE_MODULENAME)"
+                  $e = "$(ARTIFACTS_EMAIL)"
+                  $b = "$($manifest.ModuleVersion).$(Build.BuildId)"
+                  $pwd = ConvertTo-SecureString $Env:ARTIFACTS_PAT -AsPlainText -Force # Readonly PAT for Azure DevOps artifacts
+                  $creds = New-Object PSCredential($e, $pwd)
+
+                  # LINK: https://github.com/Microsoft/artifacts-credprovider
+                  $Env:NUGET_CREDENTIALPROVIDER_SESSIONTOKENCACHE_ENABLED = 'true'
+                  $Env:VSS_NUGET_EXTERNAL_FEED_ENDPOINTS = '{{"endpointCredentials": [{{"endpoint":"{0}", "username":"{1}", "password":"{2}"}}]}}' -f $url, $e, $pwd
+
+                  Install-Module -Name "$(BURPSUITE_MODULENAME)" -Repository $n -Credential $creds -MaximumVersion $b -MinimumVersion $b -Force -Scope CurrentUser -Verbose
+                workingDirectory: '$(Pipeline.Workspace)/module'
+                pwsh: ${{ parameters.pwsh }}
+              env:
+                ARTIFACTS_PAT: $(ARTIFACTS_PAT)
+
+            - task: PowerShell@2
+              displayName: 'Install Pester'
+              inputs:
+                targetType: 'inline'
+                script: 'Install-Module -Name Pester -Repository PSGallery -MinimumVersion 5.0.2 -Force -Scope CurrentUser -AllowClobber -SkipPublisherCheck'
+                pwsh: ${{ parameters.pwsh }}
+
+            - task: PowerShell@2
+              displayName: 'Run Integration Tests'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $Env:BURPSUITE_URL = "$(BURPSUITE_URL)"
+                  $Env:BURPSUITE_APIVERSION = "$(BURPSUITE_APIVERSION)"
+
+                  Import-Module "$(BURPSUITE_MODULENAME)"
+                  if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
+
+                  $PesterPreference = [PesterConfiguration]::Default
+                  $PesterPreference.Run.Path = "$(Pipeline.Workspace)/integration/tests"
+                  $PesterPreference.Run.PassThru = $true
+                  $PesterPreference.TestResult.Enabled = $true
+                  $PesterPreference.TestResult.OutputPath = Join-Path -Path "$(Pipeline.Workspace)/integration/tests" -ChildPath "$(BURPSUITE_MODULENAME)-TestsResults.xml"
+
+                  $testResults = Invoke-Pester -Configuration $PesterPreference
+                  Write-Host 'Pester results:' -ForegroundColor Yellow
+                  $tableProperties = 'Result', 'FailedCount', 'FailedBlocksCount', 'FailedContainersCount', 'PassedCount', 'SkippedCount', 'NotRunCount', 'TotalCount', 'Duration'
+                  $testResults | Format-Table -AutoSize -Property $tableProperties
+
+                  if ($testResults.FailedCount -gt 0) { throw 'One or more Pester tests failed' }
+                failOnStderr: true
+                workingDirectory: '$(Pipeline.Workspace)/integration/tests'
+                pwsh: ${{ parameters.pwsh }}
+              env:
+                BURPSUITE_APIKEY: $(BURPSUITE_APIKEY)
+
+            - task: PublishTestResults@2
+              displayName: 'Publish Test Results'
+              inputs:
+                testResultsFormat: NUnit
+                testResultsFiles: '**/$(BURPSUITE_MODULENAME)-TestsResults.xml'
+                searchFolder: '$(Pipeline.Workspace)/integration/tests'
+                testRunTitle: '${{ parameters.os }} Tests'
+              continueOnError: true
+              condition: succeededOrFailed()
