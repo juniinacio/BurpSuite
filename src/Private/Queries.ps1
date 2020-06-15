@@ -143,3 +143,58 @@ function _buildUnauthorizedAgentQuery {
 
     return $graphRequest
 }
+
+function _buildScanQuery {
+    param ([hashtable] $parameters)
+
+    if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'status' }
+    if (-not ($parameters.ContainsKey('AgentFields'))) { $parameters['AgentFields'] = 'id', 'name' }
+    if (-not ($parameters.ContainsKey('IssueTypesFields'))) { $parameters['IssueTypesFields'] = 'confidence', 'severity', 'novelty' }
+    if (-not ($parameters.ContainsKey('SiteApplicationLoginsFields'))) { $parameters['SiteApplicationLoginsFields'] = 'label', 'username' }
+    if (-not ($parameters.ContainsKey('AuditItemsField'))) { $parameters['AuditItemsField'] = 'id', 'number_of_requests' }
+    if (-not ($parameters.ContainsKey('IssueCountsFields'))) { $parameters['IssueCountsFields'] = 'total' }
+    if (-not ($parameters.ContainsKey('ScanConfigurationsFields'))) { $parameters['ScanConfigurationsFields'] = 'id', 'name' }
+
+    $operationName = 'GetScan'
+
+    $agentField = [Query]::New('agent')
+    $parameters['AgentFields'] | ForEach-Object { $agentField.AddField($_) | Out-Null }
+
+    $issueTypesField = [Query]::New('issue_types')
+    $parameters['IssueTypesFields'] | ForEach-Object { $issueTypesField.AddField($_) | Out-Null }
+
+    $siteApplicationLoginsField = [Query]::New('site_application_logins')
+    $parameters['SiteApplicationLoginsFields'] | ForEach-Object { $siteApplicationLoginsField.AddField($_) | Out-Null }
+
+    $IssueCountsField = [Query]::New('issue_counts')
+    $parameters['IssueCountsFields'] | ForEach-Object { $IssueCountsField.AddField($_) | Out-Null }
+
+    $auditItemsField = [Query]::New('audit_items')
+    $parameters['AuditItemsField'] | ForEach-Object { $auditItemsField.AddField($_) | Out-Null }
+    $auditItemsField.AddField($IssueCountsField) | Out-Null
+
+    $scanConfigurationsField = [Query]::New('scan_configurations')
+    $parameters['ScanConfigurationsFields'] | ForEach-Object { $scanConfigurationsField.AddField($_) | Out-Null }
+
+    $scanField = [Query]::New("scan")
+    $scanField.AddArgument('id', '$id') | Out-Null
+
+    $parameters['Fields'] | ForEach-Object { $scanField.AddField($_) | Out-Null }
+    $scanField.AddField($agentField) | Out-Null
+    $scanField.AddField($issueTypesField) | Out-Null
+    $scanField.AddField($siteApplicationLoginsField) | Out-Null
+    $scanField.AddField($auditItemsField) | Out-Null
+    $scanField.AddField($scanConfigurationsField) | Out-Null
+
+    $scanQuery = [Query]::New($operationName)
+    $scanQuery.AddArgument('$id', 'ID!') | Out-Null
+    $scanQuery.AddField($scanField) | Out-Null
+
+    $query = 'query {0}' -f $scanQuery
+
+    $graphRequest = [GraphRequest]::new($query, $operationName)
+
+    if ($parameters.ContainsKey('ID')) { $graphRequest.Variables.id = $ID }
+
+    return $graphRequest
+}
