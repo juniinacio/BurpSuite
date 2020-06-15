@@ -225,3 +225,62 @@ function _buildScanQuery {
 
     return $graphRequest
 }
+
+
+function _buildQueryObject {
+    param([string]$name, [string]$objectType)
+
+    $query = [Query]::New($name)
+
+    switch ($objectType) {
+        AgentError {
+            $query.AddField('code') | Out-Null
+            $query.AddField('error') | Out-Null
+        }
+
+        ApplicationLogin {
+            $query.AddField('id') | Out-Null
+            $query.AddField('label') | Out-Null
+            $query.AddField('username') | Out-Null
+        }
+
+        # AuditItem {
+        #     $query.AddField('id') | Out-Null
+        #     $query.AddField('host') | Out-Null
+        #     $query.AddField('path') | Out-Null
+        #     $query.AddField('error_types') | Out-Null
+        #     $query.AddField('issue_counts') | Out-Null
+        #     $query.AddField('number_of_requests') | Out-Null
+        #     $query.AddField('number_of_errors') | Out-Null
+        #     $query.AddField('number_of_insertion_points') | Out-Null
+        #     $query.AddField((
+        #         _buildQueryObject -name 'issue_types' -objectType 'IssueType')) | Out-Null
+        # }
+
+        CountsByConfidence {
+            $query.AddField('total') | Out-Null
+            $query.AddField('firm') | Out-Null
+            $query.AddField('tentative') | Out-Null
+            $query.AddField('certain') | Out-Null
+        }
+
+        IssueCounts {
+            $query.AddField('total') | Out-Null
+            $query.AddField((_buildQueryObject -name 'high' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryObject -name 'medium' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryObject -name 'low' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryObject -name 'info' -objectType 'CountsByConfidence')) | Out-Null
+        }
+
+        IssueType {
+            $query.AddField('type_index') | Out-Null
+            $query.AddField('confidence') | Out-Null
+            $query.AddField('severity') | Out-Null
+            $query.AddField('number_of_children') | Out-Null
+            $query.AddField('first_child_serial_number') | Out-Null
+            $query.AddField('novelty') | Out-Null
+        }
+    }
+
+    return $query
+}
