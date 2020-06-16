@@ -16,7 +16,7 @@ function Get-BurpSuiteScanReport {
     }
 
     process {
-        $graphRequest = _buildScanReportQuery -Parameters $PSBoundParameters -QueryType $PSCmdlet.ParameterSetName
+        $graphRequest = _buildScanReportQuery -Parameters $PSBoundParameters 
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
