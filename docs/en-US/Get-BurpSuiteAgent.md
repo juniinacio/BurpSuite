@@ -13,8 +13,7 @@ Gets BurpSuite agents.
 ## SYNTAX
 
 ```
-Get-BurpSuiteAgent [[-Fields] <String[]>] [[-ErrorFields] <String[]>] [[-ID] <String>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Get-BurpSuiteAgent [[-Fields] <String[]>] [[-ID] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -38,10 +37,10 @@ This example shows how to retrieve an agent by id.
 
 ### Example 3
 ```powershell
-PS C:\> Get-BurpSuiteAgent -ID 1 -ErrorFields 'code', 'error'
+PS C:\> Get-BurpSuiteAgent -ID 1 -Fields 'id', 'machine_id', 'current_scan_count', 'ip', 'name', 'state', 'error', 'enabled', 'max_concurrent_scans'
 ```
 
-This example shows how to retrieve an agent by id together with errors.
+This example shows how to retrieve an agent by id together with fields.
 
 ## PARAMETERS
 
@@ -60,22 +59,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ErrorFields
-Specifies the error fields to retrieve for the agent.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-Accepted values: code, error
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -Fields
 Specifies the agents fields to retrieve.
 
@@ -83,7 +66,7 @@ Specifies the agents fields to retrieve.
 Type: String[]
 Parameter Sets: (All)
 Aliases:
-Accepted values: id, machine_id, current_scan_count, ip, name, state, enabled, max_concurrent_scans
+Accepted values: id, machine_id, current_scan_count, ip, name, state, error, enabled, max_concurrent_scans
 
 Required: False
 Position: 0
@@ -101,7 +84,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

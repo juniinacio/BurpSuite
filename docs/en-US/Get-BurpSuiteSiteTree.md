@@ -5,36 +5,28 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-BurpSuiteIssue
+# Get-BurpSuiteSiteTree
 
 ## SYNOPSIS
-Gets BurpSuite issues.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
 ```
-Get-BurpSuiteIssue [-ID] <String> [-SerialNumber] <String> [[-Fields] <String[]>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Get-BurpSuiteSiteTree [[-Fields] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets BurpSuite issues.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645
+PS C:\> {{ Add example code here }}
 ```
 
-This example shows how to retrieve an issue.
-
-### Example 2
-```powershell
-PS C:\> Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645 -Fields 'confidence', 'display_confidence', 'serial_number'
-```
-
-This example shows how to retrieve an issue with certain fields.
+{{ Add example description here }}
 
 ## PARAMETERS
 
@@ -54,46 +46,16 @@ Accept wildcard characters: False
 ```
 
 ### -Fields
-Specifies the issue fields to retrieve for the issue.
+{{ Fill Fields Description }}
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
 Aliases:
-Accepted values: confidence, display_confidence, serial_number, severity, description_html, remediation_html, type_index, path, origin, novelty, evidence, tickets
+Accepted values: folders, sites
 
 Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ID
-Specifies the ID for the issue to retrieve.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -SerialNumber
-Specifies the serial number for the issue to retrieve.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

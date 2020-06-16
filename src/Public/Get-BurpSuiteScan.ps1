@@ -37,7 +37,14 @@ function Get-BurpSuiteScan {
             ParameterSetName = 'List')]
         [ValidateSet('queued', 'running', 'succeeded', 'cancelled', 'failed')]
         [string]
-        $ScanStatus
+        $ScanStatus,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('id', 'schedule_item', 'site_id', 'site_name', 'start_time', 'end_time', 'duration_in_seconds', 'status', 'agent', 'scan_metrics',
+            'scan_failure_message', 'generated_by', 'scanner_version', 'scan_configurations', 'scan_delta', 'jira_ticket_count', 'issue_types', 'issue_counts',
+            'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues')]
+        [string[]]
+        $Fields
     )
 
     begin {

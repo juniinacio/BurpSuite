@@ -1,4 +1,4 @@
-function Get-BurpSuiteIssue {
+function Get-BurpSuiteScanReport {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
@@ -7,24 +7,16 @@ function Get-BurpSuiteIssue {
         [string]
         $ID,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $SerialNumber,
-
         [Parameter(Mandatory = $false)]
-        [ValidateSet('confidence', 'display_confidence', 'serial_number', 'severity', 'description_html',
-            'remediation_html', 'type_index', 'path', 'origin', 'novelty', 'evidence', 'tickets')]
-        [string[]]
-        $Fields
+        [switch]
+        $IncludeFalsePositives
     )
 
     begin {
     }
 
     process {
-
-        $graphRequest = _buildIssueQuery -Parameters $PSBoundParameters
+        $graphRequest = _buildScanReportQuery -Parameters $PSBoundParameters -QueryType $PSCmdlet.ParameterSetName
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {

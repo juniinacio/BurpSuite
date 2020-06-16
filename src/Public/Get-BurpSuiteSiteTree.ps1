@@ -1,16 +1,11 @@
-function Get-BurpSuiteAgent {
+function Get-BurpSuiteSiteTree {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
         [Parameter(Mandatory = $false)]
-        [ValidateSet('id', 'machine_id', 'current_scan_count', 'ip', 'name', 'state', 'error', 'enabled', 'max_concurrent_scans')]
+        [ValidateSet('folders', 'sites')]
         [string[]]
-        $Fields,
-
-        [Parameter(Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $ID
+        $Fields
     )
 
     begin {
@@ -18,7 +13,7 @@ function Get-BurpSuiteAgent {
 
     process {
 
-        $graphRequest = _buildAgentQuery -Parameters $PSBoundParameters
+        $graphRequest = _buildSuiteSiteTreeQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {

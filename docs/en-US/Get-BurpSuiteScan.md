@@ -14,13 +14,13 @@ Gets BurpSuite scans.
 
 ### Specific (Default)
 ```
-Get-BurpSuiteScan -ID <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScan -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### List
 ```
 Get-BurpSuiteScan -Offset <Int32> -Limit <Int32> -SortColumn <String> -SortOrder <String> -ScanStatus <String>
- [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,6 +51,22 @@ Prompts you for confirmation before running the cmdlet.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Fields
+Specifies the scan fields to retrieve.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: id, schedule_item, site_id, site_name, start_time, end_time, duration_in_seconds, status, agent, scan_metrics, scan_failure_message, generated_by, scanner_version, scan_configurations, scan_delta, jira_ticket_count, issue_types, issue_counts, audit_items, audit_item, scope, site_application_logins, schedule_item_application_logins, issues
 
 Required: False
 Position: Named
