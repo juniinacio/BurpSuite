@@ -1,4 +1,4 @@
-# Barracuda.WAF
+# BurpSuite
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/juniinacio/BurpSuite/blob/master/LICENSE)
 [![Documentation - BurpSuite](https://img.shields.io/badge/Documentation-BurpSuite-blue.svg)](https://github.com/juniinacio/BurpSuite/blob/master/README.md)
@@ -30,13 +30,13 @@ Install-Module -Name BurpSuite
 
 ## Pipeline Status
 
-You can review the status of every Barracuda.WAF pipeline below.
+You can review the status of every BurpSuite pipeline below.
 
 |         Pipeline                    |             Status           |
 |-------------------------------------|------------------------------|
 | Production                          | [![Build Status](https://dev.azure.com/juniinacio/BurpSuite/_apis/build/status/BurpSuite?branchName=master)](https://dev.azure.com/juniinacio/BurpSuite/_build/latest?definitionId=13&branchName=master) |
 
-The build for BurpSuite is run on Linux and Windows to ensure there are no casing or other platform specific issues with the code. On each platform unit tests are run to ensure the code runs on all platforms and without issues. During pull request builds the module is also installed both on Windows and Linux and tested using integration tests againt BurpSuite Enterprise before changes are pushed to the master branch.
+The build for BurpSuite is run on Linux and Windows to ensure there are no casing or other platform specific issues with the code. On each platform unit tests are run to ensure the code runs on all platforms and without issues. During pull request builds the module is also installed both on Windows and Linux and tested using integration tests against BurpSuite Enterprise before changes are pushed to the master branch.
 
 ## Building Module
 
