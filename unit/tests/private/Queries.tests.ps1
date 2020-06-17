@@ -25,7 +25,7 @@ InModuleScope BurpSuite {
                 @{ObjectName = "ScanDelta"; FieldName = "scan_delta"; Query = "scan_delta { new_issue_count repeated_issue_count regressed_issue_count resolved_issue_count }" }
                 @{ObjectName = "ScanProgressMetrics"; FieldName = "scan_progress_metrics"; Query = "scan_progress_metrics { crawl_request_count unique_location_count audit_request_count crawl_and_audit_progress_percentage }" }
                 @{ObjectName = "Schedule"; FieldName = "schedule"; Query = "schedule { initial_run_time rrule }" }
-                @{ObjectName = "ScheduleItem"; FieldName = "schedule_item"; Query = "schedule_item { id site }" }
+                @{ObjectName = "ScheduleItem"; FieldName = "schedule_item"; Query = "schedule_item { id }" }
                 @{ObjectName = "Scope"; FieldName = "scope"; Query = "scope { included_urls excluded_urls }" }
                 @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } }" }
                 @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } } }" }

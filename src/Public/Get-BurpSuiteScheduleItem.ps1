@@ -1,5 +1,5 @@
 function Get-BurpSuiteScheduleItem {
-    [CmdletBinding(DefaultParameterSetName = 'Specific',
+    [CmdletBinding(DefaultParameterSetName = 'List',
         SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
@@ -9,13 +9,13 @@ function Get-BurpSuiteScheduleItem {
         [string]
         $ID,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateNotNullOrEmpty()]
         [string]
         $SortBy,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateNotNullOrEmpty()]
         [string]

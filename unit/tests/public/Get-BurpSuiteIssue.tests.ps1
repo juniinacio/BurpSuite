@@ -16,7 +16,7 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should add <FieldName> query field" -TestCases @(
+        It "should add <FieldName> selection field" -TestCases @(
             @{ FieldName = "confidence" }
             @{ FieldName = "display_confidence" }
             @{ FieldName = "serial_number" }
@@ -41,7 +41,7 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should add <FieldName> sub query field" -TestCases @(
+        It "should add <FieldName> sub selection field" -TestCases @(
             @{ FieldName = "tickets"; Query = "tickets { jira_ticket { id external_key issue_type summary project status priority } link_url link_id }" }
         ) {
             # arrange

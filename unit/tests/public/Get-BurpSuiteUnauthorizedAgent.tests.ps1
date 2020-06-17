@@ -14,7 +14,7 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should set unauthorized agent fields" {
+        It "should set unauthorized agent selection fields" {
             # arrange
             $fields = 'machine_id', 'ip'
 

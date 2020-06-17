@@ -30,6 +30,7 @@ properties {
     $PesterPreference.CodeCoverage.Enabled = $true
     $PesterPreference.CodeCoverage.Path = Join-Path -Path $outputModVerDir -ChildPath '*.psm1'
     $PesterPreference.CodeCoverage.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-Coverage.xml"
+    $PesterPreference.Output.Verbosity = "Detailed"
     $null = $PesterPreference
 }
 

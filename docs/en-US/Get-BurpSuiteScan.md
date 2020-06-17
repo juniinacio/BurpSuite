@@ -12,15 +12,15 @@ Gets BurpSuite scans.
 
 ## SYNTAX
 
-### Specific (Default)
+### List (Default)
 ```
-Get-BurpSuiteScan -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScan [-Offset <Int32>] [-Limit <Int32>] [-SortColumn <String>] [-SortOrder <String>]
+ [-ScanStatus <String[]>] [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
-### List
+### Specific
 ```
-Get-BurpSuiteScan -Offset <Int32> -Limit <Int32> -SortColumn <String> -SortOrder <String> -ScanStatus <String>
- [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScan -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -37,10 +37,10 @@ This example shows how to get the scan with ID 1.
 
 ### Example 2
 ```powershell
-PS C:\> Get-BurpSuiteScan -Offset 1 -Limit 10 -SortColumn 'start' -SortOrder 'asc' -ScanStatus 'queued'
+PS C:\> Get-BurpSuiteScan -Fields id
 ```
 
-This example shows how to get a list of scans starting at offset 1.
+This example shows how to get a list of scans.
 
 ## PARAMETERS
 
@@ -98,7 +98,7 @@ Type: Int32
 Parameter Sets: List
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -113,7 +113,7 @@ Type: Int32
 Parameter Sets: List
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -124,12 +124,12 @@ Accept wildcard characters: False
 Specifies wich type of scans to retrieve.
 
 ```yaml
-Type: String
+Type: String[]
 Parameter Sets: List
 Aliases:
 Accepted values: queued, running, succeeded, cancelled, failed
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -145,7 +145,7 @@ Parameter Sets: List
 Aliases:
 Accepted values: start, end, status, site, id
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -161,7 +161,7 @@ Parameter Sets: List
 Aliases:
 Accepted values: asc, desc
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False

@@ -1,5 +1,5 @@
 function Get-BurpSuiteScan {
-    [CmdletBinding(DefaultParameterSetName = 'Specific',
+    [CmdletBinding(DefaultParameterSetName = 'List',
         SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
@@ -9,34 +9,34 @@ function Get-BurpSuiteScan {
         [string]
         $ID,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateNotNullOrEmpty()]
         [int]
         $Offset,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateNotNullOrEmpty()]
         [int]
         $Limit,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateSet('start', 'end', 'status', 'site', 'id')]
         [string]
         $SortColumn,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateSet('asc', 'desc')]
         [string]
         $SortOrder,
 
-        [Parameter(Mandatory = $true,
+        [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
         [ValidateSet('queued', 'running', 'succeeded', 'cancelled', 'failed')]
-        [string]
+        [string[]]
         $ScanStatus,
 
         [Parameter(Mandatory = $false)]
@@ -51,6 +51,14 @@ function Get-BurpSuiteScan {
     }
 
     process {
+
+        if ($PSBoundParameters.ContainsKey('Fields')) {
+            $unsupportedFields = @('site_name', 'agent', 'scan_configurations', 'jira_ticket_count', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues')
+            $equalFields = Compare-Object -ReferenceObject $unsupportedFields -DifferenceObject $Fields -IncludeEqual -ExcludeDifferent -PassThru
+            if ($null -ne $equalFields) {
+                Write-Warning "Fetching fields ('$($unsupportedFields -join ", '")') is not yet supported."
+            }
+        }
 
         $graphRequest = _buildScanQuery -Parameters $PSBoundParameters -QueryType $PSCmdlet.ParameterSetName
 

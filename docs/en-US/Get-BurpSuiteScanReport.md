@@ -13,7 +13,8 @@ Gets a scan report.
 ## SYNTAX
 
 ```
-Get-BurpSuiteScanReport [-ID] <String> [-IncludeFalsePositives] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScanReport [-ID] <String> [[-TimezoneOffset] <Int32>] [[-ReportType] <String>]
+ [-IncludeFalsePositives] [[-Severities] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -70,6 +71,53 @@ Aliases:
 
 Required: False
 Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ReportType
+Specifies the type of report you wish to fetch.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: detailed, summary
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Severities
+Specifies the types of severities to include.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: info, low, medium, high
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TimezoneOffset
+Specifies the time zone offset.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

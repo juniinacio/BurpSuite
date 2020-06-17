@@ -8,15 +8,30 @@ function Get-BurpSuiteScanReport {
         $ID,
 
         [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [int]
+        $TimezoneOffset,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('detailed', 'summary')]
+        [string]
+        $ReportType,
+
+        [Parameter(Mandatory = $false)]
         [switch]
-        $IncludeFalsePositives
+        $IncludeFalsePositives,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('info', 'low', 'medium', 'high')]
+        [string[]]
+        $Severities
     )
 
     begin {
     }
 
     process {
-        $graphRequest = _buildScanReportQuery -Parameters $PSBoundParameters 
+        $graphRequest = _buildScanReportQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {

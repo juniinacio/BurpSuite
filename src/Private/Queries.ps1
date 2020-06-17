@@ -96,10 +96,14 @@ function _buildScanConfigurationQuery {
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'name' }
 
+    $subFields = 'last_modified_by'
+
     $operationName = 'GetScanConfigurations'
 
     $scanConfigurationsField = [Query]::New('scan_configurations')
-    $parameters['Fields'] | ForEach-Object { $scanConfigurationsField.AddField($_) | Out-Null }
+    $parameters['Fields'] | Where-Object { $_ -notin $subFields } | ForEach-Object { $scanConfigurationsField.AddField($_) | Out-Null }
+
+    if ($parameters['Fields'] -contains 'last_modified_by') { $scanConfigurationsField.AddField((_buildObjectQuery -name 'last_modified_by' -objectType 'User')) | Out-Null }
 
     $scanConfigurationQuery = [Query]::New($operationName)
     $scanConfigurationQuery.AddField($scanConfigurationsField) | Out-Null
@@ -135,24 +139,22 @@ function _buildScanQuery {
     param ([hashtable] $parameters, [string]$queryType)
 
     if (-not ($parameters.ContainsKey('Fields'))) {
-        $parameters['Fields'] = 'id', 'status', 'agent', 'issue_types', 'site_application_logins',
-        'audit_items', 'scan_configurations'
+        # $parameters['Fields'] = 'id', 'status', 'agent', 'issue_types', 'site_application_logins',
+        # 'audit_items', 'scan_configurations'
+        $parameters['Fields'] = 'id', 'status', 'issue_types'
     }
 
     $subFields = 'schedule_item', 'agent', 'scan_metrics', 'scan_configurations', 'scan_delta', 'issue_types', 'issue_counts', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues'
 
-    $operationName = 'GetScan'
-    if ($queryType -eq 'List') {
-        $operationName = 'GetScans'
-    }
+    if ($queryType -eq 'List') { $operationName = 'GetScans' } else { $operationName = 'GetScan' }
 
     if ($queryType -eq 'List') {
         $scanField = [Query]::New("scans")
-        $scanField.AddArgument('offset', '$offset') | Out-Null
-        $scanField.AddArgument('limit', '$limit') | Out-Null
-        $scanField.AddArgument('sort_column', '$sort_column') | Out-Null
-        $scanField.AddArgument('sort_order', '$sort_order') | Out-Null
-        $scanField.AddArgument('scan_status', '$scan_status') | Out-Null
+        if ($parameters.ContainsKey('Offset')) { $scanField.AddArgument('offset', '$offset') | Out-Null }
+        if ($parameters.ContainsKey('Limit')) { $scanField.AddArgument('limit', '$limit') | Out-Null }
+        if ($parameters.ContainsKey('SortColumn')) { $scanField.AddArgument('sort_column', '$sort_column') | Out-Null }
+        if ($parameters.ContainsKey('SortOrder')) { $scanField.AddArgument('sort_order', '$sort_order') | Out-Null }
+        if ($parameters.ContainsKey('ScanStatus')) { $scanField.AddArgument('scan_status', '$scan_status') | Out-Null }
     } else {
         $scanField = [Query]::New("scan")
         $scanField.AddArgument('id', '$id') | Out-Null
@@ -177,11 +179,11 @@ function _buildScanQuery {
 
     $scanQuery = [Query]::New($operationName)
     if ($queryType -eq 'List') {
-        $scanQuery.AddArgument('$offset', 'Int') | Out-Null
-        $scanQuery.AddArgument('$limit', 'Int') | Out-Null
-        $scanQuery.AddArgument('$sort_column', 'String') | Out-Null
-        $scanQuery.AddArgument('$sort_order', 'String') | Out-Null
-        $scanQuery.AddArgument('$scan_status', 'String') | Out-Null
+        if ($parameters.ContainsKey('Offset')) { $scanQuery.AddArgument('$offset', 'Int') | Out-Null }
+        if ($parameters.ContainsKey('Limit')) { $scanQuery.AddArgument('$limit', 'Int') | Out-Null }
+        if ($parameters.ContainsKey('SortColumn')) { $scanQuery.AddArgument('$sort_column', 'ScansSortColumn') | Out-Null }
+        if ($parameters.ContainsKey('SortOrder')) { $scanQuery.AddArgument('$sort_order', 'SortOrder') | Out-Null }
+        if ($parameters.ContainsKey('ScanStatus')) { $scanQuery.AddArgument('$scan_status', '[ScanStatus]') | Out-Null }
     } else {
         $scanQuery.AddArgument('$id', 'ID!') | Out-Null
     }
@@ -192,11 +194,11 @@ function _buildScanQuery {
     $graphRequest = [GraphRequest]::new($query, $operationName)
 
     if ($queryType -eq 'List') {
-        $graphRequest.Variables.offset = $parameters.Offset
-        $graphRequest.Variables.limit = $parameters.Limit
-        $graphRequest.Variables.sort_column = $parameters.SortColumn
-        $graphRequest.Variables.sort_order = $parameters.SortOrder
-        $graphRequest.Variables.scan_status = $parameters.ScanStatus
+        if ($parameters.ContainsKey('Offset')) { $graphRequest.Variables.offset = $parameters.Offset }
+        if ($parameters.ContainsKey('Limit')) { $graphRequest.Variables.limit = $parameters.Limit }
+        if ($parameters.ContainsKey('SortColumn')) { $graphRequest.Variables.sort_column = $parameters.SortColumn }
+        if ($parameters.ContainsKey('SortOrder')) { $graphRequest.Variables.sort_order = $parameters.SortOrder }
+        if ($parameters.ContainsKey('ScanStatus')) { $graphRequest.Variables.scan_status = @($parameters.ScanStatus) }
     } else { $graphRequest.Variables.id = $parameters.ID }
 
     return $graphRequest
@@ -210,14 +212,20 @@ function _buildScanReportQuery {
     $scanReportField = [Query]::New('scan_report')
 
     $scanReportField.AddArgument('scan_id', '$scan_id') | Out-Null
-    $scanReportField.AddArgument('include_false_positives', '$include_false_positives') | Out-Null
+    if ($parameters.ContainsKey('TimezoneOffset')) { $scanReportField.AddArgument('timezone_offset', '$timezone_offset') | Out-Null }
+    if ($parameters.ContainsKey('ReportType')) { $scanReportField.AddArgument('report_type', '$report_type') | Out-Null }
+    if ($parameters.ContainsKey('IncludeFalsePositives')) { $scanReportField.AddArgument('include_false_positives', '$include_false_positives') | Out-Null }
+    if ($parameters.ContainsKey('Severities')) { $scanReportField.AddArgument('severities', '$severities') | Out-Null }
 
     $scanReportField.AddField('report_html') | Out-Null
 
     $scanReportQuery = [Query]::New($operationName)
 
     $scanReportQuery.AddArgument('$scan_id', 'ID!') | Out-Null
-    $scanReportQuery.AddArgument('$include_false_positives', 'boolean') | Out-Null
+    if ($parameters.ContainsKey('TimezoneOffset')) { $scanReportQuery.AddArgument('$timezone_offset', 'Int') | Out-Null }
+    if ($parameters.ContainsKey('ReportType')) { $scanReportQuery.AddArgument('$report_type', 'ScanReportType') | Out-Null }
+    if ($parameters.ContainsKey('IncludeFalsePositives')) { $scanReportQuery.AddArgument('$include_false_positives', 'Boolean') | Out-Null }
+    if ($parameters.ContainsKey('Severities')) { $scanReportQuery.AddArgument('$severities', '[Severity]') | Out-Null }
 
     $scanReportQuery.AddField($scanReportField) | Out-Null
 
@@ -227,8 +235,13 @@ function _buildScanReportQuery {
 
     $graphRequest.Variables.scan_id = $parameters.ID
 
-    $graphRequest.Variables.include_false_positives = "false"
-    if (($parameters.ContainsKey('IncludeFalsePositives')) -and ($parameters.IncludeFalsePositives -eq $true)) { $graphRequest.Variables.include_false_positives = "true" }
+    if ($parameters.ContainsKey('TimezoneOffset')) { $graphRequest.Variables.timezone_offset = $parameters.TimezoneOffset }
+    if ($parameters.ContainsKey('ReportType')) { $graphRequest.Variables.report_type = $parameters.ReportType }
+    if ($parameters.ContainsKey('IncludeFalsePositives')) {
+        $graphRequest.Variables.include_false_positives = "false"
+        if ($parameters.IncludeFalsePositives -eq $true) { $graphRequest.Variables.include_false_positives = "true" }
+    }
+    if ($parameters.ContainsKey('Severities')) { $graphRequest.Variables.severities = @($parameters.Severities) }
 
     return $graphRequest
 }
@@ -240,7 +253,7 @@ function _buildScheduleItemQuery {
         $parameters['Fields'] = 'id', 'schedule', 'scheduled_run_time'
     }
 
-    $subFields = 'schedule', 'scan_configurations'
+    $subFields = 'site', 'schedule', 'scan_configurations'
 
     $operationName = 'GetScheduleItem'
     if ($queryType -eq 'List') {
@@ -249,8 +262,8 @@ function _buildScheduleItemQuery {
 
     if ($queryType -eq 'List') {
         $scheduleItemField = [Query]::New("schedule_items")
-        $scheduleItemField.AddArgument('sort_by', '$sort_by') | Out-Null
-        $scheduleItemField.AddArgument('sort_order', '$sort_order') | Out-Null
+        if ($parameters.ContainsKey('SortBy')) { $scheduleItemField.AddArgument('sort_by', '$sort_by') | Out-Null }
+        if ($parameters.ContainsKey('SortOrder')) { $scheduleItemField.AddArgument('sort_order', '$sort_order') | Out-Null }
     } else {
         $scheduleItemField = [Query]::New('schedule_item')
         $scheduleItemField.AddArgument('id', '$id') | Out-Null
@@ -265,8 +278,8 @@ function _buildScheduleItemQuery {
     $scheduleItemQuery = [Query]::New($operationName)
 
     if ($queryType -eq 'List') {
-        $scheduleItemQuery.AddArgument('$sort_by', 'String') | Out-Null
-        $scheduleItemQuery.AddArgument('$sort_order', 'String') | Out-Null
+        if ($parameters.ContainsKey('SortBy')) { $scheduleItemQuery.AddArgument('$sort_by', 'String') | Out-Null }
+        if ($parameters.ContainsKey('SortOrder')) { $scheduleItemQuery.AddArgument('$sort_order', 'String') | Out-Null }
     } else { $scheduleItemQuery.AddArgument('$id', 'ID!') | Out-Null }
 
     $scheduleItemQuery.AddField($scheduleItemField) | Out-Null
@@ -276,8 +289,8 @@ function _buildScheduleItemQuery {
     $graphRequest = [GraphRequest]::new($query, $operationName)
 
     if ($queryType -eq 'List') {
-        $graphRequest.Variables.sort_by = $parameters.SortBy
-        $graphRequest.Variables.sort_order = $parameters.SortOrder
+        if ($parameters.ContainsKey('SortBy')) { $graphRequest.Variables.sort_by = $parameters.SortBy }
+        if ($parameters.ContainsKey('SortOrder')) { $graphRequest.Variables.sort_order = $parameters.SortOrder }
     } else { $graphRequest.Variables.id = $parameters.ID }
 
     return $graphRequest
@@ -295,7 +308,22 @@ function _buildSuiteSiteTreeQuery {
     $siteTreeField = [Query]::New('site_tree')
 
     if ($parameters['Fields'] -contains 'folders') { $siteTreeField.AddField((_buildObjectQuery -name 'folders' -objectType 'Folder')) | Out-Null }
-    if ($parameters['Fields'] -contains 'sites') { $siteTreeField.AddField((_buildObjectQuery -name 'sites' -objectType 'Site')) | Out-Null }
+
+    if ($parameters['Fields'] -contains 'sites') {
+        $scanConfigurationsField = [Query]::New('scan_configurations')
+        $scanConfigurationsField.AddField('id') | Out-Null
+
+        $sitesField = [Query]::New('sites')
+        $sitesField.AddField('id') | Out-Null
+        $sitesField.AddField('name') | Out-Null
+        $sitesField.AddField('parent_id') | Out-Null
+        $sitesField.AddField((_buildObjectQuery -name 'scope' -objectType 'Scope')) | Out-Null
+        $sitesField.AddField($scanConfigurationsField) | Out-Null
+        $sitesField.AddField((_buildObjectQuery -name 'application_logins' -objectType 'ApplicationLogin')) | Out-Null
+        $sitesField.AddField('ephemeral') | Out-Null
+        $sitesField.AddField((_buildObjectQuery -name 'email_recipients' -objectType 'EmailRecipient')) | Out-Null
+        $siteTreeField.AddField($sitesField) | Out-Null
+    }
 
     $siteTreeQuery = [Query]::New($operationName)
 
@@ -461,7 +489,6 @@ function _buildObjectQuery {
 
         ScheduleItem {
             $query.AddField('id') | Out-Null
-            $query.AddField('site') | Out-Null
         }
 
         Scope {

@@ -29,7 +29,7 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should add <FieldName> query field" -TestCases @(
+        It "should add <FieldName> selection field" -TestCases @(
             @{ FieldName = "id" }
             @{ FieldName = "machine_id" }
             @{ FieldName = "current_scan_count" }
@@ -51,7 +51,7 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should add <FieldName> sub query field" -TestCases @(
+        It "should add <FieldName> sub selection field" -TestCases @(
             @{ FieldName = "error"; Query = "error { code error }" }
         ) {
             # arrange

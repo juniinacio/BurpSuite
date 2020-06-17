@@ -12,15 +12,15 @@ Gets a schedule item.
 
 ## SYNTAX
 
-### Specific (Default)
+### List (Default)
 ```
-Get-BurpSuiteScheduleItem -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScheduleItem [-SortBy <String>] [-SortOrder <String>] [-Fields <String[]>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
-### List
+### Specific
 ```
-Get-BurpSuiteScheduleItem -SortBy <String> -SortOrder <String> [-Fields <String[]>] [-WhatIf] [-Confirm]
- [<CommonParameters>]
+Get-BurpSuiteScheduleItem -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -91,7 +91,7 @@ Type: String
 Parameter Sets: List
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
@@ -106,7 +106,7 @@ Type: String
 Parameter Sets: List
 Aliases:
 
-Required: True
+Required: False
 Position: Named
 Default value: None
 Accept pipeline input: False
