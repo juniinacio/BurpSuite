@@ -63,3 +63,27 @@ function _buildUpdateScanConfigurationQuery {
 
     return $graphRequest
 }
+
+function _buildDeleteScanConfigurationQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'DeleteScanConfiguration'
+
+    $deleteScanConfigurationField = [Query]::New('delete_scan_configuration')
+    $deleteScanConfigurationField.AddArgument('input', '$input') | Out-Null
+    $deleteScanConfigurationField.AddField('id') | Out-Null
+
+    $deleteScanConfigurationQuery = [Query]::New($operationName)
+    $deleteScanConfigurationQuery.AddArgument('$input', 'DeleteScanConfigurationInput!') | Out-Null
+    $deleteScanConfigurationQuery.AddField($deleteScanConfigurationField) | Out-Null
+
+    $query = 'mutation {0}' -f $deleteScanConfigurationQuery
+
+    $variables = @{input=@{}}
+
+    $variables.input.id = $parameters.Id
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
