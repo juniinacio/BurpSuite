@@ -1,8 +1,9 @@
 function Remove-BurpSuiteScanConfiguration {
     [CmdletBinding(SupportsShouldProcess = $true,
-        ConfirmImpact = 'Low')]
+        ConfirmImpact = 'High')]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true,
+        ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Id

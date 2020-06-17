@@ -1,21 +1,22 @@
 function Update-BurpSuiteScanConfiguration {
     [CmdletBinding(DefaultParameterSetName = 'UpdateName',
         SupportsShouldProcess = $true,
-        ConfirmImpact = 'Low')]
+        ConfirmImpact = 'Medium')]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Id,
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'UpdateName')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'AllFields')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'UpdateName')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'AllFields')]
         [ValidateNotNullOrEmpty()]
         [string]
         $Name,
 
-        [Parameter(Mandatory = $true, ParameterSetName = 'UpdateSettings')]
-        [Parameter(Mandatory = $true, ParameterSetName = 'AllFields')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'UpdateSettings')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'AllFields')]
         [ValidateScript( { Test-Path -Path $_ -PathType Leaf } )]
         [string]
         $FilePath

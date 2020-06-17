@@ -13,7 +13,7 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Remove-BurpSuiteScanConfiguration -Id 1
+            Remove-BurpSuiteScanConfiguration -Id 1 -Confirm:$false
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {

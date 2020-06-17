@@ -8,7 +8,7 @@ schema: 2.0.0
 # Remove-BurpSuiteScanConfiguration
 
 ## SYNOPSIS
-{{ Fill in the Synopsis }}
+Removes scan configurations.
 
 ## SYNTAX
 
@@ -17,16 +17,16 @@ Remove-BurpSuiteScanConfiguration [-Id] <String> [-WhatIf] [-Confirm] [<CommonPa
 ```
 
 ## DESCRIPTION
-{{ Fill in the Description }}
+Removes scan configurations.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> {{ Add example code here }}
+PS C:\> Remove-BurpSuiteScanConfiguration -Id fe31725d-1ced-44e0-9fb0-6712cf23a3cd
 ```
 
-{{ Add example description here }}
+This example shows how to remove a scan configuration.
 
 ## PARAMETERS
 
@@ -46,7 +46,7 @@ Accept wildcard characters: False
 ```
 
 ### -Id
-{{ Fill Id Description }}
+Specifies the id of the scan configuration to remove.
 
 ```yaml
 Type: String
@@ -56,7 +56,7 @@ Aliases:
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

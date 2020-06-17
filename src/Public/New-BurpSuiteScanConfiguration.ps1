@@ -2,13 +2,15 @@ function New-BurpSuiteScanConfiguration {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Name,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateScript({Test-Path -Path $_ -PathType Leaf})]
+        [Parameter(Mandatory = $true,
+            ValueFromPipelineByPropertyName = $true)]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf })]
         [string]
         $FilePath
     )
