@@ -177,11 +177,11 @@ function _buildScanQuery {
 
     $scanQuery = [Query]::New($operationName)
     if ($queryType -eq 'List') {
-        $scanQuery.AddArgument('$offset', 'int') | Out-Null
-        $scanQuery.AddArgument('$limit', 'int') | Out-Null
-        $scanQuery.AddArgument('$sort_column', 'string') | Out-Null
-        $scanQuery.AddArgument('$sort_order', 'string') | Out-Null
-        $scanQuery.AddArgument('$scan_status', 'string') | Out-Null
+        $scanQuery.AddArgument('$offset', 'Int') | Out-Null
+        $scanQuery.AddArgument('$limit', 'Int') | Out-Null
+        $scanQuery.AddArgument('$sort_column', 'String') | Out-Null
+        $scanQuery.AddArgument('$sort_order', 'String') | Out-Null
+        $scanQuery.AddArgument('$scan_status', 'String') | Out-Null
     } else {
         $scanQuery.AddArgument('$id', 'ID!') | Out-Null
     }
@@ -265,8 +265,8 @@ function _buildScheduleItemQuery {
     $scheduleItemQuery = [Query]::New($operationName)
 
     if ($queryType -eq 'List') {
-        $scheduleItemQuery.AddArgument('$sort_by', 'string') | Out-Null
-        $scheduleItemQuery.AddArgument('$sort_order', 'string') | Out-Null
+        $scheduleItemQuery.AddArgument('$sort_by', 'String') | Out-Null
+        $scheduleItemQuery.AddArgument('$sort_order', 'String') | Out-Null
     } else { $scheduleItemQuery.AddArgument('$id', 'ID!') | Out-Null }
 
     $scheduleItemQuery.AddField($scheduleItemField) | Out-Null
