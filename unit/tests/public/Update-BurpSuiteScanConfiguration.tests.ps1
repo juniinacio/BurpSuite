@@ -5,10 +5,12 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        scan_configuration = [PSCustomObject]@{
-                            id = 1
-                            name = 'foo'
-                            scan_configuration_fragment_json = '{}'
+                        update_scan_configuration = [PSCustomObject]@{
+                            scan_configuration = [PSCustomObject]@{
+                                id = 1
+                                name = 'foo'
+                                scan_configuration_fragment_json = '{}'
+                            }
                         }
                     }
                 }
