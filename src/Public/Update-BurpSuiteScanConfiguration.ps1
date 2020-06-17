@@ -31,10 +31,10 @@ function Update-BurpSuiteScanConfiguration {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
                 $response
-                # $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                # if ($null -ne $data) {
-                #     $data.create_scan_configuration.scan_configuration
-                # }
+                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
+                if ($null -ne $data) {
+                    $data.update_scan_configuration.scan_configuration
+                }
             } catch {
                 throw
             }
