@@ -1,4 +1,4 @@
-# Barracuda.WAF
+# BurpSuite
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/juniinacio/BurpSuite/blob/master/LICENSE)
 [![Documentation - BurpSuite](https://img.shields.io/badge/Documentation-BurpSuite-blue.svg)](https://github.com/juniinacio/BurpSuite/blob/master/README.md)
