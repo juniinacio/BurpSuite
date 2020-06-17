@@ -13,7 +13,7 @@ Connects BurpSuite to BurpSuite Enterprise.
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -52,6 +52,21 @@ Prompts you for confirmation before running the cmdlet.
 Type: SwitchParameter
 Parameter Sets: (All)
 Aliases: cf
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PassThru
+Specifies to return the response given by the API call during connection.
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named
@@ -101,6 +116,5 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ### Output from this cmdlet (if any)
 ## NOTES
-General notes
 
 ## RELATED LINKS

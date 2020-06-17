@@ -2,7 +2,16 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteSiteTree" {
         It "should get site tree" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        site_tree = [PSCustomObject]@{
+                            folders = @()
+                            sites = @()
+                        }
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteSiteTree
@@ -19,7 +28,16 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "sites"; Query = "sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } }" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        site_tree = [PSCustomObject]@{
+                            folders = @()
+                            sites = @()
+                        }
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteSiteTree -Fields $FieldName

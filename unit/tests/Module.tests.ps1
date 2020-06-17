@@ -6,14 +6,14 @@ Describe "Module" {
             # act
 
             # assert
-            { [GraphRequest]::new('{ __schema { queryType { name } } }') } | Should -Not -Throw
+            { [BurpSuiteGraphRequest]::new('{ __schema { queryType { name } } }') } | Should -Not -Throw
         }
 
         It "should create [GraphRequest] instance" {
             # arrange
 
             # act
-            $assert = [GraphRequest]::new('{ __schema { queryType { name } } }')
+            $assert = [BurpSuiteGraphRequest]::new('{ __schema { queryType { name } } }')
 
             # assert
             $assert | Should -Not -BeNullOrEmpty

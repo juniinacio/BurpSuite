@@ -2,7 +2,17 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteAgent" {
         It "should get agents" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        agents = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteAgent
@@ -16,16 +26,24 @@ InModuleScope $env:BHProjectName {
 
         It "should get agent" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        agent = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteAgent -ID 12345
+            Get-BurpSuiteAgent -ID 1
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetAgent" `
                     -and $GraphRequest.Query -like 'query GetAgent($id:ID!) { agent(id:$id) { * } }' `
-                    -and $GraphRequest.Variables.id -eq 12345
+                    -and $GraphRequest.Variables.id -eq 1
             }
         }
 
@@ -40,7 +58,15 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "max_concurrent_scans" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        agent = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteAgent -ID 1 -Fields $FieldName
@@ -55,7 +81,17 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "error"; Query = "error { code error }" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        agents = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteAgent -Fields $FieldName

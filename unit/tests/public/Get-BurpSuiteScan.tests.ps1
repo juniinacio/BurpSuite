@@ -2,10 +2,18 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteScan" {
         It "should get scan" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteScan -ID 1
+            Get-BurpSuiteScan -Id 1
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -17,7 +25,17 @@ InModuleScope $env:BHProjectName {
 
         It "should get scans" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scans = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScan -Offset 1 -Limit 1 -SortColumn 'start' -SortOrder 'asc' -ScanStatus 'queued'
@@ -48,11 +66,20 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "jira_ticket_count" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
+
             Mock -CommandName Write-Warning
 
             # act
-            Get-BurpSuiteScan -ID 1 -Fields $FieldName
+            Get-BurpSuiteScan -Id 1 -Fields $FieldName
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -76,7 +103,18 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "issues"; Query = "issues { confidence serial_number severity novelty }" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scans = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
+
             Mock -CommandName Write-Warning
 
             # act

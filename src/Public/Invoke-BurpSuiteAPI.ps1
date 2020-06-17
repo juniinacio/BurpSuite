@@ -8,7 +8,7 @@ function Invoke-BurpSuiteAPI {
             ParameterSetName = 'Default')]
         [ValidateNotNullOrEmpty()]
         [Alias('Request')]
-        [GraphRequest]
+        [object]
         $GraphRequest,
 
         [Parameter(Mandatory = $true,
@@ -31,13 +31,15 @@ function Invoke-BurpSuiteAPI {
 
     process {
         if ($PSCmdlet.ParameterSetName -eq 'FreeForm') {
-            if ($PSBoundParameters.ContainsKey('Variables')) { $graphRequest = [GraphRequest]::new($Query, $Variables) }
-            else { $graphRequest = [GraphRequest]::new($Query) }
+            $GraphRequest = [GraphRequest]::new($Query)
+            if ($PSBoundParameters.ContainsKey('Variables')) {
+                $GraphRequest.Variables = $Variables
+            }
         }
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $GraphRequest.Query)) {
             try {
-                $response = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -GraphRequest $GraphRequest
                 $response
             } catch {
                 throw

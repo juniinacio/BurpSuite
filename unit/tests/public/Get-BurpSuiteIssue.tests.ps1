@@ -2,10 +2,16 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteIssue" {
         It "should get issue" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        serial_number = 314276827364273645
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645
+            Get-BurpSuiteIssue -ScanId 1 -SerialNumber 314276827364273645
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -30,10 +36,16 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "evidence" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        serial_number = 314276827364273645
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645 -Fields $FieldName
+            Get-BurpSuiteIssue -ScanId 1 -SerialNumber 314276827364273645 -Fields $FieldName
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -45,10 +57,16 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "tickets"; Query = "tickets { jira_ticket { id external_key issue_type summary project status priority } link_url link_id }" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        serial_number = 314276827364273645
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645 -Fields $FieldName
+            Get-BurpSuiteIssue -ScanId 1 -SerialNumber 314276827364273645 -Fields $FieldName
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {

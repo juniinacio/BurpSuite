@@ -2,7 +2,15 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteScheduleItem" {
         It "should get schedule item" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        schedule_item = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScheduleItem -ID 1
@@ -21,7 +29,15 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "scheduled_run_time" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        schedule_item = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScheduleItem -ID 1 -Fields $FieldName
@@ -38,7 +54,15 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "scan_configurations"; Query = "scan_configurations { id name }" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        schedule_item = [PSCustomObject]@{
+                            id = 1
+                        }
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScheduleItem -ID 1 -Fields $FieldName
@@ -51,7 +75,17 @@ InModuleScope $env:BHProjectName {
 
         It "should get schedule items" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        schedule_items = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScheduleItem -SortBy 'site' -SortOrder 'asc'

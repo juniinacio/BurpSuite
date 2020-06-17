@@ -5,7 +5,7 @@ function Get-BurpSuiteIssue {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $ID,
+        $ScanId,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -29,7 +29,10 @@ function Get-BurpSuiteIssue {
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
-                $response
+                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
+                if ($null -ne $data) {
+                    $data.issue
+                }
             } catch {
                 throw
             }

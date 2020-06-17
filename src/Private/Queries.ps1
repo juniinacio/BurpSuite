@@ -24,34 +24,33 @@ function _buildIntrospectionQuery {
 }
 
 function _buildAgentQuery {
-    param ([hashtable] $parameters)
+    param ([hashtable] $parameters, [string]$queryType)
 
     if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'name', 'state', 'enabled' }
 
     $subFields = 'error'
 
-    $operationName = 'GetAgents'
-    if ($parameters.ContainsKey('ID')) { $operationName = 'GetAgent' }
+    if ($queryType -eq 'List') { $operationName = 'GetAgents' } else { $operationName = 'GetAgent' }
 
     $agentField = [Query]::New('agents')
-    if ($parameters.ContainsKey('ID')) { $agentField = [Query]::New('agent') }
+    if ($parameters.ContainsKey('Id')) { $agentField = [Query]::New('agent') }
 
     $parameters['Fields'] | Where-Object { $_ -notin $subFields } | ForEach-Object { $agentField.AddField($_) | Out-Null }
 
     if ($parameters['Fields'] -contains 'error') { $agentField.AddField((_buildObjectQuery -name 'error' -objectType 'AgentError')) | Out-Null }
 
-    if ($parameters.ContainsKey('ID')) { $agentField.AddArgument('id', '$id') | Out-Null }
+    if ($queryType -eq 'Specific') { $agentField.AddArgument('id', '$id') | Out-Null }
 
     $agentQuery = [Query]::New($operationName)
     $agentQuery.AddField($agentField) | Out-Null
 
-    if ($parameters.ContainsKey('ID')) { $agentQuery.AddArgument('$id', 'ID!') | Out-Null }
+    if ($parameters.ContainsKey('Id')) { $agentQuery.AddArgument('$id', 'ID!') | Out-Null }
 
     $query = 'query {0}' -f $agentQuery
 
     $graphRequest = [GraphRequest]::new($query, $operationName)
 
-    if ($parameters.ContainsKey('ID')) { $graphRequest.Variables.id = $parameters.ID }
+    if ($queryType -eq 'Specific') { $graphRequest.Variables.id = $parameters.Id }
 
     return $graphRequest
 }
@@ -85,7 +84,7 @@ function _buildIssueQuery {
     $query = 'query {0}' -f $issueQuery
 
     $graphRequest = [GraphRequest]::new($query, $operationName)
-    $graphRequest.Variables.scanId = $parameters.ID
+    $graphRequest.Variables.scanId = $parameters.ScanId
     $graphRequest.Variables.serialNumber = $parameters.SerialNumber
 
     return $graphRequest
@@ -141,7 +140,7 @@ function _buildScanQuery {
     if (-not ($parameters.ContainsKey('Fields'))) {
         # $parameters['Fields'] = 'id', 'status', 'agent', 'issue_types', 'site_application_logins',
         # 'audit_items', 'scan_configurations'
-        $parameters['Fields'] = 'id', 'status', 'issue_types'
+        $parameters['Fields'] = 'id', 'status', 'issue_counts'
     }
 
     $subFields = 'schedule_item', 'agent', 'scan_metrics', 'scan_configurations', 'scan_delta', 'issue_types', 'issue_counts', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues'
@@ -199,7 +198,7 @@ function _buildScanQuery {
         if ($parameters.ContainsKey('SortColumn')) { $graphRequest.Variables.sort_column = $parameters.SortColumn }
         if ($parameters.ContainsKey('SortOrder')) { $graphRequest.Variables.sort_order = $parameters.SortOrder }
         if ($parameters.ContainsKey('ScanStatus')) { $graphRequest.Variables.scan_status = @($parameters.ScanStatus) }
-    } else { $graphRequest.Variables.id = $parameters.ID }
+    } else { $graphRequest.Variables.id = $parameters.Id }
 
     return $graphRequest
 }
@@ -233,7 +232,7 @@ function _buildScanReportQuery {
 
     $graphRequest = [GraphRequest]::new($query, $operationName)
 
-    $graphRequest.Variables.scan_id = $parameters.ID
+    $graphRequest.Variables.scan_id = $parameters.ScanId
 
     if ($parameters.ContainsKey('TimezoneOffset')) { $graphRequest.Variables.timezone_offset = $parameters.TimezoneOffset }
     if ($parameters.ContainsKey('ReportType')) { $graphRequest.Variables.report_type = $parameters.ReportType }
@@ -291,7 +290,7 @@ function _buildScheduleItemQuery {
     if ($queryType -eq 'List') {
         if ($parameters.ContainsKey('SortBy')) { $graphRequest.Variables.sort_by = $parameters.SortBy }
         if ($parameters.ContainsKey('SortOrder')) { $graphRequest.Variables.sort_order = $parameters.SortOrder }
-    } else { $graphRequest.Variables.id = $parameters.ID }
+    } else { $graphRequest.Variables.id = $parameters.Id }
 
     return $graphRequest
 }

@@ -2,10 +2,18 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteScanReport" {
         It "should get scan report" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_report = [PSCustomObject]@{
+                            report_html = "<html></html>"
+                        }
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteScanReport -ID 1 -TimezoneOffset 2 -ReportType 'detailed' -Severities 'info', 'low', 'medium', 'high'
+            Get-BurpSuiteScanReport -ScanId 1 -TimezoneOffset 2 -ReportType 'detailed' -Severities 'info', 'low', 'medium', 'high'
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -20,10 +28,18 @@ InModuleScope $env:BHProjectName {
 
         It "should get scan report including false positives" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_report = [PSCustomObject]@{
+                            report_html = "<html></html>"
+                        }
+                    }
+                }
+            }
 
             # act
-            Get-BurpSuiteScanReport -ID 1 -TimezoneOffset 2 -ReportType 'detailed' -IncludeFalsePositives:$false -Severities 'info', 'low', 'medium', 'high'
+            Get-BurpSuiteScanReport -ScanId 1 -TimezoneOffset 2 -ReportType 'detailed' -IncludeFalsePositives:$false -Severities 'info', 'low', 'medium', 'high'
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {

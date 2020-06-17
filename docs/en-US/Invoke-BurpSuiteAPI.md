@@ -14,7 +14,7 @@ Invokes BurpSuite GraphQL API.
 
 ### Default (Default)
 ```
-Invoke-BurpSuiteAPI -GraphRequest <GraphRequest> [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-BurpSuiteAPI -GraphRequest <Object> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### FreeForm
@@ -29,7 +29,7 @@ Invokes BurpSuite GraphQL API.
 
 ### Example 1
 ```powershell
-PS C:\> $graphRequest = [GraphRequest]::new('query GetAgents { agents { id name state enabled } }')
+PS C:\> $graphRequest = [BurpSuiteGraphRequest]::new('query GetAgents { agents { id name state enabled } }')
 PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
 ```
 
@@ -37,7 +37,7 @@ This example shows how to use Invoke-BurpSuiteAPI to query BurpSuite agents.
 
 ### Example 2
 ```powershell
-PS C:\> $graphRequest = [GraphRequest]::new('query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }')
+PS C:\> $graphRequest = [BurpSuiteGraphRequest]::new('query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }')
 PS C:\> $graphRequest.Variables.id = 1
 PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
 ```
@@ -46,7 +46,7 @@ This example shows how to use Invoke-BurpSuiteAPI to query a specific BurpSuite 
 
 ### Example 3
 ```powershell
-PS C:\> $graphRequest = [GraphRequest]::new()
+PS C:\> $graphRequest = [BurpSuiteGraphRequest]::new()
 PS C:\> $graphRequest.Query = 'query GetScanConfigurations { scan_configurations { id name } }'
 PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
 ```
@@ -78,10 +78,10 @@ Accept wildcard characters: False
 ```
 
 ### -GraphRequest
-Specifies the request to send, use the `[GraphRequest]` type accelerator to craft your desired query.
+Specifies the request to send, use the `[BurpSuiteGraphRequest]` type accelerator to craft your desired query.
 
 ```yaml
-Type: GraphRequest
+Type: Object
 Parameter Sets: Default
 Aliases: Request
 
@@ -93,7 +93,7 @@ Accept wildcard characters: False
 ```
 
 ### -Query
-{{ Fill Query Description }}
+Specifies the query you wish to execute.
 
 ```yaml
 Type: String
@@ -108,7 +108,7 @@ Accept wildcard characters: False
 ```
 
 ### -Variables
-{{ Fill Variables Description }}
+Specifies any variables that you query needs.
 
 ```yaml
 Type: Hashtable

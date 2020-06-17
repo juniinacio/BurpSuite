@@ -7,7 +7,7 @@ function Get-BurpSuiteScheduleItem {
             ParameterSetName = 'Specific')]
         [ValidateNotNullOrEmpty()]
         [string]
-        $ID,
+        $Id,
 
         [Parameter(Mandatory = $false,
             ParameterSetName = 'List')]
@@ -37,7 +37,14 @@ function Get-BurpSuiteScheduleItem {
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
-                $response
+                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
+                if ($null -ne $data) {
+                    if ($PSCmdlet.ParameterSetName -eq 'List') {
+                        $data.schedule_items
+                    } else {
+                        $data.schedule_item
+                    }
+                }
             } catch {
                 throw
             }

@@ -13,7 +13,7 @@ Gets BurpSuite issues.
 ## SYNTAX
 
 ```
-Get-BurpSuiteIssue [-ID] <String> [-SerialNumber] <String> [[-Fields] <String[]>] [-WhatIf] [-Confirm]
+Get-BurpSuiteIssue [-ScanId] <String> [-SerialNumber] <String> [[-Fields] <String[]>] [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -69,8 +69,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ID
-Specifies the ID for the issue to retrieve.
+### -ScanId
+Specifies the scan id for the issue.
 
 ```yaml
 Type: String

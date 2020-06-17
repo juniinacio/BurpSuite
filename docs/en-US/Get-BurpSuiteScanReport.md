@@ -13,7 +13,7 @@ Gets a scan report.
 ## SYNTAX
 
 ```
-Get-BurpSuiteScanReport [-ID] <String> [[-TimezoneOffset] <Int32>] [[-ReportType] <String>]
+Get-BurpSuiteScanReport [-ScanId] <String> [[-TimezoneOffset] <Int32>] [[-ReportType] <String>]
  [-IncludeFalsePositives] [[-Severities] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
@@ -46,21 +46,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ID
-Specifies the report ID to retrieve.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -IncludeFalsePositives
 Specifies if the report should contain false positives.
 
@@ -87,6 +72,21 @@ Accepted values: detailed, summary
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ScanId
+Specifies the scan id to download the report.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

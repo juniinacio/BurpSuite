@@ -2,7 +2,17 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteScanConfiguration" {
         It "should get scan configurations" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_configurations = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScanConfiguration
@@ -18,7 +28,17 @@ InModuleScope $env:BHProjectName {
             # arrange
             $fields = 'id', 'name', 'scan_configuration_fragment_json', 'built_in', 'last_modified_time'
 
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_configurations = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScanConfiguration -Fields $fields
@@ -34,7 +54,17 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "last_modified_by"; Query = "last_modified_by { username }" }
         ) {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_configurations = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScanConfiguration -Fields $FieldName
