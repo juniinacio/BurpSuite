@@ -1,23 +1,15 @@
 Set-StrictMode -Version Latest
 
-# if ($null -eq $env:TEAM_CIBUILD) {
-#    Get-Module Barracuda.WAF | Remove-Module -Force
-#    Import-Module $PSScriptRoot\..\..\dist\Barracuda.WAF.psd1 -Force
-# }
-
 ##############################################################
-#     THESE TEST ARE DESTRUCTIVE. USE A CLEAN WAF.           #
+#     THESE TEST ARE DESTRUCTIVE. USE A CLEAN BURPSUITE.     #
 ##############################################################
 # Before running these tests you must set the following      #
 # Environment variables.                                     #
-# $env:BWAF_VERSION = 3, 3.1                                 #
-#                    depending on your Barracuda WAF         #
-# $env:BWAF_URI = Url to your Barracuda WAF                  #
-#             collection                                     #
-# $env:BWAF_PASSWORD = password for your Barracuda WAF       #
-# $env:EMAIL = Email of user to activate the WAF             #
+# $env:BURPSUITE_APIKEY = BurpSuite Enterprise API key       #
+# $env:BURPSUITE_APIVERSION = v1                             #
+# $env:BURPSUITE_URL = Url to BurpSuite Enterprise           #
 ##############################################################
-#     THESE TEST ARE DESTRUCTIVE. USE A CLEAN WAF.           #
+#     THESE TEST ARE DESTRUCTIVE. USE A CLEAN BURPSUITE.     #
 ##############################################################
 
 InModuleScope BurpSuite {

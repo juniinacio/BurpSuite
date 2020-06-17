@@ -6,12 +6,12 @@ function Connect-BurpSuite {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $APIKey,
+        $Uri,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Uri,
+        $APIKey,
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]

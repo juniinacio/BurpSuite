@@ -5,45 +5,30 @@ online version:
 schema: 2.0.0
 ---
 
-# Connect-BurpSuite
+# Remove-BurpSuiteScanConfiguration
 
 ## SYNOPSIS
-Connects BurpSuite to BurpSuite Enterprise.
+Removes scan configurations.
 
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-Uri] <String> [-APIKey] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Remove-BurpSuiteScanConfiguration [-Id] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Connects BurpSuite to BurpSuite Enterprise.
+Removes scan configurations.
 
 ## EXAMPLES
 
-### EXAMPLE 1
-```
-PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+### Example 1
+```powershell
+PS C:\> Remove-BurpSuiteScanConfiguration -Id fe31725d-1ced-44e0-9fb0-6712cf23a3cd
 ```
 
-This example shows how to connect the module with BurpSuite Enterprise.
+This example shows how to remove a scan configuration.
 
 ## PARAMETERS
-
-### -APIKey
-Specifies the API key to use for accessing BurpSuite Enterprise.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
@@ -60,23 +45,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassThru
-Specifies to return the response given by the API call during connection.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Uri
-Specifies the URL to BurpSuite Enterprise.
+### -Id
+Specifies the id of the scan configuration to remove.
 
 ```yaml
 Type: String
@@ -86,7 +56,7 @@ Aliases:
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -111,10 +81,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Inputs to this cmdlet (if any)
+### None
+
 ## OUTPUTS
 
-### Output from this cmdlet (if any)
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

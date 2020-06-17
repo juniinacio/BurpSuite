@@ -5,45 +5,30 @@ online version:
 schema: 2.0.0
 ---
 
-# Connect-BurpSuite
+# New-BurpSuiteScanConfiguration
 
 ## SYNOPSIS
-Connects BurpSuite to BurpSuite Enterprise.
+Creates scan configurations.
 
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-Uri] <String> [-APIKey] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-BurpSuiteScanConfiguration [-Name] <String> [-FilePath] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Connects BurpSuite to BurpSuite Enterprise.
+Creates scan configurations.
 
 ## EXAMPLES
 
-### EXAMPLE 1
-```
-PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+### Example 1
+```powershell
+PS C:\>  New-BurpSuiteScanConfiguration -Name 'Audit checks - all except JavaScript analysis' -FilePath C:\BurpSuite\scan_configuration.json
 ```
 
-This example shows how to connect the module with BurpSuite Enterprise.
+This example show how to create a new scan configuration.
 
 ## PARAMETERS
-
-### -APIKey
-Specifies the API key to use for accessing BurpSuite Enterprise.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
@@ -60,23 +45,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassThru
-Specifies to return the response given by the API call during connection.
+### -FilePath
+Specifies the path to the scan configuration fragment json file.
 
 ```yaml
-Type: SwitchParameter
+Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: Named
+Required: True
+Position: 1
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Uri
-Specifies the URL to BurpSuite Enterprise.
+### -Name
+Specifies the name for the new scan configuration.
 
 ```yaml
 Type: String
@@ -86,7 +71,7 @@ Aliases:
 Required: True
 Position: 0
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -111,10 +96,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Inputs to this cmdlet (if any)
+### None
+
 ## OUTPUTS
 
-### Output from this cmdlet (if any)
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
