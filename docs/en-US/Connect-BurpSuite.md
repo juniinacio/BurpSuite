@@ -13,7 +13,7 @@ Connects BurpSuite to BurpSuite Enterprise.
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Connect-BurpSuite [-Uri] <String> [-APIKey] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -39,7 +39,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -84,7 +84,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
