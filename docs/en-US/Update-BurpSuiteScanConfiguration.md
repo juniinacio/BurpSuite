@@ -14,18 +14,18 @@ Updates scan configurations.
 
 ### UpdateName (Default)
 ```
-Update-BurpSuiteScanConfiguration [-Id <String>] -Name <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-BurpSuiteScanConfiguration -Id <String> -Name <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### AllFields
 ```
-Update-BurpSuiteScanConfiguration [-Id <String>] -Name <String> -FilePath <String> [-WhatIf] [-Confirm]
+Update-BurpSuiteScanConfiguration -Id <String> -Name <String> -FilePath <String> [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
 ### UpdateSettings
 ```
-Update-BurpSuiteScanConfiguration [-Id <String>] -FilePath <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-BurpSuiteScanConfiguration -Id <String> -FilePath <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -87,7 +87,7 @@ Type: String
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: Named
 Default value: None
 Accept pipeline input: False
