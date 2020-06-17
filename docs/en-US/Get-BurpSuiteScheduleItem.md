@@ -5,45 +5,37 @@ online version:
 schema: 2.0.0
 ---
 
-# Connect-BurpSuite
+# Get-BurpSuiteScheduleItem
 
 ## SYNOPSIS
-Connects BurpSuite to BurpSuite Enterprise.
+Gets a schedule item.
 
 ## SYNTAX
 
+### List (Default)
 ```
-Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScheduleItem [-SortBy <String>] [-SortOrder <String>] [-Fields <String[]>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
+```
+
+### Specific
+```
+Get-BurpSuiteScheduleItem -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Connects BurpSuite to BurpSuite Enterprise.
+Gets a schedule item.
 
 ## EXAMPLES
 
-### EXAMPLE 1
-```
-PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+### Example 1
+```powershell
+PS C:\> Get-BurpSuiteScheduleItem -ID 1
 ```
 
-This example shows how to connect the module with BurpSuite Enterprise.
+This example shows how to retrieve the schedule with ID 1.
 
 ## PARAMETERS
-
-### -APIKey
-Specifies the API key to use for accessing BurpSuite Enterprise.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
@@ -60,12 +52,43 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassThru
-Specifies to return the response given by the API call during connection.
+### -Fields
+Specifies the report fields to retrieve.
 
 ```yaml
-Type: SwitchParameter
+Type: String[]
 Parameter Sets: (All)
+Aliases:
+Accepted values: id, site, schedule, scan_configurations, has_run_more_than_once, scheduled_run_time
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ID
+Specifies the report ID to retrieve.
+
+```yaml
+Type: String
+Parameter Sets: Specific
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SortBy
+Specifies the reports sorting column (the API isn't clear about this field)?
+
+```yaml
+Type: String
+Parameter Sets: List
 Aliases:
 
 Required: False
@@ -75,16 +98,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Uri
-Specifies the URL to BurpSuite Enterprise.
+### -SortOrder
+Specifies the reports sorting order (the API isn't clear about this field)?
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: List
 Aliases:
 
-Required: True
-Position: 1
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -111,10 +134,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Inputs to this cmdlet (if any)
+### None
+
 ## OUTPUTS
 
-### Output from this cmdlet (if any)
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

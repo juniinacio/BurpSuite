@@ -2,7 +2,17 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteUnauthorizedAgent" {
         It "should get unauthorized agents" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        unauthorized_agents = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteUnauthorizedAgent
@@ -14,11 +24,21 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should set unauthorized agent fields" {
+        It "should set unauthorized agent selection fields" {
             # arrange
             $fields = 'machine_id', 'ip'
 
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        unauthorized_agents = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteUnauthorizedAgent -Fields $fields

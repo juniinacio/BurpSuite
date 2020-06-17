@@ -247,7 +247,7 @@ InModuleScope BurpSuite {
                 _registerAccelerators
 
                 # assert
-                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'GraphRequest' } ) | Should -Not -BeNullOrEmpty
+                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'BurpSuiteGraphRequest' } ) | Should -Not -BeNullOrEmpty
             }
         }
 
@@ -262,7 +262,7 @@ InModuleScope BurpSuite {
                 _uregisterAccelerators
 
                 # assert
-                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'GraphRequest' } ) | Should -BeNullOrEmpty
+                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'BurpSuiteGraphRequest' } ) | Should -BeNullOrEmpty
             }
         }
 

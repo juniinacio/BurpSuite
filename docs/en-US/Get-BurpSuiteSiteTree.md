@@ -5,45 +5,30 @@ online version:
 schema: 2.0.0
 ---
 
-# Connect-BurpSuite
+# Get-BurpSuiteSiteTree
 
 ## SYNOPSIS
-Connects BurpSuite to BurpSuite Enterprise.
+{{ Fill in the Synopsis }}
 
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteSiteTree [[-Fields] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Connects BurpSuite to BurpSuite Enterprise.
+{{ Fill in the Description }}
 
 ## EXAMPLES
 
-### EXAMPLE 1
-```
-PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
 
-This example shows how to connect the module with BurpSuite Enterprise.
+{{ Add example description here }}
 
 ## PARAMETERS
-
-### -APIKey
-Specifies the API key to use for accessing BurpSuite Enterprise.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
@@ -60,31 +45,17 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassThru
-Specifies to return the response given by the API call during connection.
+### -Fields
+{{ Fill Fields Description }}
 
 ```yaml
-Type: SwitchParameter
+Type: String[]
 Parameter Sets: (All)
 Aliases:
+Accepted values: folders, sites
 
 Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Uri
-Specifies the URL to BurpSuite Enterprise.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -111,10 +82,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Inputs to this cmdlet (if any)
+### None
+
 ## OUTPUTS
 
-### Output from this cmdlet (if any)
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

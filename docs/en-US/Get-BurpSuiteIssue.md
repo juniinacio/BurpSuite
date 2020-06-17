@@ -13,8 +13,8 @@ Gets BurpSuite issues.
 ## SYNTAX
 
 ```
-Get-BurpSuiteIssue [-ID] <String> [-SerialNumber] <String> [[-Fields] <String[]>] [[-TicketFields] <String[]>]
- [[-JiraTicketFields] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteIssue [-ScanId] <String> [-SerialNumber] <String> [[-Fields] <String[]>] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -35,13 +35,6 @@ PS C:\> Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645 -Fields 'confi
 ```
 
 This example shows how to retrieve an issue with certain fields.
-
-### Example 3
-```powershell
-PS C:\> Get-BurpSuiteIssue -ID 1 -SerialNumber 314276827364273645 -TicketFields 'link_url', 'link_id'
-```
-
-This example shows how to retrieve an issue with ticket fields.
 
 ## PARAMETERS
 
@@ -67,7 +60,7 @@ Specifies the issue fields to retrieve for the issue.
 Type: String[]
 Parameter Sets: (All)
 Aliases:
-Accepted values: confidence, display_confidence, serial_number, severity, description_html, remediation_html, type_index, path, origin, novelty, evidence
+Accepted values: confidence, display_confidence, serial_number, severity, description_html, remediation_html, type_index, path, origin, novelty, evidence, tickets
 
 Required: False
 Position: 2
@@ -76,8 +69,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ID
-Specifies the ID for the issue to retrieve.
+### -ScanId
+Specifies the scan id for the issue.
 
 ```yaml
 Type: String
@@ -86,22 +79,6 @@ Aliases:
 
 Required: True
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -JiraTicketFields
-Specifies the witch Jira ticket fields to retrieve for the issue.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-Accepted values: id, external_key, issue_type, summary, project, status, priority
-
-Required: False
-Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -117,22 +94,6 @@ Aliases:
 
 Required: True
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TicketFields
-Specifies the witch ticket fields to retrieve for the issue.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases:
-Accepted values: link_url, link_id
-
-Required: False
-Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

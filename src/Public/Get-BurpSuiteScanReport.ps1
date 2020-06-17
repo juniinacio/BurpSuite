@@ -1,4 +1,4 @@
-function Get-BurpSuiteIssue {
+function Get-BurpSuiteScanReport {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
@@ -7,31 +7,38 @@ function Get-BurpSuiteIssue {
         [string]
         $ScanId,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        [string]
-        $SerialNumber,
+        [int]
+        $TimezoneOffset,
 
         [Parameter(Mandatory = $false)]
-        [ValidateSet('confidence', 'display_confidence', 'serial_number', 'severity', 'description_html',
-            'remediation_html', 'type_index', 'path', 'origin', 'novelty', 'evidence', 'tickets')]
+        [ValidateSet('detailed', 'summary')]
+        [string]
+        $ReportType,
+
+        [Parameter(Mandatory = $false)]
+        [switch]
+        $IncludeFalsePositives,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('info', 'low', 'medium', 'high')]
         [string[]]
-        $Fields
+        $Severities
     )
 
     begin {
     }
 
     process {
-
-        $graphRequest = _buildIssueQuery -Parameters $PSBoundParameters
+        $graphRequest = _buildScanReportQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
-                    $data.issue
+                    $data.scan_report
                 }
             } catch {
                 throw

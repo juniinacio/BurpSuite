@@ -1,20 +1,9 @@
-function Get-BurpSuiteIssue {
+function Get-BurpSuiteSiteTree {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $ScanId,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $SerialNumber,
-
         [Parameter(Mandatory = $false)]
-        [ValidateSet('confidence', 'display_confidence', 'serial_number', 'severity', 'description_html',
-            'remediation_html', 'type_index', 'path', 'origin', 'novelty', 'evidence', 'tickets')]
+        [ValidateSet('folders', 'sites')]
         [string[]]
         $Fields
     )
@@ -24,14 +13,14 @@ function Get-BurpSuiteIssue {
 
     process {
 
-        $graphRequest = _buildIssueQuery -Parameters $PSBoundParameters
+        $graphRequest = _buildSuiteSiteTreeQuery -Parameters $PSBoundParameters
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 $response = _callAPI -GraphRequest $graphRequest
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
-                    $data.issue
+                    $data.site_tree
                 }
             } catch {
                 throw

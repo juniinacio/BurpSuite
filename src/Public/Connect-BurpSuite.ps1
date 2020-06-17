@@ -11,7 +11,12 @@ function Connect-BurpSuite {
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Uri
+        $Uri,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [switch]
+        $PassThru
     )
 
     begin {
@@ -27,7 +32,11 @@ function Connect-BurpSuite {
         if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
             try {
                 _createSession -APIUrl $graphUrl -APIKey $APIKey
-                $null = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -GraphRequest $graphRequest
+                if ($PassThru.IsPresent) {
+                    $data = _getObjectProperty -InputObject $response -PropertyName 'data'
+                    $data
+                }
             } catch {
                 _removeSession
                 $e = [Exception]::new("Cannot access BurpSuite API using key $APIKey and Uri $Uri")

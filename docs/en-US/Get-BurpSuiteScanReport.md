@@ -5,45 +5,31 @@ online version:
 schema: 2.0.0
 ---
 
-# Connect-BurpSuite
+# Get-BurpSuiteScanReport
 
 ## SYNOPSIS
-Connects BurpSuite to BurpSuite Enterprise.
+Gets a scan report.
 
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-APIKey] <String> [-Uri] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScanReport [-ScanId] <String> [[-TimezoneOffset] <Int32>] [[-ReportType] <String>]
+ [-IncludeFalsePositives] [[-Severities] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Connects BurpSuite to BurpSuite Enterprise.
+Gets a scan report.
 
 ## EXAMPLES
 
-### EXAMPLE 1
-```
-PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+### Example 1
+```powershell
+PS C:\> Get-BurpSuiteScanReport -ID 1
 ```
 
-This example shows how to connect the module with BurpSuite Enterprise.
+This example shows how to retrieve the scan report with ID 1.
 
 ## PARAMETERS
-
-### -APIKey
-Specifies the API key to use for accessing BurpSuite Enterprise.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Confirm
 Prompts you for confirmation before running the cmdlet.
@@ -60,8 +46,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PassThru
-Specifies to return the response given by the API call during connection.
+### -IncludeFalsePositives
+Specifies if the report should contain false positives.
 
 ```yaml
 Type: SwitchParameter
@@ -75,8 +61,24 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Uri
-Specifies the URL to BurpSuite Enterprise.
+### -ReportType
+Specifies the type of report you wish to fetch.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: detailed, summary
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ScanId
+Specifies the scan id to download the report.
 
 ```yaml
 Type: String
@@ -84,6 +86,37 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Severities
+Specifies the types of severities to include.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: info, low, medium, high
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TimezoneOffset
+Specifies the time zone offset.
+
+```yaml
+Type: Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
 Position: 1
 Default value: None
 Accept pipeline input: False
@@ -111,10 +144,11 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### Inputs to this cmdlet (if any)
+### None
+
 ## OUTPUTS
 
-### Output from this cmdlet (if any)
+### System.Object
 ## NOTES
 
 ## RELATED LINKS

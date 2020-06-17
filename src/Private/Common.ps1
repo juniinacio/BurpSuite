@@ -83,7 +83,7 @@ function _uregisterAccelerators {
     )
 
     [ReflectionCache]::TypeAccelerators::Remove(
-        'GraphRequest')
+        'BurpSuiteGraphRequest')
 }
 
 function _preProcessRequest {

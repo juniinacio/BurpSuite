@@ -2,7 +2,17 @@ InModuleScope $env:BHProjectName {
     Describe "Get-BurpSuiteScanConfiguration" {
         It "should get scan configurations" {
             # arrange
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_configurations = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScanConfiguration
@@ -14,11 +24,21 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should set scan configurations field properties" {
+        It "should set scan configurations selection fields" {
             # arrange
-            $fields = 'id', 'name', 'scan_configuration_fragment_json', 'built_in', 'last_modified_time', 'last_modified_by'
+            $fields = 'id', 'name', 'scan_configuration_fragment_json', 'built_in', 'last_modified_time'
 
-            Mock -CommandName _callAPI
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_configurations = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
 
             # act
             Get-BurpSuiteScanConfiguration -Fields $fields
@@ -27,6 +47,31 @@ InModuleScope $env:BHProjectName {
             Should -Invoke _callAPI -ParameterFilter {
                 $GraphRequest.OperationName -eq "GetScanConfigurations" `
                     -and $GraphRequest.Query -eq "query GetScanConfigurations { scan_configurations { $($fields -join ' ') } }"
+            }
+        }
+
+        It "should add <FieldName> sub selection field" -TestCases @(
+            @{ FieldName = "last_modified_by"; Query = "last_modified_by { username }" }
+        ) {
+            # arrange
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scan_configurations = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
+
+            # act
+            Get-BurpSuiteScanConfiguration -Fields $FieldName
+
+            # assert
+            Should -Invoke _callAPI -ParameterFilter {
+                $GraphRequest.Query -like "query GetScanConfigurations { scan_configurations { *$Query* } }"
             }
         }
     }
