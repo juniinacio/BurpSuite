@@ -1,5 +1,6 @@
 function Get-BurpSuiteScanReport {
-    [CmdletBinding(SupportsShouldProcess = $true,
+    [CmdletBinding(DefaultParameterSetName = 'Download',
+        SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
         [Parameter(Mandatory = $true)]
@@ -24,7 +25,13 @@ function Get-BurpSuiteScanReport {
         [Parameter(Mandatory = $false)]
         [ValidateSet('info', 'low', 'medium', 'high')]
         [string[]]
-        $Severities
+        $Severities,
+
+        [Parameter(Mandatory = $true,
+            ParameterSetName = 'DownloadToDisk')]
+        [ValidateScript( { Test-Path -Path $_ -PathType Leaf -IsValid })]
+        [string]
+        $OutFile
     )
 
     begin {
@@ -38,7 +45,13 @@ function Get-BurpSuiteScanReport {
                 $response = _callAPI -GraphRequest $graphRequest
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
-                    $data.scan_report
+                    if ($PSCmdlet.ParameterSetName -eq 'Download') {
+                        $data.scan_report
+                    } else {
+                        $outFileArgs = @{}
+                        $outFileArgs.FilePath = $OutFile
+                        $data.scan_report.report_html | Out-File @outFileArgs
+                    }
                 }
             } catch {
                 throw

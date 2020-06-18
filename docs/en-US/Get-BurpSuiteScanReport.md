@@ -12,9 +12,16 @@ Gets a scan report.
 
 ## SYNTAX
 
+### Download (Default)
 ```
-Get-BurpSuiteScanReport [-ScanId] <String> [[-TimezoneOffset] <Int32>] [[-ReportType] <String>]
- [-IncludeFalsePositives] [[-Severities] <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScanReport -ScanId <String> [-TimezoneOffset <Int32>] [-ReportType <String>]
+ [-IncludeFalsePositives] [-Severities <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+```
+
+### DownloadToDisk
+```
+Get-BurpSuiteScanReport -ScanId <String> [-TimezoneOffset <Int32>] [-ReportType <String>]
+ [-IncludeFalsePositives] [-Severities <String[]>] -OutFile <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -61,6 +68,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -OutFile
+Specifies the path to save the report.
+
+```yaml
+Type: String
+Parameter Sets: DownloadToDisk
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ReportType
 Specifies the type of report you wish to fetch.
 
@@ -71,7 +93,7 @@ Aliases:
 Accepted values: detailed, summary
 
 Required: False
-Position: 2
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -86,7 +108,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -102,7 +124,7 @@ Aliases:
 Accepted values: info, low, medium, high
 
 Required: False
-Position: 3
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -117,7 +139,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
