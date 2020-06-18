@@ -87,3 +87,27 @@ function _buildDeleteScanConfigurationQuery {
 
     return $graphRequest
 }
+
+function _buildDeleteScheduleItemQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'DeleteScheduleItem'
+
+    $deleteScheduleItemField = [Query]::New('delete_schedule_item')
+    $deleteScheduleItemField.AddArgument('input', '$input') | Out-Null
+    $deleteScheduleItemField.AddField('id') | Out-Null
+
+    $deleteScheduleItemQuery = [Query]::New($operationName)
+    $deleteScheduleItemQuery.AddArgument('$input', 'DeleteScheduleItemInput!') | Out-Null
+    $deleteScheduleItemQuery.AddField($deleteScheduleItemField) | Out-Null
+
+    $query = 'mutation {0}' -f $deleteScheduleItemQuery
+
+    $variables = @{input=@{}}
+
+    $variables.input.id = $parameters.Id
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
