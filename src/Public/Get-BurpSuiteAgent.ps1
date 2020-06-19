@@ -20,13 +20,12 @@ function Get-BurpSuiteAgent {
 
     process {
 
+        $queryName = 'GetAgent'
         if ($PSCmdlet.ParameterSetName -eq 'List') {
             $queryName = 'GetAgents'
-        } else {
-            $queryName = 'GetAgent'
         }
 
-        $query = _buildAgentQuery -queryName $queryName -selectFields $PSBoundParameters['Fields'] -queryType $PSCmdlet.ParameterSetName
+        $query = _agentQuery -queryName $queryName -selectFields $PSBoundParameters['Fields'] -queryType $PSCmdlet.ParameterSetName
 
         $request = [GraphRequest]::new($query, $queryName)
 

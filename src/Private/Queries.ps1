@@ -23,30 +23,33 @@ function _buildIntrospectionQuery {
     return $graphRequest
 }
 
-function _buildAgentQuery {
+function _agentQuery {
     param ([string]$queryName, [string[]] $selectFields, [string]$queryType)
 
     if ($null -eq $selectFields) { $selectFields = 'id', 'name', 'state', 'enabled' }
 
-    $subFields = 'error'
+    $subSelectFields = 'error'
 
     if ($queryType -eq 'List') { $queryName = 'GetAgents' } else { $queryName = 'GetAgent' }
 
-    $field = [Query]::New($queryName)
+    $agentField = [Query]::New('agent')
+    if ($queryType -eq 'List') {
+        $agentField = [Query]::New('agents')
+    }
 
-    $selectFields | Where-Object { $_ -notin $subFields } | ForEach-Object { $field.AddField($_) | Out-Null }
+    $selectFields | Where-Object { $_ -notin $subSelectFields } | ForEach-Object { $agentField.AddField($_) | Out-Null }
 
-    if ($selectFields -contains 'error') { $field.AddField((_buildObjectQuery -name 'error' -objectType 'AgentError')) | Out-Null }
+    if ($selectFields -contains 'error') { $agentField.AddField((_buildObjectQuery -name 'error' -objectType 'AgentError')) | Out-Null }
 
-    if ($queryType -eq 'Specific') { $field.AddArgument('id', '$id') | Out-Null }
+    if ($queryType -eq 'Specific') { $agentField.AddArgument('id', '$id') | Out-Null }
 
-    $query = [Query]::New($queryName)
+    $agentQuery = [Query]::New($queryName)
 
-    $query.AddField($field) | Out-Null
+    $agentQuery.AddField($agentField) | Out-Null
 
-    if ($queryType -eq 'Specific') { $query.AddArgument('$id', 'ID!') | Out-Null }
+    if ($queryType -eq 'Specific') { $agentQuery.AddArgument('$id', 'ID!') | Out-Null }
 
-    $query = 'query {0}' -f $query
+    $query = 'query {0}' -f $agentQuery
 
     return $query
 }
