@@ -50,7 +50,6 @@ function _callAPI {
 
     $response = Invoke-RestMethod @params
     if ((_testObjectProperty -InputObject $response -PropertyName 'errors')) {
-        $e = _aggregateErrors -Errors $response.errors
         $exceptions = @()
         foreach ($e in $response.errors) {
             $exceptions += [Exception]::New($e.message)
