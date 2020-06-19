@@ -19,6 +19,8 @@ Describe 'Scan Configuration API' -Tag 'CD' {
         $BURPSUITE_URL = $env:BURPSUITE_URL
 
         Connect-BurpSuite -APIKey $BURPSUITE_APIKEY -Uri $BURPSUITE_URL
+
+        Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.built_in -eq $False } | Remove-BurpSuiteScanConfiguration -Confirm:$false
     }
 
     Context 'New-BurpSuiteScanConfiguration' {
@@ -38,7 +40,7 @@ Describe 'Scan Configuration API' -Tag 'CD' {
         }
 
         AfterEach {
-            Get-BurpSuiteScanConfiguration -Fields id | Where-Object { $_.name -eq $name } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.built_in -eq $False } | Remove-BurpSuiteScanConfiguration -Confirm:$false
         }
     }
 
@@ -60,7 +62,7 @@ Describe 'Scan Configuration API' -Tag 'CD' {
         }
 
         AfterEach {
-            Get-BurpSuiteScanConfiguration -Fields id, built_in | Where-Object { $_.name -eq $name } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.built_in -eq $False } | Remove-BurpSuiteScanConfiguration -Confirm:$false
         }
     }
 }
