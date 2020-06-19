@@ -182,3 +182,51 @@ function _buildDeleteScheduleItemQuery {
     return $graphRequest
 }
 
+function _buildDeleteScanQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'DeleteScan'
+
+    $deleteScanField = [Query]::New('delete_scan')
+    $deleteScanField.AddArgument('input', '$input') | Out-Null
+    $deleteScanField.AddField('id') | Out-Null
+
+    $deleteScanQuery = [Query]::New($operationName)
+    $deleteScanQuery.AddArgument('$input', 'DeleteScanInput!') | Out-Null
+    $deleteScanQuery.AddField($deleteScanField) | Out-Null
+
+    $query = 'mutation {0}' -f $deleteScanQuery
+
+    $variables = @{input = @{} }
+
+    $variables.input.id = $parameters.Id
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
+
+function _buildCancelScanQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'CancelScan'
+
+    $deleteScanField = [Query]::New('cancel_scan')
+    $deleteScanField.AddArgument('input', '$input') | Out-Null
+    $deleteScanField.AddField('id') | Out-Null
+
+    $deleteScanQuery = [Query]::New($operationName)
+    $deleteScanQuery.AddArgument('$input', 'CancelScanInput!') | Out-Null
+    $deleteScanQuery.AddField($deleteScanField) | Out-Null
+
+    $query = 'mutation {0}' -f $deleteScanQuery
+
+    $variables = @{input = @{} }
+
+    $variables.input.id = $parameters.Id
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
+
