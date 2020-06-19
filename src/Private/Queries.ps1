@@ -24,35 +24,31 @@ function _buildIntrospectionQuery {
 }
 
 function _buildAgentQuery {
-    param ([hashtable] $parameters, [string]$queryType)
+    param ([string]$queryName, [string[]] $selectFields, [string]$queryType)
 
-    if (-not ($parameters.ContainsKey('Fields'))) { $parameters['Fields'] = 'id', 'name', 'state', 'enabled' }
+    if ($null -eq $selectFields) { $selectFields = 'id', 'name', 'state', 'enabled' }
 
     $subFields = 'error'
 
-    if ($queryType -eq 'List') { $operationName = 'GetAgents' } else { $operationName = 'GetAgent' }
+    if ($queryType -eq 'List') { $queryName = 'GetAgents' } else { $queryName = 'GetAgent' }
 
-    $agentField = [Query]::New('agents')
-    if ($parameters.ContainsKey('Id')) { $agentField = [Query]::New('agent') }
+    $field = [Query]::New($queryName)
 
-    $parameters['Fields'] | Where-Object { $_ -notin $subFields } | ForEach-Object { $agentField.AddField($_) | Out-Null }
+    $selectFields | Where-Object { $_ -notin $subFields } | ForEach-Object { $field.AddField($_) | Out-Null }
 
-    if ($parameters['Fields'] -contains 'error') { $agentField.AddField((_buildObjectQuery -name 'error' -objectType 'AgentError')) | Out-Null }
+    if ($selectFields -contains 'error') { $field.AddField((_buildObjectQuery -name 'error' -objectType 'AgentError')) | Out-Null }
 
-    if ($queryType -eq 'Specific') { $agentField.AddArgument('id', '$id') | Out-Null }
+    if ($queryType -eq 'Specific') { $field.AddArgument('id', '$id') | Out-Null }
 
-    $agentQuery = [Query]::New($operationName)
-    $agentQuery.AddField($agentField) | Out-Null
+    $query = [Query]::New($queryName)
 
-    if ($parameters.ContainsKey('Id')) { $agentQuery.AddArgument('$id', 'ID!') | Out-Null }
+    $query.AddField($field) | Out-Null
 
-    $query = 'query {0}' -f $agentQuery
+    if ($queryType -eq 'Specific') { $query.AddArgument('$id', 'ID!') | Out-Null }
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $query = 'query {0}' -f $query
 
-    if ($queryType -eq 'Specific') { $graphRequest.Variables.id = $parameters.Id }
-
-    return $graphRequest
+    return $query
 }
 
 function _buildIssueQuery {

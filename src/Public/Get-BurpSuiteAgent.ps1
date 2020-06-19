@@ -20,11 +20,23 @@ function Get-BurpSuiteAgent {
 
     process {
 
-        $graphRequest = _buildAgentQuery -Parameters $PSBoundParameters -queryType $PSCmdlet.ParameterSetName
+        if ($PSCmdlet.ParameterSetName -eq 'List') {
+            $queryName = 'GetAgents'
+        } else {
+            $queryName = 'GetAgent'
+        }
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        $query = _buildAgentQuery -queryName $queryName -selectFields $PSBoundParameters['Fields'] -queryType $PSCmdlet.ParameterSetName
+
+        $request = [GraphRequest]::new($query, $queryName)
+
+        if ($PSCmdlet.ParameterSetName -eq 'Specific') {
+            $request.Variables.id = $Id
+        }
+
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -GraphRequest $request
 
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
