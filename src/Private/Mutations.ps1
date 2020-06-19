@@ -260,3 +260,34 @@ function _buildUpdateFalsePositive {
     return $graphRequest
 }
 
+function _buildUpdateAgentMaxConcurrentScansQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'UpdateAgentMaxConcurrentScans'
+
+    $agentField = [Query]::New('agent')
+    $agentField.AddField('id') | Out-Null
+    $agentField.AddField('name') | Out-Null
+    $agentField.AddField('max_concurrent_scans') | Out-Null
+    $agentField.AddField('enabled') | Out-Null
+
+    $updateAgentMaxConcurrentScansField = [Query]::New('update_agent_max_concurrent_scans')
+    $updateAgentMaxConcurrentScansField.AddArgument('input', '$input') | Out-Null
+    $updateAgentMaxConcurrentScansField.AddField($agentField) | Out-Null
+
+    $updateAgentMaxConcurrentScansQuery = [Query]::New($operationName)
+    $updateAgentMaxConcurrentScansQuery.AddArgument('$input', 'UpdateAgentMaxConcurrentScansInput!') | Out-Null
+    $updateAgentMaxConcurrentScansQuery.AddField($updateAgentMaxConcurrentScansField) | Out-Null
+
+    $query = 'mutation {0}' -f $updateAgentMaxConcurrentScansQuery
+
+    $variables = @{ input = @{} }
+
+    $variables.input.id = $parameters.Id
+    $variables.input.max_concurrent_scans = $parameters.MaxConcurrentScans
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
+
