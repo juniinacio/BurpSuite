@@ -230,3 +230,33 @@ function _buildCancelScanQuery {
     return $graphRequest
 }
 
+function _buildUpdateFalsePositive {
+    param([hashtable]$parameters)
+
+    $operationName = 'UpdateFalsePositive'
+
+    $updateFalsePositiveField = [Query]::New('update_false_positive')
+    $updateFalsePositiveField.AddArgument('input', '$input') | Out-Null
+    $updateFalsePositiveField.AddField('successful') | Out-Null
+
+    $updateFalsePositiveQuery = [Query]::New($operationName)
+    $updateFalsePositiveQuery.AddArgument('$input', 'UpdateFalsePositiveInput!') | Out-Null
+    $updateFalsePositiveQuery.AddField($updateFalsePositiveField) | Out-Null
+
+    $query = 'mutation {0}' -f $updateFalsePositiveQuery
+
+    $variables = @{ input = @{} }
+
+    $variables.input.scan_id = $parameters.ScanId
+    $variables.input.serial_number = $parameters.SerialNumber
+    $variables.input.is_false_positive = "false"
+    if ($parameters.ContainsKey('IsFalsePositive')) {
+        if ($parameters.IsFalsePositive -eq $true) { $variables.input.is_false_positive = "true" }
+    }
+    if ($parameters.ContainsKey('PropagationMode')) { $variables.input.propagation_mode = $parameters.PropagationMode }
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
+
