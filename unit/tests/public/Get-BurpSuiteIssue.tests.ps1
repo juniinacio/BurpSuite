@@ -15,10 +15,10 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "getIssue" `
-                    -and $GraphRequest.Query -like "query getIssue(`$scanId:ID!,`$serialNumber:ID!) { issue(scan_id:`$scanId,serial_number:`$serialNumber) { * } }" `
-                    -and $GraphRequest.Variables.scanId -eq 1 `
-                    -and $GraphRequest.Variables.serialNumber -eq 314276827364273645
+                $Request.OperationName -eq "getIssue" `
+                    -and $Request.Query -like "query getIssue(`$scanId:ID!,`$serialNumber:ID!) { issue(scan_id:`$scanId,serial_number:`$serialNumber) { * } }" `
+                    -and $Request.Variables.scanId -eq 1 `
+                    -and $Request.Variables.serialNumber -eq 314276827364273645
             }
         }
 
@@ -49,7 +49,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query getIssue(`$scanId:ID!,`$serialNumber:ID!) { issue(scan_id:`$scanId,serial_number:`$serialNumber) {* $FieldName *} }"
+                $Request.Query -like "query getIssue(`$scanId:ID!,`$serialNumber:ID!) { issue(scan_id:`$scanId,serial_number:`$serialNumber) {* $FieldName *} }"
             }
         }
 
@@ -70,7 +70,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query getIssue(`$scanId:ID!,`$serialNumber:ID!) { issue(scan_id:`$scanId,serial_number:`$serialNumber) { *$FieldName* } }"
+                $Request.Query -like "query getIssue(`$scanId:ID!,`$serialNumber:ID!) { issue(scan_id:`$scanId,serial_number:`$serialNumber) { *$FieldName* } }"
             }
         }
     }

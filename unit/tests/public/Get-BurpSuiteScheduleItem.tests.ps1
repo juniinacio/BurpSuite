@@ -17,9 +17,9 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScheduleItem" `
-                    -and $GraphRequest.Query -like 'query GetScheduleItem($id:ID!) { schedule_item(id:$id) { * } }' `
-                    -and $GraphRequest.Variables.id -eq 1
+                $Request.OperationName -eq "GetScheduleItem" `
+                    -and $Request.Query -like 'query GetScheduleItem($id:ID!) { schedule_item(id:$id) { * } }' `
+                    -and $Request.Variables.id -eq 1
             }
         }
 
@@ -44,7 +44,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) {* $FieldName *} }"
             }
         }
 
@@ -69,7 +69,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) { *$Query*} }"
+                $Request.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) { *$Query*} }"
             }
         }
 
@@ -92,10 +92,10 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScheduleItems" `
-                    -and $GraphRequest.Query -like 'query GetScheduleItems($sort_by:String,$sort_order:String) { schedule_items(sort_by:$sort_by,sort_order:$sort_order) { * } }' `
-                    -and $GraphRequest.Variables.sort_by -eq 'site' `
-                    -and $GraphRequest.Variables.sort_order -eq 'asc'
+                $Request.OperationName -eq "GetScheduleItems" `
+                    -and $Request.Query -like 'query GetScheduleItems($sort_by:String,$sort_order:String) { schedule_items(sort_by:$sort_by,sort_order:$sort_order) { * } }' `
+                    -and $Request.Variables.sort_by -eq 'site' `
+                    -and $Request.Variables.sort_order -eq 'asc'
             }
         }
     }

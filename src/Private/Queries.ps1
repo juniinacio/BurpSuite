@@ -18,9 +18,9 @@ function _buildIntrospectionQuery {
 
     $query = 'query {0}' -f $introspectionQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
-    return $graphRequest
+    return $Request
 }
 
 function _agentQuery {
@@ -82,11 +82,11 @@ function _buildIssueQuery {
 
     $query = 'query {0}' -f $issueQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
-    $graphRequest.Variables.scanId = $parameters.ScanId
-    $graphRequest.Variables.serialNumber = $parameters.SerialNumber
+    $Request = [Request]::new($query, $operationName)
+    $Request.Variables.scanId = $parameters.ScanId
+    $Request.Variables.serialNumber = $parameters.SerialNumber
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildScanConfigurationQuery {
@@ -108,9 +108,9 @@ function _buildScanConfigurationQuery {
 
     $query = 'query {0}' -f $scanConfigurationQuery.ToString()
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildUnauthorizedAgentQuery {
@@ -128,9 +128,9 @@ function _buildUnauthorizedAgentQuery {
 
     $query = 'query {0}' -f $unauthorizedAgentsQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildScanQuery {
@@ -189,17 +189,17 @@ function _buildScanQuery {
 
     $query = 'query {0}' -f $scanQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
     if ($queryType -eq 'List') {
-        if ($parameters.ContainsKey('Offset')) { $graphRequest.Variables.offset = $parameters.Offset }
-        if ($parameters.ContainsKey('Limit')) { $graphRequest.Variables.limit = $parameters.Limit }
-        if ($parameters.ContainsKey('SortColumn')) { $graphRequest.Variables.sort_column = $parameters.SortColumn }
-        if ($parameters.ContainsKey('SortOrder')) { $graphRequest.Variables.sort_order = $parameters.SortOrder }
-        if ($parameters.ContainsKey('ScanStatus')) { $graphRequest.Variables.scan_status = @($parameters.ScanStatus) }
-    } else { $graphRequest.Variables.id = $parameters.Id }
+        if ($parameters.ContainsKey('Offset')) { $Request.Variables.offset = $parameters.Offset }
+        if ($parameters.ContainsKey('Limit')) { $Request.Variables.limit = $parameters.Limit }
+        if ($parameters.ContainsKey('SortColumn')) { $Request.Variables.sort_column = $parameters.SortColumn }
+        if ($parameters.ContainsKey('SortOrder')) { $Request.Variables.sort_order = $parameters.SortOrder }
+        if ($parameters.ContainsKey('ScanStatus')) { $Request.Variables.scan_status = @($parameters.ScanStatus) }
+    } else { $Request.Variables.id = $parameters.Id }
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildScanReportQuery {
@@ -229,19 +229,19 @@ function _buildScanReportQuery {
 
     $query = 'query {0}' -f $scanReportQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
-    $graphRequest.Variables.scan_id = $parameters.ScanId
+    $Request.Variables.scan_id = $parameters.ScanId
 
-    if ($parameters.ContainsKey('TimezoneOffset')) { $graphRequest.Variables.timezone_offset = $parameters.TimezoneOffset }
-    if ($parameters.ContainsKey('ReportType')) { $graphRequest.Variables.report_type = $parameters.ReportType }
+    if ($parameters.ContainsKey('TimezoneOffset')) { $Request.Variables.timezone_offset = $parameters.TimezoneOffset }
+    if ($parameters.ContainsKey('ReportType')) { $Request.Variables.report_type = $parameters.ReportType }
     if ($parameters.ContainsKey('IncludeFalsePositives')) {
-        $graphRequest.Variables.include_false_positives = "false"
-        if ($parameters.IncludeFalsePositives -eq $true) { $graphRequest.Variables.include_false_positives = "true" }
+        $Request.Variables.include_false_positives = "false"
+        if ($parameters.IncludeFalsePositives -eq $true) { $Request.Variables.include_false_positives = "true" }
     }
-    if ($parameters.ContainsKey('Severities')) { $graphRequest.Variables.severities = @($parameters.Severities) }
+    if ($parameters.ContainsKey('Severities')) { $Request.Variables.severities = @($parameters.Severities) }
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildScheduleItemQuery {
@@ -284,14 +284,14 @@ function _buildScheduleItemQuery {
 
     $query = 'query {0}' -f $scheduleItemQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
     if ($queryType -eq 'List') {
-        if ($parameters.ContainsKey('SortBy')) { $graphRequest.Variables.sort_by = $parameters.SortBy }
-        if ($parameters.ContainsKey('SortOrder')) { $graphRequest.Variables.sort_order = $parameters.SortOrder }
-    } else { $graphRequest.Variables.id = $parameters.Id }
+        if ($parameters.ContainsKey('SortBy')) { $Request.Variables.sort_by = $parameters.SortBy }
+        if ($parameters.ContainsKey('SortOrder')) { $Request.Variables.sort_order = $parameters.SortOrder }
+    } else { $Request.Variables.id = $parameters.Id }
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildSuiteSiteTreeQuery {
@@ -329,9 +329,9 @@ function _buildSuiteSiteTreeQuery {
 
     $query = 'query {0}' -f $siteTreeQuery
 
-    $graphRequest = [GraphRequest]::new($query, $operationName)
+    $Request = [Request]::new($query, $operationName)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildObjectQuery {

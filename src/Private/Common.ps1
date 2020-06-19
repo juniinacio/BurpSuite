@@ -21,7 +21,7 @@ function _callAPI {
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [object]
-        $GraphRequest
+        $Request
     )
 
     _assertAPIKey
@@ -41,7 +41,7 @@ function _callAPI {
     $convertToJsonArgs = @{}
     if (_testIsPowerShellCore) { $convertToJsonArgs['Compress'] = $true }
 
-    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json @convertToJsonArgs -Depth 3
+    $body = _preProcessRequest -Request $Request | ConvertTo-Json @convertToJsonArgs -Depth 3
 
     $params['body'] = $body
     Write-Verbose $body
@@ -94,7 +94,7 @@ function _uregisterAccelerators {
     )
 
     [ReflectionCache]::TypeAccelerators::Remove(
-        'BurpSuiteGraphRequest')
+        'BurpSuiteRequest')
 }
 
 function _preProcessRequest {
@@ -102,7 +102,7 @@ function _preProcessRequest {
     Param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [Alias('GraphRequest')]
+        [Alias('Request')]
         [object]
         $InputObject
     )

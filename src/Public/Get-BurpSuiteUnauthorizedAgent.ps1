@@ -13,11 +13,11 @@ function Get-BurpSuiteUnauthorizedAgent {
 
     process {
 
-        $graphRequest = _buildUnauthorizedAgentQuery -Parameters $PSBoundParameters
+        $Request = _buildUnauthorizedAgentQuery -Parameters $PSBoundParameters
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
             try {
-                $response = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -Request $Request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
                     $data.unauthorized_agents

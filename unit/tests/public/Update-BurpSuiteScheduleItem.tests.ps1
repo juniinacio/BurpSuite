@@ -22,10 +22,10 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "UpdateScheduleItem" `
-                    -and $GraphRequest.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
-                    -and $GraphRequest.Variables.input.id -eq $id `
-                    -and ($GraphRequest.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
+                $Request.OperationName -eq "UpdateScheduleItem" `
+                    -and $Request.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
+                    -and $Request.Variables.input.id -eq $id `
+                    -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
             }
         }
 
@@ -52,11 +52,11 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "UpdateScheduleItem" `
-                    -and $GraphRequest.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
-                    -and $GraphRequest.Variables.input.id -eq $id `
-                    -and $GraphRequest.Variables.input.site_id -eq $id `
-                    -and ($GraphRequest.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
+                $Request.OperationName -eq "UpdateScheduleItem" `
+                    -and $Request.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
+                    -and $Request.Variables.input.id -eq $id `
+                    -and $Request.Variables.input.site_id -eq $id `
+                    -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
             }
         }
 
@@ -81,11 +81,11 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "UpdateScheduleItem" `
-                    -and $GraphRequest.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
-                    -and $GraphRequest.Variables.input.id -eq $id `
-                    -and ($GraphRequest.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
-                    -and $GraphRequest.Variables.input.schedule.initial_run_time -eq $initialRunTime
+                $Request.OperationName -eq "UpdateScheduleItem" `
+                    -and $Request.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
+                    -and $Request.Variables.input.id -eq $id `
+                    -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
+                    -and $Request.Variables.input.schedule.initial_run_time -eq $initialRunTime
             }
         }
 
@@ -110,11 +110,11 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "UpdateScheduleItem" `
-                    -and $GraphRequest.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
-                    -and $GraphRequest.Variables.input.id -eq $id `
-                    -and $GraphRequest.Variables.input.schedule.rrule -eq $recurrenceRule `
-                    -and ($GraphRequest.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
+                $Request.OperationName -eq "UpdateScheduleItem" `
+                    -and $Request.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
+                    -and $Request.Variables.input.id -eq $id `
+                    -and $Request.Variables.input.schedule.rrule -eq $recurrenceRule `
+                    -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
             }
         }
     }

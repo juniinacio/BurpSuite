@@ -17,12 +17,12 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetReport" `
-                    -and $GraphRequest.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,severities:$severities) { report_html } }' `
-                    -and $GraphRequest.Variables.scan_id -eq 1 `
-                    -and $GraphRequest.Variables.timezone_offset -eq 2 `
-                    -and $GraphRequest.Variables.report_type -eq 'detailed' `
-                    -and ($GraphRequest.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
+                $Request.OperationName -eq "GetReport" `
+                    -and $Request.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,severities:$severities) { report_html } }' `
+                    -and $Request.Variables.scan_id -eq 1 `
+                    -and $Request.Variables.timezone_offset -eq 2 `
+                    -and $Request.Variables.report_type -eq 'detailed' `
+                    -and ($Request.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
             }
         }
 
@@ -43,13 +43,13 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetReport" `
-                    -and $GraphRequest.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$include_false_positives:Boolean,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,include_false_positives:$include_false_positives,severities:$severities) { report_html } }' `
-                    -and $GraphRequest.Variables.scan_id -eq 1 `
-                    -and $GraphRequest.Variables.timezone_offset -eq 2 `
-                    -and $GraphRequest.Variables.report_type -eq 'detailed' `
-                    -and $GraphRequest.Variables.include_false_positives -eq "true" `
-                    -and ($GraphRequest.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
+                $Request.OperationName -eq "GetReport" `
+                    -and $Request.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$include_false_positives:Boolean,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,include_false_positives:$include_false_positives,severities:$severities) { report_html } }' `
+                    -and $Request.Variables.scan_id -eq 1 `
+                    -and $Request.Variables.timezone_offset -eq 2 `
+                    -and $Request.Variables.report_type -eq 'detailed' `
+                    -and $Request.Variables.include_false_positives -eq "true" `
+                    -and ($Request.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
             }
         }
 
@@ -70,13 +70,13 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetReport" `
-                    -and $GraphRequest.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$include_false_positives:Boolean,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,include_false_positives:$include_false_positives,severities:$severities) { report_html } }' `
-                    -and $GraphRequest.Variables.scan_id -eq 1 `
-                    -and $GraphRequest.Variables.timezone_offset -eq 2 `
-                    -and $GraphRequest.Variables.report_type -eq 'detailed' `
-                    -and $GraphRequest.Variables.include_false_positives -eq "false" `
-                    -and ($GraphRequest.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
+                $Request.OperationName -eq "GetReport" `
+                    -and $Request.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$include_false_positives:Boolean,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,include_false_positives:$include_false_positives,severities:$severities) { report_html } }' `
+                    -and $Request.Variables.scan_id -eq 1 `
+                    -and $Request.Variables.timezone_offset -eq 2 `
+                    -and $Request.Variables.report_type -eq 'detailed' `
+                    -and $Request.Variables.include_false_positives -eq "false" `
+                    -and ($Request.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
             }
         }
 

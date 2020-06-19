@@ -3,7 +3,7 @@ function Remove-BurpSuiteScheduleItem {
         ConfirmImpact = 'High')]
     Param (
         [Parameter(Mandatory = $true,
-        ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Id
@@ -14,11 +14,11 @@ function Remove-BurpSuiteScheduleItem {
 
     process {
 
-        $graphRequest = _buildDeleteScheduleItemQuery -Parameters $PSBoundParameters
+        $Request = _buildDeleteScheduleItemQuery -Parameters $PSBoundParameters
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
             try {
-                $response = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -Request $Request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
                     $data.delete_schedule_item

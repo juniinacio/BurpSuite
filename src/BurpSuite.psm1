@@ -32,8 +32,8 @@ function _registerAccelerators {
     )
 
     [ReflectionCache]::TypeAccelerators::Add(
-        'BurpSuiteGraphRequest',
-        [GraphRequest])
+        'BurpSuiteRequest',
+        [Request])
 }
 _registerAccelerators
 

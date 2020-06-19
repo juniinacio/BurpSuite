@@ -3,16 +3,16 @@ InModuleScope $env:BHProjectName {
         Context "Default" {
             It "should invoke BurpSuite Graph API" {
                 # arrange
-                $graphRequest = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $Request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName _callAPI
 
                 # act
-                Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
+                Invoke-BurpSuiteAPI -Request $Request -Confirm:$false
 
                 # assert
                 Should -Invoke _callAPI -ParameterFilter {
-                    $GraphRequest.query -eq "{ __schema { queryType { name } } }"
+                    $Request.query -eq "{ __schema { queryType { name } } }"
                 }
             }
         }
@@ -27,7 +27,7 @@ InModuleScope $env:BHProjectName {
 
                 # assert
                 Should -Invoke _callAPI -ParameterFilter {
-                    $GraphRequest.query -eq "{ __schema { queryType { name } } }"
+                    $Request.query -eq "{ __schema { queryType { name } } }"
                 }
             }
 
@@ -40,8 +40,8 @@ InModuleScope $env:BHProjectName {
 
                 # assert
                 Should -Invoke _callAPI -ParameterFilter {
-                    $GraphRequest.Query -eq 'query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }' `
-                        -and $GraphRequest.Variables.id -eq 12345
+                    $Request.Query -eq 'query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }' `
+                        -and $Request.Variables.id -eq 12345
                 }
             }
         }

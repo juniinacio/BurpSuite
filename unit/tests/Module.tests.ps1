@@ -1,19 +1,19 @@
 Describe "Module" {
     Context "Accelerator" {
-        It "should add GraphRequest type accelerator" {
+        It "should add Request type accelerator" {
             # arrange
 
             # act
 
             # assert
-            { [BurpSuiteGraphRequest]::new('{ __schema { queryType { name } } }') } | Should -Not -Throw
+            { [BurpSuiteRequest]::new('{ __schema { queryType { name } } }') } | Should -Not -Throw
         }
 
-        It "should create [GraphRequest] instance" {
+        It "should create [Request] instance" {
             # arrange
 
             # act
-            $assert = [BurpSuiteGraphRequest]::new('{ __schema { queryType { name } } }')
+            $assert = [BurpSuiteRequest]::new('{ __schema { queryType { name } } }')
 
             # assert
             $assert | Should -Not -BeNullOrEmpty

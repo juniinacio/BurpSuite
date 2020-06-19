@@ -27,12 +27,12 @@ function Connect-BurpSuite {
     }
 
     process {
-        $graphRequest = _buildIntrospectionQuery
+        $Request = _buildIntrospectionQuery
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
             try {
                 _createSession -APIUrl $graphUrl -APIKey $APIKey
-                $response = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -Request $Request
                 if ($PassThru.IsPresent) {
                     $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                     $data

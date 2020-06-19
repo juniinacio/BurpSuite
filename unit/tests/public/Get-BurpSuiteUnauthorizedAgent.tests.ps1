@@ -19,8 +19,8 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetUnauthorizedAgents" `
-                    -and $GraphRequest.Query -eq "query GetUnauthorizedAgents { unauthorized_agents { ip } }"
+                $Request.OperationName -eq "GetUnauthorizedAgents" `
+                    -and $Request.Query -eq "query GetUnauthorizedAgents { unauthorized_agents { ip } }"
             }
         }
 
@@ -45,8 +45,8 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetUnauthorizedAgents" `
-                    -and $GraphRequest.Query -eq "query GetUnauthorizedAgents { unauthorized_agents { $($fields -join ' ') } }"
+                $Request.OperationName -eq "GetUnauthorizedAgents" `
+                    -and $Request.Query -eq "query GetUnauthorizedAgents { unauthorized_agents { $($fields -join ' ') } }"
             }
         }
     }

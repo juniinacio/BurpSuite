@@ -27,7 +27,7 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod -MockWith {
                     [PSCustomObject]@{
@@ -36,7 +36,7 @@ InModuleScope BurpSuite {
                 }
 
                 # act
-                _callAPI -GraphRequest $request
+                _callAPI -Request $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -53,7 +53,7 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod -MockWith {
                     [PSCustomObject]@{
@@ -62,7 +62,7 @@ InModuleScope BurpSuite {
                 }
 
                 # act
-                _callAPI -GraphRequest $request
+                _callAPI -Request $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -79,7 +79,7 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod -MockWith {
                     [PSCustomObject]@{
@@ -88,7 +88,7 @@ InModuleScope BurpSuite {
                 }
 
                 # act
-                _callAPI -GraphRequest $request
+                _callAPI -Request $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -105,7 +105,7 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod -MockWith {
                     [PSCustomObject]@{
@@ -114,7 +114,7 @@ InModuleScope BurpSuite {
                 }
 
                 # act
-                _callAPI -GraphRequest $request
+                _callAPI -Request $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -131,7 +131,7 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod -MockWith {
                     [PSCustomObject]@{
@@ -140,7 +140,7 @@ InModuleScope BurpSuite {
                 }
 
                 # act
-                _callAPI -GraphRequest $request
+                _callAPI -Request $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -157,7 +157,7 @@ InModuleScope BurpSuite {
                 [Session]::APIKey = $apiKey
                 [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 Mock -CommandName Invoke-RestMethod -MockWith {
                     [PSCustomObject]@{
@@ -166,7 +166,7 @@ InModuleScope BurpSuite {
                 }
 
                 # act
-                _callAPI -GraphRequest $request
+                _callAPI -Request $request
 
                 # assert
                 Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -184,7 +184,7 @@ InModuleScope BurpSuite {
                     [Session]::APIKey = $apiKey
                     [Session]::APIUrl = 'https://burpsuite.foo.org:443/graphql/v1'
 
-                    $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                    $request = [Request]::new('{ __schema { queryType { name } } }')
 
                     Mock -CommandName Invoke-RestMethod -MockWith {
                         [PSCustomObject]@{
@@ -193,7 +193,7 @@ InModuleScope BurpSuite {
                     }
 
                     # act
-                    _callAPI -GraphRequest $request
+                    _callAPI -Request $request
 
                     # assert
                     Should -Invoke Invoke-RestMethod -ParameterFilter {
@@ -275,7 +275,7 @@ InModuleScope BurpSuite {
                 _registerAccelerators
 
                 # assert
-                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'BurpSuiteGraphRequest' } ) | Should -Not -BeNullOrEmpty
+                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'BurpSuiteRequest' } ) | Should -Not -BeNullOrEmpty
             }
         }
 
@@ -290,7 +290,7 @@ InModuleScope BurpSuite {
                 _uregisterAccelerators
 
                 # assert
-                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'BurpSuiteGraphRequest' } ) | Should -BeNullOrEmpty
+                $typeAccelerators::Get.GetEnumerator().Where( { $_.Key -eq 'BurpSuiteRequest' } ) | Should -BeNullOrEmpty
             }
         }
 
@@ -337,10 +337,10 @@ InModuleScope BurpSuite {
         Context '_preProcessRequest' {
             It 'should convert object properties names to lower case' {
                 # Arrange
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
+                $request = [Request]::new('{ __schema { queryType { name } } }')
 
                 # Act
-                $assert = _preProcessRequest -GraphRequest $request
+                $assert = _preProcessRequest -Request $request
 
                 # Assert
                 $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -cmatch "[A-Z]+" } | Should -BeNullOrEmpty
@@ -348,10 +348,10 @@ InModuleScope BurpSuite {
 
             It 'should keep object properties' {
                 # Arrange
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }', '__schema')
+                $request = [Request]::new('{ __schema { queryType { name } } }', '__schema')
 
                 # Act
-                $assert = _preProcessRequest -GraphRequest $request
+                $assert = _preProcessRequest -Request $request
 
                 # Assert
                 $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -eq "query" } | Should -Not -BeNullOrEmpty
@@ -360,10 +360,10 @@ InModuleScope BurpSuite {
 
             It 'should remove object properties' {
                 # Arrange
-                $request = [GraphRequest]::new('{ __schema { queryType { name } } }', '__schema')
+                $request = [Request]::new('{ __schema { queryType { name } } }', '__schema')
 
                 # Act
-                $assert = _preProcessRequest -GraphRequest $request
+                $assert = _preProcessRequest -Request $request
 
                 # Assert
                 $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -eq "variables" } | Should -BeNullOrEmpty

@@ -19,8 +19,8 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScanConfigurations" `
-                    -and $GraphRequest.Query -eq "query GetScanConfigurations { scan_configurations { id name } }"
+                $Request.OperationName -eq "GetScanConfigurations" `
+                    -and $Request.Query -eq "query GetScanConfigurations { scan_configurations { id name } }"
             }
         }
 
@@ -45,8 +45,8 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScanConfigurations" `
-                    -and $GraphRequest.Query -eq "query GetScanConfigurations { scan_configurations { $($fields -join ' ') } }"
+                $Request.OperationName -eq "GetScanConfigurations" `
+                    -and $Request.Query -eq "query GetScanConfigurations { scan_configurations { $($fields -join ' ') } }"
             }
         }
 
@@ -71,7 +71,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScanConfigurations { scan_configurations { *$Query* } }"
+                $Request.Query -like "query GetScanConfigurations { scan_configurations { *$Query* } }"
             }
         }
     }

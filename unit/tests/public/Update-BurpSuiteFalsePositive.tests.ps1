@@ -20,12 +20,12 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "UpdateFalsePositive" `
-                    -and $GraphRequest.Query -eq 'mutation UpdateFalsePositive($input:UpdateFalsePositiveInput!) { update_false_positive(input:$input) { successful } }' `
-                    -and $GraphRequest.Variables.input.scan_id -eq $scanId `
-                    -and $GraphRequest.Variables.input.serial_number -eq $serialNumber `
-                    -and $GraphRequest.Variables.input.is_false_positive -eq 'true' `
-                    -and $GraphRequest.Variables.input.propagation_mode -eq 'issue_type_only'
+                $Request.OperationName -eq "UpdateFalsePositive" `
+                    -and $Request.Query -eq 'mutation UpdateFalsePositive($input:UpdateFalsePositiveInput!) { update_false_positive(input:$input) { successful } }' `
+                    -and $Request.Variables.input.scan_id -eq $scanId `
+                    -and $Request.Variables.input.serial_number -eq $serialNumber `
+                    -and $Request.Variables.input.is_false_positive -eq 'true' `
+                    -and $Request.Variables.input.propagation_mode -eq 'issue_type_only'
             }
         }
     }

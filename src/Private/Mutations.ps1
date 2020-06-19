@@ -25,9 +25,9 @@ function _buildCreateScanConfigurationQuery {
     $variables.input.name = $parameters.Name
     $variables.input.scan_configuration_fragment_json = Get-Content -Raw -Path $parameters.FilePath | Out-String
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildUpdateScanConfigurationQuery {
@@ -59,9 +59,9 @@ function _buildUpdateScanConfigurationQuery {
     if ($parameters.ContainsKey('Name')) { $variables.input.name = $parameters.Name }
     if ($parameters.ContainsKey('FilePath')) { $variables.input.scan_configuration_fragment_json = Get-Content -Raw -Path $parameters.FilePath | Out-String }
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildDeleteScanConfigurationQuery {
@@ -83,9 +83,9 @@ function _buildDeleteScanConfigurationQuery {
 
     $variables.input.id = $parameters.Id
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildCreateScheduleItemQuery {
@@ -117,9 +117,9 @@ function _buildCreateScheduleItemQuery {
         $variables.input.schedule = $schedule
     }
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildUpdateScheduleItemQuery {
@@ -153,9 +153,9 @@ function _buildUpdateScheduleItemQuery {
         $variables.input.schedule = $schedule
     }
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildDeleteScheduleItemQuery {
@@ -177,9 +177,9 @@ function _buildDeleteScheduleItemQuery {
 
     $variables.input.id = $parameters.Id
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildDeleteScanQuery {
@@ -201,9 +201,9 @@ function _buildDeleteScanQuery {
 
     $variables.input.id = $parameters.Id
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildCancelScanQuery {
@@ -225,9 +225,9 @@ function _buildCancelScanQuery {
 
     $variables.input.id = $parameters.Id
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildUpdateFalsePositive {
@@ -255,9 +255,9 @@ function _buildUpdateFalsePositive {
     }
     if ($parameters.ContainsKey('PropagationMode')) { $variables.input.propagation_mode = $parameters.PropagationMode }
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 
 function _buildUpdateAgentMaxConcurrentScansQuery {
@@ -286,8 +286,8 @@ function _buildUpdateAgentMaxConcurrentScansQuery {
     $variables.input.id = $parameters.Id
     $variables.input.max_concurrent_scans = $parameters.MaxConcurrentScans
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+    $Request = [Request]::new($query, $operationName, $variables)
 
-    return $graphRequest
+    return $Request
 }
 

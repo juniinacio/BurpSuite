@@ -19,8 +19,8 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetAgents" `
-                    -and $GraphRequest.Query -like "query GetAgents { agents { * } }"
+                $Request.OperationName -eq "GetAgents" `
+                    -and $Request.Query -like "query GetAgents { agents { * } }"
             }
         }
 
@@ -41,9 +41,9 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetAgent" `
-                    -and $GraphRequest.Query -like 'query GetAgent($id:ID!) { agent(id:$id) { * } }' `
-                    -and $GraphRequest.Variables.id -eq 1
+                $Request.OperationName -eq "GetAgent" `
+                    -and $Request.Query -like 'query GetAgent($id:ID!) { agent(id:$id) { * } }' `
+                    -and $Request.Variables.id -eq 1
             }
         }
 
@@ -73,7 +73,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetAgent(`$id:ID!) { agent(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query GetAgent(`$id:ID!) { agent(id:`$id) {* $FieldName *} }"
             }
         }
 
@@ -98,7 +98,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetAgents { agents { *$query* } }"
+                $Request.Query -like "query GetAgents { agents { *$query* } }"
             }
         }
     }
