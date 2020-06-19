@@ -29,7 +29,11 @@ InModuleScope BurpSuite {
 
                 $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                Mock -CommandName Invoke-RestMethod
+                Mock -CommandName Invoke-RestMethod -MockWith {
+                    [PSCustomObject]@{
+                        data = $null
+                    }
+                }
 
                 # act
                 _callAPI -GraphRequest $request
@@ -51,7 +55,11 @@ InModuleScope BurpSuite {
 
                 $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                Mock -CommandName Invoke-RestMethod
+                Mock -CommandName Invoke-RestMethod -MockWith {
+                    [PSCustomObject]@{
+                        data = $null
+                    }
+                }
 
                 # act
                 _callAPI -GraphRequest $request
@@ -73,7 +81,11 @@ InModuleScope BurpSuite {
 
                 $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                Mock -CommandName Invoke-RestMethod
+                Mock -CommandName Invoke-RestMethod -MockWith {
+                    [PSCustomObject]@{
+                        data = $null
+                    }
+                }
 
                 # act
                 _callAPI -GraphRequest $request
@@ -95,7 +107,11 @@ InModuleScope BurpSuite {
 
                 $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                Mock -CommandName Invoke-RestMethod
+                Mock -CommandName Invoke-RestMethod -MockWith {
+                    [PSCustomObject]@{
+                        data = $null
+                    }
+                }
 
                 # act
                 _callAPI -GraphRequest $request
@@ -117,7 +133,11 @@ InModuleScope BurpSuite {
 
                 $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                Mock -CommandName Invoke-RestMethod
+                Mock -CommandName Invoke-RestMethod -MockWith {
+                    [PSCustomObject]@{
+                        data = $null
+                    }
+                }
 
                 # act
                 _callAPI -GraphRequest $request
@@ -139,7 +159,11 @@ InModuleScope BurpSuite {
 
                 $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                Mock -CommandName Invoke-RestMethod
+                Mock -CommandName Invoke-RestMethod -MockWith {
+                    [PSCustomObject]@{
+                        data = $null
+                    }
+                }
 
                 # act
                 _callAPI -GraphRequest $request
@@ -162,7 +186,11 @@ InModuleScope BurpSuite {
 
                     $request = [GraphRequest]::new('{ __schema { queryType { name } } }')
 
-                    Mock -CommandName Invoke-RestMethod
+                    Mock -CommandName Invoke-RestMethod -MockWith {
+                        [PSCustomObject]@{
+                            data = $null
+                        }
+                    }
 
                     # act
                     _callAPI -GraphRequest $request
@@ -315,7 +343,7 @@ InModuleScope BurpSuite {
                 $assert = _preProcessRequest -GraphRequest $request
 
                 # Assert
-                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -cmatch "[A-Z]+"} | Should -BeNullOrEmpty
+                $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -cmatch "[A-Z]+" } | Should -BeNullOrEmpty
             }
 
             It 'should keep object properties' {
@@ -326,8 +354,8 @@ InModuleScope BurpSuite {
                 $assert = _preProcessRequest -GraphRequest $request
 
                 # Assert
-                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -eq "query"} | Should -Not -BeNullOrEmpty
-                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -eq "operationname"} | Should -Not -BeNullOrEmpty
+                $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -eq "query" } | Should -Not -BeNullOrEmpty
+                $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -eq "operationname" } | Should -Not -BeNullOrEmpty
             }
 
             It 'should remove object properties' {
@@ -338,7 +366,7 @@ InModuleScope BurpSuite {
                 $assert = _preProcessRequest -GraphRequest $request
 
                 # Assert
-                $assert | Get-Member -MemberType Properties | Where-Object {$_.Name -eq "variables"} | Should -BeNullOrEmpty
+                $assert | Get-Member -MemberType Properties | Where-Object { $_.Name -eq "variables" } | Should -BeNullOrEmpty
             }
         }
     }

@@ -122,6 +122,42 @@ function _buildCreateScheduleItemQuery {
     return $graphRequest
 }
 
+function _buildUpdateScheduleItemQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'UpdateScheduleItem'
+
+    $scheduleItemField = [Query]::New('schedule_item')
+    $scheduleItemField.AddField('id') | Out-Null
+
+    $updateScheduleItemField = [Query]::New('update_schedule_item')
+    $updateScheduleItemField.AddArgument('input', '$input') | Out-Null
+    $updateScheduleItemField.AddField($scheduleItemField) | Out-Null
+
+    $updateScheduleItemQuery = [Query]::New($operationName)
+    $updateScheduleItemQuery.AddArgument('$input', 'UpdateScheduleItemInput!') | Out-Null
+    $updateScheduleItemQuery.AddField($updateScheduleItemField) | Out-Null
+
+    $query = 'mutation {0}' -f $updateScheduleItemQuery
+
+    $variables = @{input = @{} }
+    $variables.input.id = $parameters.Id
+    $variables.input.scan_configuration_ids = $parameters.ScanConfigurationIds
+
+    if ($parameters.ContainsKey('SiteId')) { $variables.input.site_id = $parameters.SiteId }
+
+    if ($parameters.ContainsKey('InitialRunTime') -or $parameters.ContainsKey('RecurrenceRule')) {
+        $schedule = @{}
+        if ($parameters.ContainsKey('InitialRunTime')) { $schedule.initial_run_time = $parameters.InitialRunTime }
+        if ($parameters.ContainsKey('RecurrenceRule')) { $schedule.rrule = $parameters.RecurrenceRule }
+        $variables.input.schedule = $schedule
+    }
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
+
 function _buildDeleteScheduleItemQuery {
     param([hashtable]$parameters)
 
