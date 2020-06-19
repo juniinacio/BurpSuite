@@ -21,7 +21,7 @@ function _buildCreateScanConfigurationQuery {
 
     $query = 'mutation {0}' -f $createScanConfigurationQuery
 
-    $variables = @{input=@{}}
+    $variables = @{input = @{} }
     $variables.input.name = $parameters.Name
     $variables.input.scan_configuration_fragment_json = Get-Content -Raw -Path $parameters.FilePath | Out-String
 
@@ -53,7 +53,7 @@ function _buildUpdateScanConfigurationQuery {
 
     $query = 'mutation {0}' -f $updateScanConfigurationQuery
 
-    $variables = @{input=@{}}
+    $variables = @{input = @{} }
 
     $variables.input.id = $parameters.Id
     if ($parameters.ContainsKey('Name')) { $variables.input.name = $parameters.Name }
@@ -79,9 +79,43 @@ function _buildDeleteScanConfigurationQuery {
 
     $query = 'mutation {0}' -f $deleteScanConfigurationQuery
 
-    $variables = @{input=@{}}
+    $variables = @{input = @{} }
 
     $variables.input.id = $parameters.Id
+
+    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+
+    return $graphRequest
+}
+
+function _buildCreateScheduleItemQuery {
+    param([hashtable]$parameters)
+
+    $operationName = 'CreateScheduleItem'
+
+    $scheduleItemField = [Query]::New('schedule_item')
+    $scheduleItemField.AddField('id') | Out-Null
+
+    $createScheduleItemField = [Query]::New('create_schedule_item')
+    $createScheduleItemField.AddArgument('input', '$input') | Out-Null
+    $createScheduleItemField.AddField($scheduleItemField) | Out-Null
+
+    $createScheduleItemQuery = [Query]::New($operationName)
+    $createScheduleItemQuery.AddArgument('$input', 'CreateScheduleItemInput!') | Out-Null
+    $createScheduleItemQuery.AddField($createScheduleItemField) | Out-Null
+
+    $query = 'mutation {0}' -f $createScheduleItemQuery
+
+    $variables = @{input = @{} }
+    $variables.input.site_id = $parameters.SiteId
+    $variables.input.scan_configuration_ids = $parameters.ScanConfigurationIds
+
+    if ($parameters.ContainsKey('InitialRunTime') -or $parameters.ContainsKey('RecurrenceRule')) {
+        $schedule = @{}
+        if ($parameters.ContainsKey('InitialRunTime')) { $schedule.initial_run_time = $parameters.InitialRunTime }
+        if ($parameters.ContainsKey('RecurrenceRule')) { $schedule.rrule = $parameters.RecurrenceRule }
+        $variables.input.schedule = $schedule
+    }
 
     $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
 
@@ -103,7 +137,7 @@ function _buildDeleteScheduleItemQuery {
 
     $query = 'mutation {0}' -f $deleteScheduleItemQuery
 
-    $variables = @{input=@{}}
+    $variables = @{input = @{} }
 
     $variables.input.id = $parameters.Id
 
@@ -111,3 +145,4 @@ function _buildDeleteScheduleItemQuery {
 
     return $graphRequest
 }
+

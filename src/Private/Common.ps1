@@ -41,13 +41,25 @@ function _callAPI {
     $convertToJsonArgs = @{}
     if (_testIsPowerShellCore) { $convertToJsonArgs['Compress'] = $true }
 
-    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json @convertToJsonArgs
+    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json @convertToJsonArgs -Depth 3
 
     $params['body'] = $body
+    Write-Verbose $body
 
     if (_testIsPowerShellCore) { $params.Add('SkipCertificateCheck', $true) }
 
-    Invoke-RestMethod @params
+    $response = Invoke-RestMethod @params
+    if ((_testObjectProperty -InputObject $response -PropertyName 'errors')) {
+        $e = _aggregateErrors -Errors $response.errors
+        $exceptions = @()
+        foreach ($e in $response.errors) {
+            $exceptions += [Exception]::New($e.message)
+        }
+        $aggregate = [AggregateException]::new("One or more errors occurred while querying BurpSuite.", $exceptions)
+        throw $aggregate
+    } else {
+        $response
+    }
 }
 
 function _removeSession {
