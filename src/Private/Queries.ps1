@@ -275,10 +275,7 @@ function _buildQuery {
     }
 
     if ($null -ne $arguments) {
-        $keys = $arguments.Keys | Sort-Object
-        foreach ($k in $keys) {
-            $query.AddArgument($k, $arguments[$k])
-        }
+        foreach ($k in ($arguments.Keys | Sort-Object)) { $query.AddArgument($k, $arguments[$k]) }
     }
 
     return ('query {{ {0} }}' -f $query)

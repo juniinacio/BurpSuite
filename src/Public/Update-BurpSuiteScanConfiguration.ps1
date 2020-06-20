@@ -27,15 +27,20 @@ function Update-BurpSuiteScanConfiguration {
 
     process {
 
-        $Request = _buildUpdateScanConfigurationQuery -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'UpdateScanConfiguration' -inputType 'UpdateScanConfigurationInput!' -name 'update_scan_configuration' -returnType 'ScanConfiguration'
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
+                $variables = @{ input = @{} }
+                $variables.input.id = $Id
+                if ($PSBoundParameters.ContainsKey('Name')) { $variables.input.name = $Name }
+                if ($PSBoundParameters.ContainsKey('FilePath')) { $variables.input.scan_configuration_fragment_json = Get-Content -Raw -Path $FilePath | Out-String }
+
+                $request = [Request]::new($query, 'UpdateScanConfiguration', $variables)
+
                 $response = _callAPI -Request $Request
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.update_scan_configuration.scan_configuration
-                }
+
+                $response.data.update_scan_configuration.scan_configuration
             } catch {
                 throw
             }
