@@ -1,4 +1,4 @@
-class Query: IQuery {
+class Query {
     [string] $Name
     [string] $AliasName
     [Dictionary[string, object]] $Arguments = [Dictionary[string, object]]::new()
@@ -31,10 +31,6 @@ class Query: IQuery {
         $this.Fields.Add($query)
     }
 
-    # [Query] AddField([string] $field, [Query] $query) {
-    #     $subQuery = [Query]::New($field)
-    #     $subQuery.AddField($query)
-    #     $this.Fields.Add($subQuery)
-    # }
+    [string] ToString() { return $this.Build() }
 }
 
