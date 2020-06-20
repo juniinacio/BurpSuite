@@ -23,7 +23,7 @@ properties {
     if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
 
     $PesterPreference = [PesterConfiguration]::Default
-    $PesterPreference.Run.Path = Join-Path -Path $projectRoot -ChildPath 'unit\tests\'
+    $PesterPreference.Run.Path = Join-Path -Path $projectRoot -ChildPath 'unit\tests\*.Tests.ps1'
     $PesterPreference.Run.PassThru = $true
     $PesterPreference.TestResult.Enabled = $true
     $PesterPreference.TestResult.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-TestsResults.xml"
@@ -31,7 +31,6 @@ properties {
     $PesterPreference.CodeCoverage.Path = Join-Path -Path $outputModVerDir -ChildPath '*.psm1'
     $PesterPreference.CodeCoverage.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-Coverage.xml"
     $PesterPreference.Output.Verbosity = "Detailed"
-    $null = $PesterPreference
 }
 
 task default -depends RunTest
