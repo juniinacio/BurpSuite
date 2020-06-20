@@ -14,15 +14,15 @@ function Remove-BurpSuiteScan {
 
     process {
 
-        $Request = _buildDeleteScanQuery -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'DeleteScan' -inputType 'DeleteScanInput!' -name 'delete_scan' -returnType 'Scan' -returnTypeField
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -Request $Request
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.delete_schedule_item
-                }
+                $variables = @{ input = @{id = $Id } }
+
+                $request = [Request]::new($query, 'DeleteScan', $variables)
+
+                $null = _callAPI -Request $request
             } catch {
                 throw
             }

@@ -23,9 +23,7 @@ function Remove-BurpSuiteScanConfiguration {
 
                 $request = [Request]::new($query, 'DeleteScanConfiguration', $variables)
 
-                $response = _callAPI -Request $Request
-
-                $response.data.delete_scan_configuration
+                $null = _callAPI -Request $Request
             } catch {
                 throw
             }

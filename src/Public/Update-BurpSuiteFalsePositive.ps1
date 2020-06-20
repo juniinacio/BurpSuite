@@ -22,15 +22,23 @@ function Update-BurpSuiteFalsePositive {
 
     process {
 
-        $Request = _buildUpdateFalsePositive -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'UpdateFalsePositive' -inputType 'UpdateFalsePositiveInput!' -name 'update_false_positive' -returnType 'FalsePositive' -returnTypeField
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -Request $Request
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.update_false_positive
+                $variables = @{ input = @{} }
+
+                $variables.input.scan_id = $ScanId
+                $variables.input.serial_number = $SerialNumber
+                $variables.input.is_false_positive = "false"
+                if ($PSBoundParameters.ContainsKey('IsFalsePositive')) {
+                    if ($IsFalsePositive.IsPresent) { $variables.input.is_false_positive = "true" }
                 }
+                if ($PSBoundParameters.ContainsKey('PropagationMode')) { $variables.input.propagation_mode = $PropagationMode }
+
+                $request = [Request]::new($query, 'UpdateFalsePositive', $variables)
+
+                $null = _callAPI -Request $request
             } catch {
                 throw
             }

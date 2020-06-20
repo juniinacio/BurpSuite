@@ -23,7 +23,7 @@ function Remove-BurpSuiteScheduleItem {
 
                 $request = [Request]::new($query, 'DeleteScheduleItem', $variables)
 
-                $response = _callAPI -Request $request
+                $null = _callAPI -Request $request
             } catch {
                 throw
             }

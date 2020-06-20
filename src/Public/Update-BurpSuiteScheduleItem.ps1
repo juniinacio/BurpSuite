@@ -47,7 +47,7 @@ function Update-BurpSuiteScheduleItem {
 
                 $request = [Request]::new($query, 'UpdateScheduleItem', $variables)
 
-                $response = _callAPI -Request $request
+                $null = _callAPI -Request $request
             } catch {
                 throw
             }

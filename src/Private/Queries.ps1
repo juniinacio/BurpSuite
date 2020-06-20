@@ -116,6 +116,10 @@ function _buildQueryField {
             $query.AddField('response_segments') | Out-Null
         }
 
+        Scan {
+            $query.AddField('id') | Out-Null
+        }
+
         ScanConfiguration {
             $query.AddField('id') | Out-Null
             $query.AddField('name') | Out-Null
@@ -194,6 +198,10 @@ function _buildQueryField {
 
         MutationType {
             $query.AddField('name') | Out-Null
+        }
+
+        FalsePositive {
+            $query.AddField('successful') | Out-Null
         }
     }
 

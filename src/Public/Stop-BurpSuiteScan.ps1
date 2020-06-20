@@ -12,15 +12,16 @@ function Stop-BurpSuiteScan {
 
     process {
 
-        $Request = _buildCancelScanQuery -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'CancelScan' -inputType 'CancelScanInput!' -name 'cancel_scan' -returnType 'Scan' -returnTypeField
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -Request $Request
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.delete_schedule_item
-                }
+                $variables = @{input = @{} }
+                $variables.input.id = $Id
+
+                $request = [Request]::new($query, 'CancelScan', $variables)
+
+                $null = _callAPI -Request $request
             } catch {
                 throw
             }

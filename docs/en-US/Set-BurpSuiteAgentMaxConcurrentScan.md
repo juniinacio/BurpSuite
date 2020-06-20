@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Set-BurpSuiteAgentMaxConcurrentScans
+# Set-BurpSuiteAgentMaxConcurrentScan
 
 ## SYNOPSIS
 Sets agent max concurrent scans setting.
@@ -13,7 +13,7 @@ Sets agent max concurrent scans setting.
 ## SYNTAX
 
 ```
-Set-BurpSuiteAgentMaxConcurrentScans [-Id] <String> [-MaxConcurrentScans] <Int32> [-WhatIf] [-Confirm]
+Set-BurpSuiteAgentMaxConcurrentScan [-Id] <String> [-MaxConcurrentScans] <Int32> [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
@@ -24,7 +24,7 @@ Sets agent max concurrent scans setting.
 
 ### Example 1
 ```powershell
-PS C:\> Set-BurpSuiteAgentMaxConcurrentScans -Id 1 -MaxConcurrentScans 10
+PS C:\> Set-BurpSuiteAgentMaxConcurrentScan -Id 1 -MaxConcurrentScans 10
 ```
 
 This example show how to set an agent max concurrent scans setting.
