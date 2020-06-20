@@ -9,13 +9,16 @@ function Get-BurpSuiteSiteTree {
     )
 
     begin {
+        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $Fields = 'folders', 'sites' }
     }
 
     process {
 
-        $Request = _buildSuiteSiteTreeQuery -Parameters $PSBoundParameters
+        $query = _queryableObject -name 'site_tree' -objectType 'SiteTree' -fields $Fields
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        $request = [Request]::new($query)
+
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
                 $response = _callAPI -Request $Request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'

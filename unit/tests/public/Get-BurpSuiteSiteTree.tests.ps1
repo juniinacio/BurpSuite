@@ -18,14 +18,13 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetSiteTree" `
-                    -and $Request.Query -like 'query GetSiteTree { site_tree { * } }'
+                $Request.Query -like 'query { site_tree { * } }'
             }
         }
 
         It "should add <FieldName> sub selection field" -TestCases @(
             @{ FieldName = "folders"; Query = "folders { id name parent_id }" }
-            @{ FieldName = "sites"; Query = "sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } }" }
+            @{ FieldName = "sites"; Query = "sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } }" }
         ) {
             # arrange
             Mock -CommandName _callAPI -MockWith {
@@ -44,7 +43,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetSiteTree { site_tree { *$Query* } }"
+                $Request.Query -like "query { site_tree { *$Query* } }"
             }
         }
     }

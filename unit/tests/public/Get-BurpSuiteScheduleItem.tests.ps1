@@ -5,7 +5,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        schedule_item = [PSCustomObject]@{
+                        schedule_items = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -17,9 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetScheduleItem" `
-                    -and $Request.Query -like 'query GetScheduleItem($id:ID!) { schedule_item(id:$id) { * } }' `
-                    -and $Request.Variables.id -eq 1
+                $Request.Query -like "query { schedule_items:schedule_item(id:'1') { * } }"
             }
         }
 
@@ -44,7 +42,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query { schedule_items:schedule_item(id:'1') {* $FieldName *} }"
             }
         }
 
@@ -65,11 +63,11 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Get-BurpSuiteScheduleItem -ID 1 -Fields $FieldName
+            Get-BurpSuiteScheduleItem -Fields $FieldName
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) { *$Query*} }"
+                $Request.Query -like "query { schedule_items { *$Query*} }"
             }
         }
 
@@ -92,10 +90,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetScheduleItems" `
-                    -and $Request.Query -like 'query GetScheduleItems($sort_by:String,$sort_order:String) { schedule_items(sort_by:$sort_by,sort_order:$sort_order) { * } }' `
-                    -and $Request.Variables.sort_by -eq 'site' `
-                    -and $Request.Variables.sort_order -eq 'asc'
+                $Request.Query -like "query { schedule_items(sort_by:'site',sort_order:'asc') { * } }"
             }
         }
     }

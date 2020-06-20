@@ -19,8 +19,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetAgents" `
-                    -and $Request.Query -like "query GetAgents { agents { * } }"
+                $Request.Query -like "query { agents { * } }"
             }
         }
 
@@ -29,8 +28,8 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        agent = [PSCustomObject]@{
-                            id = 1
+                        agents = [PSCustomObject]@{
+                            id = $id
                         }
                     }
                 }
@@ -41,9 +40,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetAgent" `
-                    -and $Request.Query -like 'query GetAgent($id:ID!) { agent(id:$id) { * } }' `
-                    -and $Request.Variables.id -eq 1
+                $Request.Query -like "query { agents:agent(id:'1') { * } }"
             }
         }
 
@@ -61,7 +58,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        agent = [PSCustomObject]@{
+                        agents = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -73,7 +70,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetAgent(`$id:ID!) { agent(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query { agents:agent(id:'1') {* $FieldName *} }"
             }
         }
 
@@ -98,7 +95,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetAgents { agents { *$query* } }"
+                $Request.Query -like "query { agents { *$query* } }"
             }
         }
     }

@@ -38,9 +38,18 @@ function Get-BurpSuiteScanReport {
     }
 
     process {
-        $Request = _buildScanReportQuery -Parameters $PSBoundParameters
+        $arguments = @{}
+        $arguments.scan_id = $ScanId
+        if ($PSBoundParameters.ContainsKey('TimezoneOffset')) { $arguments.timezone_offset = $TimezoneOffset }
+        if ($PSBoundParameters.ContainsKey('ReportType')) { $arguments.report_type = $ReportType }
+        if ($PSBoundParameters.ContainsKey('IncludeFalsePositives')) { $arguments.include_false_positives = $IncludeFalsePositives.IsPresent }
+        if ($PSBoundParameters.ContainsKey('Severities')) { $arguments.severities = ,@($Severities) }
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        $query = _queryableObject -name 'scan_report' -objectType 'ScanReport' -arguments $arguments
+
+        $request = [Request]::new($query)
+
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
                 $response = _callAPI -Request $Request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'

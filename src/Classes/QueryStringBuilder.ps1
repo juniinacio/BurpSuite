@@ -10,10 +10,7 @@ class QueryStringBuilder {
 
     hidden [string] FormatQueryParam([object] $value) {
         switch ($value) {
-            # Pass string as is to prevent cases where it would enclose
-            # ID special cases ex. getAgent(id:ID!)
-            # { $_ -is [string] } { return "`"" + $value + "`"" }
-            { $_ -is [string] } { return $value }
+            { $_ -is [string] } { return "'" + $value + "'" }
             { $_ -is [byte] } { return $value.ToString() }
             { $_ -is [sbyte] } { return $value.ToString() }
             { $_ -is [int16] } { return $value.ToString() }

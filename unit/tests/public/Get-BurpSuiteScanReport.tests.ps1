@@ -17,12 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetReport" `
-                    -and $Request.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,severities:$severities) { report_html } }' `
-                    -and $Request.Variables.scan_id -eq 1 `
-                    -and $Request.Variables.timezone_offset -eq 2 `
-                    -and $Request.Variables.report_type -eq 'detailed' `
-                    -and ($Request.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
+                $Request.Query -eq "query { scan_report(report_type:'detailed',scan_id:'1',severities:['info','low','medium','high'],timezone_offset:2) { report_html } }"
             }
         }
 
@@ -43,13 +38,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetReport" `
-                    -and $Request.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$include_false_positives:Boolean,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,include_false_positives:$include_false_positives,severities:$severities) { report_html } }' `
-                    -and $Request.Variables.scan_id -eq 1 `
-                    -and $Request.Variables.timezone_offset -eq 2 `
-                    -and $Request.Variables.report_type -eq 'detailed' `
-                    -and $Request.Variables.include_false_positives -eq "true" `
-                    -and ($Request.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
+                $Request.Query -eq "query { scan_report(include_false_positives:true,report_type:'detailed',scan_id:'1',severities:['info','low','medium','high'],timezone_offset:2) { report_html } }"
             }
         }
 
@@ -70,13 +59,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetReport" `
-                    -and $Request.Query -eq 'query GetReport($scan_id:ID!,$timezone_offset:Int,$report_type:ScanReportType,$include_false_positives:Boolean,$severities:[Severity]) { scan_report(scan_id:$scan_id,timezone_offset:$timezone_offset,report_type:$report_type,include_false_positives:$include_false_positives,severities:$severities) { report_html } }' `
-                    -and $Request.Variables.scan_id -eq 1 `
-                    -and $Request.Variables.timezone_offset -eq 2 `
-                    -and $Request.Variables.report_type -eq 'detailed' `
-                    -and $Request.Variables.include_false_positives -eq "false" `
-                    -and ($Request.Variables.severities -join ',') -eq (@('info', 'low', 'medium', 'high') -join ',')
+                $Request.Query -eq "query { scan_report(include_false_positives:false,report_type:'detailed',scan_id:'1',severities:['info','low','medium','high'],timezone_offset:2) { report_html } }"
             }
         }
 

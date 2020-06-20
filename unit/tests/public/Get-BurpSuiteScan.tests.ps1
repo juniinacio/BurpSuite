@@ -5,7 +5,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        scan = [PSCustomObject]@{
+                        scans = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -17,9 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetScan" `
-                    -and $Request.Query -like 'query GetScan($id:ID!) { scan(id:$id) { * } }' `
-                    -and $Request.Variables.id -eq 1
+                $Request.Query -like "query { scans:scan(id:'1') { * } }"
             }
         }
 
@@ -42,13 +40,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "GetScans" `
-                    -and $Request.Query -match '^query GetScans\(\$offset:Int,\$limit:Int,\$sort_column:ScansSortColumn,\$sort_order:SortOrder,\$scan_status:\[ScanStatus\]\) { scans\(offset:\$offset,limit:\$limit,sort_column:\$sort_column,sort_order:\$sort_order,scan_status:\$scan_status\) { .+ } }$' `
-                    -and $Request.Variables.offset -eq 1 `
-                    -and $Request.Variables.limit -eq 1 `
-                    -and $Request.Variables.sort_column -eq 'start' `
-                    -and $Request.Variables.sort_order -eq 'asc' `
-                    -and ($Request.Variables.scan_status -join ',') -eq (@('queued') -join ',')
+                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:'queued',sort_column:'start',sort_order:'asc') { * } }"
             }
         }
 
@@ -69,7 +61,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        scan = [PSCustomObject]@{
+                        scans = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -83,7 +75,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetScan(`$id:ID!) { scan(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query { scans:scan(id:'1') {* $FieldName *} }"
             }
         }
 
@@ -122,7 +114,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query GetScans { scans { *$query* } }"
+                $Request.Query -like "query { scans { *$query* } }"
             }
         }
     }

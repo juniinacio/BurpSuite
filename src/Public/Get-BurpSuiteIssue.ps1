@@ -20,15 +20,20 @@ function Get-BurpSuiteIssue {
     )
 
     begin {
+        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $Fields = 'confidence', 'serial_number', 'severity', 'novelty' }
     }
 
     process {
+        $arguments = @{}
+        $arguments.scan_id = $ScanId
+        $arguments.serial_number = $SerialNumber
+        $query = _queryableObject -name 'issue' -objectType 'Issue' -fields $Fields -arguments $arguments
 
-        $Request = _buildIssueQuery -Parameters $PSBoundParameters
+        $request = [Request]::new($query)
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -Request $Request
+                $response = _callAPI -Request $request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
                     $data.issue

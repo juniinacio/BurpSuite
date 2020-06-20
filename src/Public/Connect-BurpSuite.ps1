@@ -23,15 +23,16 @@ function Connect-BurpSuite {
         $uriBuilder = New-Object -TypeName System.UriBuilder -ArgumentList $Uri
         $uriBuilder.Path = '/graphql/v1'
 
-        $graphUrl = $uriBuilder.ToString()
+        $apiUrl = $uriBuilder.ToString()
     }
 
     process {
-        $Request = _buildIntrospectionQuery
+        $query = _queryableObject -name '__schema' -objectType 'Schema'
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                _createSession -APIUrl $graphUrl -APIKey $APIKey
+                _createSession -APIUrl $apiUrl -APIKey $APIKey
+                $request = [Request]::new($query)
                 $response = _callAPI -Request $Request
                 if ($PassThru.IsPresent) {
                     $data = _getObjectProperty -InputObject $response -PropertyName 'data'

@@ -48,30 +48,40 @@ function Get-BurpSuiteScan {
     )
 
     begin {
-    }
-
-    process {
-
         if ($PSBoundParameters.ContainsKey('Fields')) {
             $unsupportedFields = @('site_name', 'agent', 'scan_configurations', 'jira_ticket_count', 'issue_types', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues')
             $equalFields = Compare-Object -ReferenceObject $unsupportedFields -DifferenceObject $Fields -IncludeEqual -ExcludeDifferent -PassThru
             if ($null -ne $equalFields) {
                 Write-Warning "Fetching fields ('$($unsupportedFields -join ", '")') is not yet supported."
             }
+        } else {
+            $Fields = 'id', 'status', 'issue_counts'
+        }
+    }
+
+    process {
+        $arguments = @{}
+        if ($PSBoundParameters.ContainsKey('Id')) { $arguments.id = $Id }
+        if ($PSBoundParameters.ContainsKey('Offset')) { $arguments.offset = $Offset }
+        if ($PSBoundParameters.ContainsKey('Limit')) { $arguments.limit = $Limit }
+        if ($PSBoundParameters.ContainsKey('SortColumn')) { $arguments.sort_column = $SortColumn }
+        if ($PSBoundParameters.ContainsKey('SortOrder')) { $arguments.sort_order = $SortOrder }
+        if ($PSBoundParameters.ContainsKey('ScanStatus')) { $arguments.scan_status = $ScanStatus }
+
+        if ($PSCmdlet.ParameterSetName -eq 'List') {
+            $query = _queryableObject -name 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
+        } else {
+            $query = _queryableObject -name 'scan' -alias 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
         }
 
-        $Request = _buildScanQuery -Parameters $PSBoundParameters -QueryType $PSCmdlet.ParameterSetName
+        $request = [Request]::new($query)
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
                 $response = _callAPI -Request $Request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
-                    if ($PSCmdlet.ParameterSetName -eq 'List') {
-                        $data.scans
-                    } else {
-                        $data.scan
-                    }
+                    $data.scans
                 }
             } catch {
                 throw

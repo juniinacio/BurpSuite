@@ -9,13 +9,15 @@ function Get-BurpSuiteScanConfiguration {
     )
 
     begin {
+        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $Fields = 'id', 'name' }
     }
 
     process {
+        $query = _queryableObject -name 'scan_configurations' -objectType 'ScanConfiguration' -fields $Fields
 
-        $Request = _buildScanConfigurationQuery -Parameters $PSBoundParameters
+        $request = [Request]::new($query)
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
                 $response = _callAPI -Request $Request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
