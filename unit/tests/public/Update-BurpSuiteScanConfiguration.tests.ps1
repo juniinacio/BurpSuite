@@ -24,7 +24,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateScanConfiguration" `
-                    -and $Request.Query -eq 'mutation UpdateScanConfiguration($input:UpdateScanConfigurationInput!) { update_scan_configuration(input:$input) { scan_configuration { id name scan_configuration_fragment_json built_in last_modified_by { username } last_modified_time } } }' `
+                    -and $Request.Query -eq 'mutation UpdateScanConfiguration($input:''UpdateScanConfigurationInput!'') { update_scan_configuration(input:''$input'') { scan_configuration { id name scan_configuration_fragment_json built_in last_modified_by { username } last_modified_time } } }' `
                     -and $Request.Variables.Input.id -eq 1 `
                     -and $Request.Variables.Input.name -eq 'foo' `
                     -and $Request.Variables.Input.scan_configuration_fragment_json -eq (Get-Content -Raw -Path $filePath | Out-String)
@@ -51,7 +51,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateScanConfiguration" `
-                    -and $Request.Query -eq 'mutation UpdateScanConfiguration($input:UpdateScanConfigurationInput!) { update_scan_configuration(input:$input) { scan_configuration { id name scan_configuration_fragment_json built_in last_modified_by { username } last_modified_time } } }' `
+                    -and $Request.Query -eq 'mutation UpdateScanConfiguration($input:''UpdateScanConfigurationInput!'') { update_scan_configuration(input:''$input'') { scan_configuration { id name scan_configuration_fragment_json built_in last_modified_by { username } last_modified_time } } }' `
                     -and $Request.Variables.Input.id -eq 1 `
                     -and $Request.Variables.Input.name -eq 'foo' `
                     -and $Request.Variables.Input.ContainsKey('scan_configuration_fragment_json') -eq $false
@@ -80,7 +80,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateScanConfiguration" `
-                    -and $Request.Query -eq 'mutation UpdateScanConfiguration($input:UpdateScanConfigurationInput!) { update_scan_configuration(input:$input) { scan_configuration { id name scan_configuration_fragment_json built_in last_modified_by { username } last_modified_time } } }' `
+                    -and $Request.Query -eq 'mutation UpdateScanConfiguration($input:''UpdateScanConfigurationInput!'') { update_scan_configuration(input:''$input'') { scan_configuration { id name scan_configuration_fragment_json built_in last_modified_by { username } last_modified_time } } }' `
                     -and $Request.Variables.Input.id -eq 1 `
                     -and $Request.Variables.Input.ContainsKey('name') -eq $false `
                     -and $Request.Variables.Input.scan_configuration_fragment_json -eq (Get-Content -Raw -Path $filePath | Out-String)

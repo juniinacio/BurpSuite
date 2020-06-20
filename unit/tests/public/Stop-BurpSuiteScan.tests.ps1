@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CancelScan" `
-                    -and $Request.Query -eq 'mutation CancelScan($input:CancelScanInput!) { cancel_scan(input:$input) { id } }' `
+                    -and $Request.Query -eq 'mutation CancelScan($input:''CancelScanInput!'') { cancel_scan(input:''$input'') { id } }' `
                     -and $Request.Variables.Input.id -eq 1
             }
         }

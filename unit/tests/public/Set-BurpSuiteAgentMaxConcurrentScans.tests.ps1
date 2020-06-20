@@ -20,7 +20,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateAgentMaxConcurrentScans" `
-                    -and $Request.Query -eq 'mutation UpdateAgentMaxConcurrentScans($input:UpdateAgentMaxConcurrentScansInput!) { update_agent_max_concurrent_scans(input:$input) { agent { id name max_concurrent_scans enabled } } }' `
+                    -and $Request.Query -eq 'mutation UpdateAgentMaxConcurrentScans($input:''UpdateAgentMaxConcurrentScansInput!'') { update_agent_max_concurrent_scans(input:''$input'') { agent { id name max_concurrent_scans enabled } } }' `
                     -and $Request.Variables.input.id -eq 1 `
                     -and $Request.Variables.input.max_concurrent_scans -eq 10
             }
