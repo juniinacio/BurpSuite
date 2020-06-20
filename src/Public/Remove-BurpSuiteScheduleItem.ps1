@@ -14,15 +14,16 @@ function Remove-BurpSuiteScheduleItem {
 
     process {
 
-        $Request = _buildDeleteScheduleItemQuery -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'DeleteScheduleItem' -inputType 'DeleteScheduleItemInput!' -name 'delete_schedule_item' -returnType 'ScheduleItem' -returnTypeField
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -Request $Request
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.delete_schedule_item
-                }
+                $variables = @{input = @{} }
+                $variables.input.id = $Id
+
+                $request = [Request]::new($query, 'DeleteScheduleItem', $variables)
+
+                $response = _callAPI -Request $request
             } catch {
                 throw
             }

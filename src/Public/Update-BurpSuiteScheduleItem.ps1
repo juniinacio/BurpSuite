@@ -27,15 +27,27 @@ function Update-BurpSuiteScheduleItem {
 
     process {
 
-        $Request = _buildUpdateScheduleItemQuery -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'UpdateScheduleItem' -inputType 'UpdateScheduleItemInput!' -name 'update_schedule_item' -returnType 'ScheduleItem'
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -Request $Request
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.create_schedule_item.schedule_item
+                $variables = @{ input = @{} }
+                $variables.input.id = $Id
+                $variables.input.site_id = $SiteId
+                $variables.input.scan_configuration_ids = $ScanConfigurationIds
+
+                if ($PSBoundParameters.ContainsKey('SiteId')) { $variables.input.site_id = $SiteId }
+
+                if ($PSBoundParameters.ContainsKey('InitialRunTime') -or $PSBoundParameters.ContainsKey('RecurrenceRule')) {
+                    $schedule = @{}
+                    if ($PSBoundParameters.ContainsKey('InitialRunTime')) { $schedule.initial_run_time = $InitialRunTime }
+                    if ($PSBoundParameters.ContainsKey('RecurrenceRule')) { $schedule.rrule = $RecurrenceRule }
+                    $variables.input.schedule = $schedule
                 }
+
+                $request = [Request]::new($query, 'UpdateScheduleItem', $variables)
+
+                $response = _callAPI -Request $request
             } catch {
                 throw
             }

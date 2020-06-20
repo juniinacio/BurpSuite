@@ -39,8 +39,6 @@ function Update-BurpSuiteScanConfiguration {
                 $request = [Request]::new($query, 'UpdateScanConfiguration', $variables)
 
                 $response = _callAPI -Request $Request
-
-                $response.data.update_scan_configuration.scan_configuration
             } catch {
                 throw
             }
