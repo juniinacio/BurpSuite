@@ -27,7 +27,7 @@ function Connect-BurpSuite {
     }
 
     process {
-        $query = _queryableObject -name '__schema' -objectType 'Schema'
+        $query = _buildQuery -name '__schema' -objectType 'Schema'
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {

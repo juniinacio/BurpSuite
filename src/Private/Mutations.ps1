@@ -8,7 +8,7 @@ function _buildCreateScanConfigurationQuery {
     $scanConfigurationField.AddField('name') | Out-Null
     $scanConfigurationField.AddField('scan_configuration_fragment_json') | Out-Null
     $scanConfigurationField.AddField('built_in') | Out-Null
-    $scanConfigurationField.AddField((_buildObjectQuery -name 'last_modified_by' -objectType 'User')) | Out-Null
+    $scanConfigurationField.AddField((_buildQueryField -name 'last_modified_by' -objectType 'User')) | Out-Null
     $scanConfigurationField.AddField('last_modified_time') | Out-Null
 
     $createScanConfigurationField = [Query]::New('create_scan_configuration')
@@ -40,7 +40,7 @@ function _buildUpdateScanConfigurationQuery {
     $scanConfigurationField.AddField('name') | Out-Null
     $scanConfigurationField.AddField('scan_configuration_fragment_json') | Out-Null
     $scanConfigurationField.AddField('built_in') | Out-Null
-    $scanConfigurationField.AddField((_buildObjectQuery -name 'last_modified_by' -objectType 'User')) | Out-Null
+    $scanConfigurationField.AddField((_buildQueryField -name 'last_modified_by' -objectType 'User')) | Out-Null
     $scanConfigurationField.AddField('last_modified_time') | Out-Null
 
     $updateScanConfigurationField = [Query]::New('update_scan_configuration')

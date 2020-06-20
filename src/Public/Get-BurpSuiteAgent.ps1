@@ -22,9 +22,9 @@ function Get-BurpSuiteAgent {
     process {
 
         if ($PSCmdlet.ParameterSetName -eq 'List') {
-            $query = _queryableObject -name 'agents' -objectType 'Agent' -fields $Fields -arguments @{}
+            $query = _buildQuery -name 'agents' -objectType 'Agent' -fields $Fields -arguments @{}
         } else {
-            $query = _queryableObject -name 'agent' -alias 'agents' -objectType 'Agent' -fields $Fields -arguments @{id = $Id }
+            $query = _buildQuery -name 'agent' -alias 'agents' -objectType 'Agent' -fields $Fields -arguments @{id = $Id }
         }
 
         $request = [Request]::new($query)

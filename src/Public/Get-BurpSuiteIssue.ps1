@@ -27,7 +27,7 @@ function Get-BurpSuiteIssue {
         $arguments = @{}
         $arguments.scan_id = $ScanId
         $arguments.serial_number = $SerialNumber
-        $query = _queryableObject -name 'issue' -objectType 'Issue' -fields $Fields -arguments $arguments
+        $query = _buildQuery -name 'issue' -objectType 'Issue' -fields $Fields -arguments $arguments
 
         $request = [Request]::new($query)
 

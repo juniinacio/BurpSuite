@@ -13,7 +13,7 @@ function Get-BurpSuiteScanConfiguration {
     }
 
     process {
-        $query = _queryableObject -name 'scan_configurations' -objectType 'ScanConfiguration' -fields $Fields
+        $query = _buildQuery -name 'scan_configurations' -objectType 'ScanConfiguration' -fields $Fields
 
         $request = [Request]::new($query)
 

@@ -13,7 +13,7 @@ function Get-BurpSuiteUnauthorizedAgent {
     }
 
     process {
-        $query = _queryableObject -name 'unauthorized_agents' -objectType 'UnauthorizedAgent' -fields $Fields
+        $query = _buildQuery -name 'unauthorized_agents' -objectType 'UnauthorizedAgent' -fields $Fields
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {
             try {

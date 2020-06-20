@@ -14,7 +14,7 @@ function Get-BurpSuiteSiteTree {
 
     process {
 
-        $query = _queryableObject -name 'site_tree' -objectType 'SiteTree' -fields $Fields
+        $query = _buildQuery -name 'site_tree' -objectType 'SiteTree' -fields $Fields
 
         $request = [Request]::new($query)
 

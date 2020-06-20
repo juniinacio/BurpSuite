@@ -1,4 +1,4 @@
-function _buildObjectQuery {
+function _buildQueryField {
     param([string]$name, [string]$objectType)
 
     $query = [Query]::New($name)
@@ -25,11 +25,11 @@ function _buildObjectQuery {
             $query.AddField('host') | Out-Null
             $query.AddField('path') | Out-Null
             $query.AddField('error_types') | Out-Null
-            $query.AddField((_buildObjectQuery -name 'issue_counts' -objectType 'IssueCounts')) | Out-Null
+            $query.AddField((_buildQueryField -name 'issue_counts' -objectType 'IssueCounts')) | Out-Null
             $query.AddField('number_of_requests') | Out-Null
             $query.AddField('number_of_errors') | Out-Null
             $query.AddField('number_of_insertion_points') | Out-Null
-            $query.AddField((_buildObjectQuery -name 'issue_types' -objectType 'IssueType')) | Out-Null
+            $query.AddField((_buildQueryField -name 'issue_types' -objectType 'IssueType')) | Out-Null
         }
 
         CountsByConfidence {
@@ -79,10 +79,10 @@ function _buildObjectQuery {
 
         IssueCounts {
             $query.AddField('total') | Out-Null
-            $query.AddField((_buildObjectQuery -name 'high' -objectType 'CountsByConfidence')) | Out-Null
-            $query.AddField((_buildObjectQuery -name 'medium' -objectType 'CountsByConfidence')) | Out-Null
-            $query.AddField((_buildObjectQuery -name 'low' -objectType 'CountsByConfidence')) | Out-Null
-            $query.AddField((_buildObjectQuery -name 'info' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryField -name 'high' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryField -name 'medium' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryField -name 'low' -objectType 'CountsByConfidence')) | Out-Null
+            $query.AddField((_buildQueryField -name 'info' -objectType 'CountsByConfidence')) | Out-Null
         }
 
         IssueType {
@@ -162,16 +162,16 @@ function _buildObjectQuery {
             $query.AddField('id') | Out-Null
             $query.AddField('name') | Out-Null
             $query.AddField('parent_id') | Out-Null
-            $query.AddField((_buildObjectQuery -name 'scope' -objectType 'Scope')) | Out-Null
-            $query.AddField((_buildObjectQuery -name 'scan_configurations' -objectType 'ScanConfiguration')) | Out-Null
-            $query.AddField((_buildObjectQuery -name 'application_logins' -objectType 'ApplicationLogin')) | Out-Null
+            $query.AddField((_buildQueryField -name 'scope' -objectType 'Scope')) | Out-Null
+            $query.AddField((_buildQueryField -name 'scan_configurations' -objectType 'ScanConfiguration')) | Out-Null
+            $query.AddField((_buildQueryField -name 'application_logins' -objectType 'ApplicationLogin')) | Out-Null
             $query.AddField('ephemeral') | Out-Null
-            $query.AddField((_buildObjectQuery -name 'email_recipients' -objectType 'EmailRecipient')) | Out-Null
+            $query.AddField((_buildQueryField -name 'email_recipients' -objectType 'EmailRecipient')) | Out-Null
         }
 
         SiteTree {
-            $query.AddField((_buildObjectQuery -name 'folders' -objectType 'Folder')) | Out-Null
-            $query.AddField((_buildObjectQuery -name 'sites' -objectType 'Site')) | Out-Null
+            $query.AddField((_buildQueryField -name 'folders' -objectType 'Folder')) | Out-Null
+            $query.AddField((_buildQueryField -name 'sites' -objectType 'Site')) | Out-Null
         }
 
         SnipSegment {
@@ -179,7 +179,7 @@ function _buildObjectQuery {
         }
 
         Ticket {
-            $query.AddField((_buildObjectQuery -name 'jira_ticket' -objectType 'JiraTicket')) | Out-Null
+            $query.AddField((_buildQueryField -name 'jira_ticket' -objectType 'JiraTicket')) | Out-Null
             $query.AddField('link_url') | Out-Null
             $query.AddField('link_id') | Out-Null
         }
@@ -201,7 +201,7 @@ function _buildObjectQuery {
 }
 
 
-function _queryableObject {
+function _buildQuery {
     param([string]$name, [string]$alias = "", [string]$objectType, [string[]]$fields, [hashtable]$arguments)
 
     $query = [Query]::New($name)
@@ -212,37 +212,37 @@ function _queryableObject {
     switch ($objectType) {
         Agent {
             $fields | Where-Object { $_ -ne 'error' } | ForEach-Object { $query.AddField($_) }
-            if ($fields -contains 'error') { $query.AddField((_buildObjectQuery -name 'error' -objectType 'AgentError')) }
+            if ($fields -contains 'error') { $query.AddField((_buildQueryField -name 'error' -objectType 'AgentError')) }
         }
 
         Scan {
             $subFields = 'schedule_item', 'agent', 'scan_metrics', 'scan_configurations', 'scan_delta', 'issue_types', 'issue_counts', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues'
             $fields | Where-Object { $_ -notin $subFields } | ForEach-Object { $query.AddField($_) }
 
-            if ($fields -contains 'schedule_item') { $query.AddField((_buildObjectQuery -name 'schedule_item' -objectType 'ScheduleItem')) }
-            if ($fields -contains 'agent') { $query.AddField((_buildObjectQuery -name 'agent' -objectType 'Agent')) }
-            if ($fields -contains 'scan_metrics') { $query.AddField((_buildObjectQuery -name 'scan_metrics' -objectType 'ScanProgressMetrics')) }
-            if ($fields -contains 'generated_by') { $query.AddField((_buildObjectQuery -name 'generated_by' -objectType 'GeneratedBy')) }
-            if ($fields -contains 'scan_configurations') { $query.AddField((_buildObjectQuery -name 'scan_configurations' -objectType 'ScanConfiguration')) }
-            if ($fields -contains 'scan_delta') { $query.AddField((_buildObjectQuery -name 'scan_delta' -objectType 'ScanDelta')) }
-            if ($fields -contains 'issue_types') { $query.AddField((_buildObjectQuery -name 'issue_types' -objectType 'IssueType')) }
-            if ($fields -contains 'issue_counts') { $query.AddField((_buildObjectQuery -name 'issue_counts' -objectType 'IssueCounts')) }
-            if ($fields -contains 'audit_item') { $query.AddField((_buildObjectQuery -name 'audit_item' -objectType 'AuditItem')) }
-            if ($fields -contains 'scope') { $query.AddField((_buildObjectQuery -name 'scope' -objectType 'Scope')) }
-            if ($fields -contains 'audit_items') { $query.AddField((_buildObjectQuery -name 'audit_items' -objectType 'AuditItem')) }
-            if ($fields -contains 'site_application_logins') { $query.AddField((_buildObjectQuery -name 'site_application_logins' -objectType 'ApplicationLogin')) }
-            if ($fields -contains 'schedule_item_application_logins') { $query.AddField((_buildObjectQuery -name 'schedule_item_application_logins' -objectType 'ApplicationLogin')) }
-            if ($fields -contains 'issues') { $query.AddField((_buildObjectQuery -name 'issues' -objectType 'Issue')) }
+            if ($fields -contains 'schedule_item') { $query.AddField((_buildQueryField -name 'schedule_item' -objectType 'ScheduleItem')) }
+            if ($fields -contains 'agent') { $query.AddField((_buildQueryField -name 'agent' -objectType 'Agent')) }
+            if ($fields -contains 'scan_metrics') { $query.AddField((_buildQueryField -name 'scan_metrics' -objectType 'ScanProgressMetrics')) }
+            if ($fields -contains 'generated_by') { $query.AddField((_buildQueryField -name 'generated_by' -objectType 'GeneratedBy')) }
+            if ($fields -contains 'scan_configurations') { $query.AddField((_buildQueryField -name 'scan_configurations' -objectType 'ScanConfiguration')) }
+            if ($fields -contains 'scan_delta') { $query.AddField((_buildQueryField -name 'scan_delta' -objectType 'ScanDelta')) }
+            if ($fields -contains 'issue_types') { $query.AddField((_buildQueryField -name 'issue_types' -objectType 'IssueType')) }
+            if ($fields -contains 'issue_counts') { $query.AddField((_buildQueryField -name 'issue_counts' -objectType 'IssueCounts')) }
+            if ($fields -contains 'audit_item') { $query.AddField((_buildQueryField -name 'audit_item' -objectType 'AuditItem')) }
+            if ($fields -contains 'scope') { $query.AddField((_buildQueryField -name 'scope' -objectType 'Scope')) }
+            if ($fields -contains 'audit_items') { $query.AddField((_buildQueryField -name 'audit_items' -objectType 'AuditItem')) }
+            if ($fields -contains 'site_application_logins') { $query.AddField((_buildQueryField -name 'site_application_logins' -objectType 'ApplicationLogin')) }
+            if ($fields -contains 'schedule_item_application_logins') { $query.AddField((_buildQueryField -name 'schedule_item_application_logins' -objectType 'ApplicationLogin')) }
+            if ($fields -contains 'issues') { $query.AddField((_buildQueryField -name 'issues' -objectType 'Issue')) }
         }
 
         Issue {
             $fields | Where-Object { $_ -ne 'tickets' } | ForEach-Object { $query.AddField($_) }
-            if ($fields -contains 'tickets') { $query.AddField((_buildObjectQuery -name 'tickets' -objectType 'Ticket')) }
+            if ($fields -contains 'tickets') { $query.AddField((_buildQueryField -name 'tickets' -objectType 'Ticket')) }
         }
 
         ScanConfiguration {
             $fields | Where-Object { $_ -ne 'last_modified_by' } | ForEach-Object { $query.AddField($_) | Out-Null }
-            if ($fields -contains 'last_modified_by') { $query.AddField((_buildObjectQuery -name 'last_modified_by' -objectType 'User')) }
+            if ($fields -contains 'last_modified_by') { $query.AddField((_buildQueryField -name 'last_modified_by' -objectType 'User')) }
         }
 
         ScanReport {
@@ -252,14 +252,14 @@ function _queryableObject {
         ScheduleItem {
             $subFields = 'site', 'schedule', 'scan_configurations'
             $fields | Where-Object { $_ -notin $subFields } | ForEach-Object { $query.AddField($_) }
-            if ($fields -contains 'site') { $query.AddField((_buildObjectQuery -name 'site' -objectType 'Site')) }
-            if ($fields -contains 'schedule') { $query.AddField((_buildObjectQuery -name 'schedule' -objectType 'Schedule')) }
-            if ($fields -contains 'scan_configurations') { $query.AddField((_buildObjectQuery -name 'scan_configurations' -objectType 'ScanConfiguration')) }
+            if ($fields -contains 'site') { $query.AddField((_buildQueryField -name 'site' -objectType 'Site')) }
+            if ($fields -contains 'schedule') { $query.AddField((_buildQueryField -name 'schedule' -objectType 'Schedule')) }
+            if ($fields -contains 'scan_configurations') { $query.AddField((_buildQueryField -name 'scan_configurations' -objectType 'ScanConfiguration')) }
         }
 
         SiteTree {
-            if ($fields -contains 'folders') { $query.AddField((_buildObjectQuery -name 'folders' -objectType 'Folder')) }
-            if ($fields -contains 'sites') { $query.AddField((_buildObjectQuery -name 'sites' -objectType 'Site')) }
+            if ($fields -contains 'folders') { $query.AddField((_buildQueryField -name 'folders' -objectType 'Folder')) }
+            if ($fields -contains 'sites') { $query.AddField((_buildQueryField -name 'sites' -objectType 'Site')) }
         }
 
         UnauthorizedAgent {
@@ -267,8 +267,8 @@ function _queryableObject {
         }
 
         Schema {
-            $query.AddField((_buildObjectQuery -name 'queryType' -objectType 'QueryType'))
-            $query.AddField((_buildObjectQuery -name 'mutationType' -objectType 'MutationType'))
+            $query.AddField((_buildQueryField -name 'queryType' -objectType 'QueryType'))
+            $query.AddField((_buildQueryField -name 'mutationType' -objectType 'MutationType'))
         }
 
         default {}

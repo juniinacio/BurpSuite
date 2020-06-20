@@ -38,9 +38,9 @@ function Get-BurpSuiteScheduleItem {
         if ($PSBoundParameters.ContainsKey('SortOrder')) { $arguments.sort_order = $SortOrder }
 
         if ($PSCmdlet.ParameterSetName -eq 'List') {
-            $query = _queryableObject -name 'schedule_items' -objectType 'ScheduleItem' -fields $Fields -arguments $arguments
+            $query = _buildQuery -name 'schedule_items' -objectType 'ScheduleItem' -fields $Fields -arguments $arguments
         } else {
-            $query = _queryableObject -name 'schedule_item' -alias 'schedule_items' -objectType 'ScheduleItem' -fields $Fields -arguments $arguments
+            $query = _buildQuery -name 'schedule_item' -alias 'schedule_items' -objectType 'ScheduleItem' -fields $Fields -arguments $arguments
         }
 
         $request = [Request]::new($query)

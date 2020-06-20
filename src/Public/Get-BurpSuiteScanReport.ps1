@@ -45,7 +45,7 @@ function Get-BurpSuiteScanReport {
         if ($PSBoundParameters.ContainsKey('IncludeFalsePositives')) { $arguments.include_false_positives = $IncludeFalsePositives.IsPresent }
         if ($PSBoundParameters.ContainsKey('Severities')) { $arguments.severities = ,@($Severities) }
 
-        $query = _queryableObject -name 'scan_report' -objectType 'ScanReport' -arguments $arguments
+        $query = _buildQuery -name 'scan_report' -objectType 'ScanReport' -arguments $arguments
 
         $request = [Request]::new($query)
 

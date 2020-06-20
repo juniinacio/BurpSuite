@@ -69,9 +69,9 @@ function Get-BurpSuiteScan {
         if ($PSBoundParameters.ContainsKey('ScanStatus')) { $arguments.scan_status = $ScanStatus }
 
         if ($PSCmdlet.ParameterSetName -eq 'List') {
-            $query = _queryableObject -name 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
+            $query = _buildQuery -name 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
         } else {
-            $query = _queryableObject -name 'scan' -alias 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
+            $query = _buildQuery -name 'scan' -alias 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
         }
 
         $request = [Request]::new($query)
