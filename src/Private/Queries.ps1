@@ -4,6 +4,10 @@ function _buildQueryField {
     $query = [Query]::New($name)
 
     switch ($objectType) {
+        Id {
+            $query.AddField('id') | Out-Null
+        }
+
         Agent {
             $query.AddField('id') | Out-Null
             $query.AddField('name') | Out-Null

@@ -21,6 +21,26 @@ function _buildMutation {
             $fieldName = 'agent'
         }
 
+        Id {
+            $fieldName = 'Id'
+        }
+
+        Folder {
+            $fieldName = 'folder'
+        }
+
+        Site {
+            $fieldName = 'site'
+        }
+
+        ApplicationLogin {
+            $fieldName = 'application_login'
+        }
+
+        EmailRecipient {
+            $fieldName = 'email_recipient'
+        }
+
         default {}
     }
 
