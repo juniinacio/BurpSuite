@@ -36,7 +36,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateSite" `
-                    -and $Request.Query -eq 'mutation CreateSite($input:''CreateSiteInput!'') { create_site(input:''$input'') { site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } } } }' `
+                    -and $Request.Query -eq 'mutation CreateSite($input:''CreateSiteInput!'') { create_site(input:''$input'') { site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } } } }' `
                     -and $Request.Variables.Input.name -eq $name `
                     -and $Request.Variables.Input.parent_id -eq $parentId `
                     -and ($Request.Variables.Input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `

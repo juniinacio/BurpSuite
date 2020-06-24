@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "DeleteScanConfiguration" `
-                    -and $Request.Query -eq 'mutation DeleteScanConfiguration($input:''DeleteScanConfigurationInput!'') { delete_scan_configuration(input:''$input'') { id name } }' `
+                    -and $Request.Query -eq 'mutation DeleteScanConfiguration($input:''DeleteScanConfigurationInput!'') { delete_scan_configuration(input:''$input'') { id } }' `
                     -and $Request.Variables.Input.id -eq 1
             }
         }

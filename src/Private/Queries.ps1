@@ -126,7 +126,7 @@ function _buildQueryField {
 
         ScanConfiguration {
             $query.AddField('id') | Out-Null
-            $query.AddField('name') | Out-Null
+            # $query.AddField('name') | Out-Null
         }
 
         ScanCountsByStatus {

@@ -47,9 +47,9 @@ InModuleScope $env:BHProjectName {
         }
 
         It "should add <FieldName> sub selection field" -TestCases @(
-            @{ FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } }" }
+            @{ FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } }" }
             @{ FieldName = "schedule"; Query = "schedule { initial_run_time rrule }" }
-            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id name }" }
+            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id }" }
         ) {
             # arrange
             Mock -CommandName _callAPI -MockWith {

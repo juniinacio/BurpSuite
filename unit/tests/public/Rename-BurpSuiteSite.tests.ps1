@@ -20,7 +20,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "RenameSite" `
-                    -and $Request.Query -eq 'mutation RenameSite($input:''RenameSiteInput!'') { rename_site(input:''$input'') { site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } } } }' `
+                    -and $Request.Query -eq 'mutation RenameSite($input:''RenameSiteInput!'') { rename_site(input:''$input'') { site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } } } }' `
                     -and $Request.Variables.Input.id -eq 42 `
                     -and $Request.Variables.Input.name -eq "Example Site"
             }

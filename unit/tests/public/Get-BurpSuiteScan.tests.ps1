@@ -83,7 +83,7 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "schedule_item"; Query = "schedule_item { id }" }
             @{ FieldName = "agent"; Query = "agent { id name }" }
             @{ FieldName = "scan_metrics"; Query = "scan_metrics { crawl_request_count unique_location_count audit_request_count crawl_and_audit_progress_percentage }" }
-            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id name }" }
+            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id }" }
             @{ FieldName = "scan_delta"; Query = "scan_delta { new_issue_count repeated_issue_count regressed_issue_count resolved_issue_count }" }
             @{ FieldName = "issue_types"; Query = "issue_types { type_index confidence severity number_of_children first_child_serial_number novelty }" }
             @{ FieldName = "issue_counts"; Query = "issue_counts { total high { total firm tentative certain } medium { total firm tentative certain } low { total firm tentative certain } info { total firm tentative certain } }" }
