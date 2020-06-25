@@ -20,12 +20,12 @@ Describe 'Scan Configuration API' -Tag 'CD' {
 
         Connect-BurpSuite -APIKey $BURPSUITE_APIKEY -Uri $BURPSUITE_URL
 
-        Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.built_in -eq $False } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+        Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteScanConfiguration -Confirm:$false
     }
 
     Context 'New-BurpSuiteScanConfiguration' {
         BeforeEach {
-            $name = 'BurpSuiteCreateScanConfigurationTest'
+            $name = 'Pester - {0}' -f [Guid]::NewGuid()
         }
 
         It 'should create scan configuration' {
@@ -40,13 +40,13 @@ Describe 'Scan Configuration API' -Tag 'CD' {
         }
 
         AfterEach {
-            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.built_in -eq $False } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteScanConfiguration -Confirm:$false
         }
     }
 
     Context 'Remove-BurpSuiteScanConfiguration' {
         BeforeEach {
-            $name = 'BurpSuiteRemoveScanConfigurationTest'
+            $name = 'Pester - {0}' -f [Guid]::NewGuid()
         }
 
         It 'should remove scan configuration' {
@@ -62,7 +62,7 @@ Describe 'Scan Configuration API' -Tag 'CD' {
         }
 
         AfterEach {
-            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.built_in -eq $False } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteScanConfiguration -Confirm:$false
         }
     }
 }
