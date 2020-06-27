@@ -2,12 +2,12 @@ function Get-BurpSuiteIssue {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $ScanId,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $SerialNumber,

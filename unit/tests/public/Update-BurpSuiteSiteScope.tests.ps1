@@ -20,7 +20,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateSiteScope" `
-                    -and $Request.Query -eq 'mutation UpdateSiteScope($input:''UpdateSiteScopeInput!'') { update_site_scope(input:''$input'') { site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } } } }' `
+                    -and $Request.Query -eq 'mutation UpdateSiteScope($input:''UpdateSiteScopeInput!'') { update_site_scope(input:''$input'') { scope { included_urls excluded_urls } } }' `
                     -and $Request.Variables.Input.site_id -eq 42 `
                     -and $Request.Variables.Input.included_urls[0] -eq "http://example.com" `
                     -and $Request.Variables.Input.excluded_urls[0] -eq "http://example.com/foo"

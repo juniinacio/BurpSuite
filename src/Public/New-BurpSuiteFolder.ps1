@@ -26,7 +26,8 @@ function New-BurpSuiteFolder {
 
                 $request = [Request]::new($query, 'CreateFolder', $variables)
 
-                $null = _callAPI -Request $request
+                $response = _callAPI -Request $request
+                $response.data.create_folder.folder
             } catch {
                 throw
             }

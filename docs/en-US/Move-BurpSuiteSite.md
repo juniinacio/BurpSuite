@@ -51,7 +51,7 @@ Specifies the parent folder for the site, use 0 to move to root.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: parent_id
 
 Required: True
 Position: 1
@@ -66,7 +66,7 @@ Specifies the site id.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: id
 
 Required: True
 Position: 0

@@ -105,12 +105,12 @@ Specifies the scan id to download the report.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases:
+Aliases: Id
 
 Required: True
 Position: Named
 Default value: None
-Accept pipeline input: False
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 

@@ -30,7 +30,7 @@ Describe 'Scan Configuration API' -Tag 'CD' {
 
         It 'should create scan configuration' {
             # Arrange
-            $filePath = Join-Path -Path $PSScriptRoot -ChildPath 'mocks\scan_configuration.json'
+            $filePath = Join-Path -Path $PSScriptRoot -ChildPath 'artifacts\scan_configuration.json'
 
             # Act
             New-BurpSuiteScanConfiguration -Name $name -FilePath $filePath
@@ -51,14 +51,40 @@ Describe 'Scan Configuration API' -Tag 'CD' {
 
         It 'should remove scan configuration' {
             # Arrange
-            $filePath = Join-Path -Path $PSScriptRoot -ChildPath 'mocks\scan_configuration.json'
+            $filePath = Join-Path -Path $PSScriptRoot -ChildPath 'artifacts\scan_configuration.json'
             New-BurpSuiteScanConfiguration -Name $name -FilePath $filePath
+            $scanConfiguration = Get-BurpSuiteScanConfiguration -Fields id,name | Where-Object { $_.name -eq $name }
 
             # Act
-            Get-BurpSuiteScanConfiguration -Fields id | Where-Object { $_.name -eq $name } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+            $scanConfiguration | Remove-BurpSuiteScanConfiguration -Confirm:$false
 
             # Assert
             Get-BurpSuiteScanConfiguration -Fields id | Where-Object { $_.name -eq $name } | Should -BeNullOrEmpty
+        }
+
+        AfterEach {
+            Get-BurpSuiteScanConfiguration -Fields id, name, built_in | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteScanConfiguration -Confirm:$false
+        }
+    }
+
+    Context 'Update-BurpSuiteScanConfiguration' {
+        BeforeEach {
+            $name = 'Pester - {0}' -f [Guid]::NewGuid()
+        }
+
+        It 'should update scan configuration' {
+            # Arrange
+            $filePath = Join-Path -Path $PSScriptRoot -ChildPath 'artifacts\scan_configuration.json'
+            New-BurpSuiteScanConfiguration -Name $name -FilePath $filePath
+            $scanConfiguration = Get-BurpSuiteScanConfiguration -Fields id,name | Where-Object { $_.name -eq $name }
+
+            $newName = 'Pester - {0}' -f [Guid]::NewGuid()
+
+            # Act
+            Update-BurpSuiteScanConfiguration -Id $scanConfiguration.id -Name $newName -Confirm:$false
+
+            # Assert
+            Get-BurpSuiteScanConfiguration -Fields id | Where-Object { $_.name -eq $newName } | Should -BeNullOrEmpty
         }
 
         AfterEach {

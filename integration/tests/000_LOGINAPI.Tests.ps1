@@ -25,9 +25,10 @@ InModuleScope BurpSuite {
                 # Arrange
 
                 # Act
-                { Connect-BurpSuite -APIKey $BURPSUITE_APIKEY -Uri $BURPSUITE_URL } | Should -Not -Throw
+                $assert = Connect-BurpSuite -APIKey $BURPSUITE_APIKEY -Uri $BURPSUITE_URL -PassThru
 
                 # Assert
+                $assert.__schema | Should -Not -BeNullOrEmpty
             }
         }
 
@@ -38,6 +39,7 @@ InModuleScope BurpSuite {
                 # Act
 
                 # Assert
+                { Disconnect-BurpSuite} | Should -Not -Throw
             }
         }
     }

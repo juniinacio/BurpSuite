@@ -19,7 +19,7 @@ function Update-BurpSuiteSiteScope {
 
     process {
 
-        $query = _buildMutation -queryName 'UpdateSiteScope' -inputType 'UpdateSiteScopeInput!' -name 'update_site_scope' -returnType 'Site'
+        $query = _buildMutation -queryName 'UpdateSiteScope' -inputType 'UpdateSiteScopeInput!' -name 'update_site_scope' -returnType 'Scope'
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {

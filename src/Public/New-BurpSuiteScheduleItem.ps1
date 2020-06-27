@@ -41,7 +41,8 @@ function New-BurpSuiteScheduleItem {
 
                 $request = [Request]::new($query, 'CreateScheduleItem', $variables)
 
-                $null = _callAPI -Request $request
+                $response = _callAPI -Request $request
+                $response.data.create_schedule_item.schedule_item
             } catch {
                 throw
             }

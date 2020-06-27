@@ -3,10 +3,12 @@ function Move-BurpSuiteSite {
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
+        [Alias('id')]
         [string] $SiteId,
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
+        [Alias('parent_id')]
         [string] $ParentId
     )
 

@@ -41,7 +41,7 @@ function _callAPI {
     $convertToJsonArgs = @{}
     if (_testIsPowerShellCore) { $convertToJsonArgs['Compress'] = $true }
 
-    $body = _preProcessRequest -Request $Request | ConvertTo-Json @convertToJsonArgs -Depth 3
+    $body = _preProcessRequest -Request $Request | ConvertTo-Json @convertToJsonArgs -Depth 5
 
     $params['body'] = $body
     Write-Verbose $body
@@ -57,6 +57,7 @@ function _callAPI {
         $aggregate = [AggregateException]::new("One or more errors occurred while querying BurpSuite.", $exceptions)
         throw $aggregate
     } else {
+        Write-Verbose $($response | ConvertTo-Json)
         $response
     }
 }

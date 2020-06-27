@@ -3,8 +3,9 @@ function Get-BurpSuiteScanReport {
         SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
+        [Alias('Id')]
         [string]
         $ScanId,
 

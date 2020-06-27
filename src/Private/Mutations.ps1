@@ -41,6 +41,10 @@ function _buildMutation {
             $fieldName = 'email_recipient'
         }
 
+        Scope {
+            $fieldName = 'scope'
+        }
+
         default {}
     }
 
