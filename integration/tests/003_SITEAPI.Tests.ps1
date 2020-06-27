@@ -170,7 +170,7 @@ Describe 'Site API' -Tag 'CD' {
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object {$_.name -eq "Audit checks - all except JavaScript analysis"}
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
-            New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id -ApplicationLogins $applicationLogin
+            New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
 
