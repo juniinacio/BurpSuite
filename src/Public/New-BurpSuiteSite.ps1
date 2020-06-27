@@ -11,11 +11,7 @@ function New-BurpSuiteSite {
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
-        [string[]] $IncludedUrls,
-
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
-        [AllowEmptyCollection()]
-        [string[]] $ExcludedUrls,
+        [psobject] $Scope,
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
@@ -23,11 +19,11 @@ function New-BurpSuiteSite {
 
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
-        [string[]] $EmailRecipients
+        [psobject[]] $EmailRecipients,
 
-        # [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
-        # [ValidateNotNullOrEmpty()]
-        # [hashtable[]] $ApplicationLogins
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+        [ValidateNotNullOrEmpty()]
+        [psobject[]] $ApplicationLogins
     )
 
     begin {
@@ -44,11 +40,21 @@ function New-BurpSuiteSite {
                 $variables.input.name = $Name
                 $variables.input.parent_id = $ParentId
 
-                if ($PSBoundParameters.ContainsKey('IncludedUrls') -or $PSBoundParameters.ContainsKey('ExcludedUrls')) {
-                    $scope = @{ included_urls = @(); excluded_urls = @() }
-                    $scope.included_urls = $IncludedUrls
-                    if ($PSBoundParameters.ContainsKey('ExcludedUrls')) { $scope.excluded_urls = $ExcludedUrls }
-                    $variables.input.scope = $scope
+                if ($PSBoundParameters.ContainsKey('Scope')) {
+                    $scopeInput = @{ included_urls = @(); excluded_urls = @() }
+
+                    $includedUrls = _getObjectProperty -InputObject $Scope -PropertyName 'IncludedUrls'
+                    if ($null -eq $includedUrls) {
+                        throw "Property 'IncludedUrls' is required when specifying scope object."
+                    }
+                    $scopeInput.included_urls = @($includedUrls)
+
+                    $excludedUrls = _getObjectProperty -InputObject $Scope -PropertyName 'ExcludedUrls'
+                    if ($null -ne $excludedUrls) {
+                        $scopeInput.excluded_urls = @($excludedUrls)
+                    }
+
+                    $variables.input.scope = $scopeInput
                 }
 
                 # if ($PSBoundParameters.ContainsKey('ApplicationLogins')) {
@@ -59,7 +65,39 @@ function New-BurpSuiteSite {
                 $variables.input.scan_configuration_ids = $ScanConfigurationIds
 
                 if ($PSBoundParameters.ContainsKey('EmailRecipients')) {
-                    $variables.input.email_recipients = @($EmailRecipients.ForEach( { [PSCustomObject]@{email = $_ } }))
+                    $emailRecipientInput = @()
+
+                    foreach ($emailRecipient in $EmailRecipients) {
+                        $email = _getObjectProperty -InputObject $emailRecipient -PropertyName 'Email'
+                        if ($null -eq $email) {
+                            throw "Property 'Email' is required when specifying email recipient objects."
+                        }
+                        $emailRecipientInput += $emailRecipient
+                    }
+
+                    $variables.input.email_recipients = $emailRecipientInput
+                }
+
+                if ($PSBoundParameters.ContainsKey('ApplicationLogins')) {
+                    $applicationLoginInput = @()
+
+                    foreach ($applicationLogin in $ApplicationLogins) {
+                        $label = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Label'
+                        if ($null -eq $label) {
+                            throw "Property 'Label' is required when specifying application login objects."
+                        }
+                        $username = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Username'
+                        if ($null -eq $username) {
+                            throw "Property 'Username' is required when specifying application login objects."
+                        }
+                        $password = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Password'
+                        if ($null -eq $password) {
+                            throw "Property 'Password' is required when specifying application login objects."
+                        }
+                        $applicationLoginInput += $applicationLogin
+                    }
+
+                    $variables.input.application_logins = $applicationLoginInput
                 }
 
                 $request = [Request]::new($query, 'CreateSite', $variables)

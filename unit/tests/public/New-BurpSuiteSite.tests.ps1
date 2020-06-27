@@ -4,19 +4,21 @@ InModuleScope $env:BHProjectName {
             # arrange
             $name = "Example Site"
             $parentId = 0
-            $scope = @{
-                included_urls = @("http://example.com")
-                excluded_urls = @()
+            $scope = [PSCustomObject]@{
+                IncludedUrls = @("http://example.com")
+                ExcludedUrls = @()
             }
-            # $applicationLogins = @(
-            #     @{
-            #         label = "http://example.com"
-            #         username = "foo"
-            #         password = "bar"
-            #     }
-            # )
+            $emailRecipients = @([PSCustomObject]@{
+                Email = "foo@example.com"
+            })
+            $applicationLogins = @(
+                [PSCustomObject]@{
+                    Label = "Admin"
+                    Username = "admin"
+                    Password = "ChangeMe"
+                }
+            )
             $scanConfigurationIds = "1"
-            $emailRecipients = "foo@example.com"
 
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
@@ -31,7 +33,7 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            New-BurpSuiteSite -Name $name -ParentId $parentId -IncludedUrls $scope.included_urls  -ExcludedUrls $scope.excluded_urls -ScanConfigurationIds $scanConfigurationIds -EmailRecipients $emailRecipients -Confirm:$false
+            New-BurpSuiteSite -Name $name -ParentId $parentId -Scope $scope -ScanConfigurationIds $scanConfigurationIds -EmailRecipients $emailRecipients -ApplicationLogins $applicationLogins -Confirm:$false
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -40,12 +42,12 @@ InModuleScope $env:BHProjectName {
                     -and $Request.Variables.Input.name -eq $name `
                     -and $Request.Variables.Input.parent_id -eq $parentId `
                     -and ($Request.Variables.Input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
-                    -and $Request.Variables.Input.email_recipients[0].email -eq $emailRecipients `
-                    -and ($Request.Variables.Input.scope.included_urls -join ',') -eq ($scope.included_urls -join ',') `
-                    -and ($Request.Variables.Input.scope.excluded_urls -join ',') -eq ($scope.excluded_urls -join ',') `
-                    # -and $Request.Variables.Input.application_logins[0].label -eq $applicationLogins.label `
-                    # -and $Request.Variables.Input.application_logins[0].username -eq $applicationLogins.username `
-                    # -and $Request.Variables.Input.application_logins[0].password -eq $applicationLogins.password
+                    -and $Request.Variables.Input.email_recipients[0].email -eq $emailRecipients[0].email `
+                    -and ($Request.Variables.Input.scope.included_urls -join ',') -eq ($scope.IncludedUrls -join ',') `
+                    -and ($Request.Variables.Input.scope.excluded_urls -join ',') -eq ($scope.ExcludedUrls -join ',') `
+                    -and $Request.Variables.Input.application_logins[0].label -eq $applicationLogins[0].label `
+                    -and $Request.Variables.Input.application_logins[0].username -eq $applicationLogins[0].username `
+                    -and $Request.Variables.Input.application_logins[0].password -eq $applicationLogins[0].password
             }
         }
     }
