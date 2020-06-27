@@ -44,23 +44,14 @@ function New-BurpSuiteSite {
                     $scopeInput = @{ included_urls = @(); excluded_urls = @() }
 
                     $includedUrls = _getObjectProperty -InputObject $Scope -PropertyName 'IncludedUrls'
-                    if ($null -eq $includedUrls) {
-                        throw "Property 'IncludedUrls' is required when specifying scope object."
-                    }
+                    if ($null -eq $includedUrls) { throw "Property 'IncludedUrls' is required when specifying scope object." }
                     $scopeInput.included_urls = @($includedUrls)
 
                     $excludedUrls = _getObjectProperty -InputObject $Scope -PropertyName 'ExcludedUrls'
-                    if ($null -ne $excludedUrls) {
-                        $scopeInput.excluded_urls = @($excludedUrls)
-                    }
+                    if ($null -ne $excludedUrls) { $scopeInput.excluded_urls = @($excludedUrls) }
 
                     $variables.input.scope = $scopeInput
                 }
-
-                # if ($PSBoundParameters.ContainsKey('ApplicationLogins')) {
-                #     $variables.input.application_logins = $ApplicationLogins
-                # }
-                $variables.input.application_logins = @()
 
                 $variables.input.scan_configuration_ids = $ScanConfigurationIds
 
@@ -69,10 +60,8 @@ function New-BurpSuiteSite {
 
                     foreach ($emailRecipient in $EmailRecipients) {
                         $email = _getObjectProperty -InputObject $emailRecipient -PropertyName 'Email'
-                        if ($null -eq $email) {
-                            throw "Property 'Email' is required when specifying email recipient objects."
-                        }
-                        $emailRecipientInput += $emailRecipient
+                        if ($null -eq $email) { throw "Property 'Email' is required when specifying email recipient objects." }
+                        $emailRecipientInput += @{ email = $emailRecipient }
                     }
 
                     $variables.input.email_recipients = $emailRecipientInput
@@ -83,18 +72,15 @@ function New-BurpSuiteSite {
 
                     foreach ($applicationLogin in $ApplicationLogins) {
                         $label = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Label'
-                        if ($null -eq $label) {
-                            throw "Property 'Label' is required when specifying application login objects."
-                        }
+                        if ($null -eq $label) { throw "Property 'Label' is required when specifying application login objects." }
+
                         $username = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Username'
-                        if ($null -eq $username) {
-                            throw "Property 'Username' is required when specifying application login objects."
-                        }
+                        if ($null -eq $username) { throw "Property 'Username' is required when specifying application login objects." }
+
                         $password = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Password'
-                        if ($null -eq $password) {
-                            throw "Property 'Password' is required when specifying application login objects."
-                        }
-                        $applicationLoginInput += $applicationLogin
+                        if ($null -eq $password) { throw "Property 'Password' is required when specifying application login objects." }
+
+                        $applicationLoginInput += @{ label = $label; username = $username; password = $password }
                     }
 
                     $variables.input.application_logins = $applicationLoginInput
