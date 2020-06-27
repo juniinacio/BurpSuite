@@ -60,7 +60,7 @@ InModuleScope $env:BHProjectName {
             }
         }
 
-        It "should create schedule item with initial run time" {
+        It "should update schedule item with initial run time" {
             # arrange
             $id = 1
             $scanConfigurationIds = '2d83ee78-3a5f-401d-b745-a7b36660ebbe', '388b2cf5-542c-4c66-a8f4-705bf9b1ae23'
@@ -76,8 +76,12 @@ InModuleScope $env:BHProjectName {
                 }
             }
 
+            $schedule = [PSCustomObject]@{
+                InitialRunTime = $initialRunTime
+            }
+
             # act
-            Update-BurpSuiteScheduleItem -Id $id -ScanConfigurationIds $scanConfigurationIds -InitialRunTime $initialRunTime
+            Update-BurpSuiteScheduleItem -Id $id -ScanConfigurationIds $scanConfigurationIds -Schedule $schedule
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -85,11 +89,12 @@ InModuleScope $env:BHProjectName {
                     -and $Request.Query -eq 'mutation UpdateScheduleItem($input:''UpdateScheduleItemInput!'') { update_schedule_item(input:''$input'') { schedule_item { id } } }' `
                     -and $Request.Variables.input.id -eq $id `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
-                    -and $Request.Variables.input.schedule.initial_run_time -eq $initialRunTime
+                    -and $Request.Variables.input.schedule.initial_run_time -eq $initialRunTime `
+                    -and $Request.Variables.input.schedule.initial_run_time_is_set -eq "true"
             }
         }
 
-        It "should create schedule item with recurrence rule" {
+        It "should update schedule item with recurrence rule" {
             # arrange
             $id = 1
             $scanConfigurationIds = '2d83ee78-3a5f-401d-b745-a7b36660ebbe', '388b2cf5-542c-4c66-a8f4-705bf9b1ae23'
@@ -105,8 +110,12 @@ InModuleScope $env:BHProjectName {
                 }
             }
 
+            $schedule = [PSCustomObject]@{
+                RRule = $RecurrenceRule
+            }
+
             # act
-            Update-BurpSuiteScheduleItem -Id $id -ScanConfigurationIds $scanConfigurationIds -RecurrenceRule $recurrenceRule
+            Update-BurpSuiteScheduleItem -Id $id -ScanConfigurationIds $scanConfigurationIds -Schedule $schedule
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -114,6 +123,7 @@ InModuleScope $env:BHProjectName {
                     -and $Request.Query -eq 'mutation UpdateScheduleItem($input:''UpdateScheduleItemInput!'') { update_schedule_item(input:''$input'') { schedule_item { id } } }' `
                     -and $Request.Variables.input.id -eq $id `
                     -and $Request.Variables.input.schedule.rrule -eq $recurrenceRule `
+                    -and $Request.Variables.input.schedule.rrule_is_set -eq "true" `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
             }
         }

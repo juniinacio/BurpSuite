@@ -45,8 +45,12 @@ InModuleScope $env:BHProjectName {
                 }
             }
 
+            $schedule = [PSCustomObject]@{
+                InitialRunTime = $initialRunTime
+            }
+
             # act
-            New-BurpSuiteScheduleItem -SiteId $siteId -ScanConfigurationIds $scanConfigurationIds -InitialRunTime $initialRunTime
+            New-BurpSuiteScheduleItem -SiteId $siteId -ScanConfigurationIds $scanConfigurationIds -Schedule $schedule
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -74,8 +78,12 @@ InModuleScope $env:BHProjectName {
                 }
             }
 
+            $schedule = [PSCustomObject]@{
+                RRule = $RecurrenceRule
+            }
+
             # act
-            New-BurpSuiteScheduleItem -SiteId $siteId -ScanConfigurationIds $scanConfigurationIds -RecurrenceRule $recurrenceRule
+            New-BurpSuiteScheduleItem -SiteId $siteId -ScanConfigurationIds $scanConfigurationIds -Schedule $schedule
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {

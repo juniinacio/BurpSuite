@@ -15,11 +15,7 @@ function Update-BurpSuiteScheduleItem {
 
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $InitialRunTime,
-
-        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $RecurrenceRule
+        [psobject] $Schedule
     )
 
     begin {
@@ -38,11 +34,22 @@ function Update-BurpSuiteScheduleItem {
 
                 if ($PSBoundParameters.ContainsKey('SiteId')) { $variables.input.site_id = $SiteId }
 
-                if ($PSBoundParameters.ContainsKey('InitialRunTime') -or $PSBoundParameters.ContainsKey('RecurrenceRule')) {
-                    $schedule = @{}
-                    if ($PSBoundParameters.ContainsKey('InitialRunTime')) { $schedule.initial_run_time = $InitialRunTime }
-                    if ($PSBoundParameters.ContainsKey('RecurrenceRule')) { $schedule.rrule = $RecurrenceRule }
-                    $variables.input.schedule = $schedule
+                if ($PSBoundParameters.ContainsKey('Schedule')) {
+                    $scheduleInput = @{}
+
+                    $initialRunTime = _getObjectProperty -InputObject $Schedule -PropertyName 'InitialRunTime'
+                    if ($null -ne $initialRunTime) {
+                        $scheduleInput.initial_run_time = $initialRunTime
+                        $scheduleInput.initial_run_time_is_set = "true"
+                    }
+
+                    $recurrenceRule = _getObjectProperty -InputObject $Schedule -PropertyName 'RRule'
+                    if ($null -ne $recurrenceRule) {
+                        $scheduleInput.rrule = $recurrenceRule
+                        $scheduleInput.rrule_is_set = "true"
+                    }
+
+                    $variables.input.schedule = $scheduleInput
                 }
 
                 $request = [Request]::new($query, 'UpdateScheduleItem', $variables)

@@ -13,8 +13,8 @@ Creates schedule items.
 ## SYNTAX
 
 ```
-New-BurpSuiteScheduleItem [-SiteId] <String> [-ScanConfigurationIds] <String[]> [[-InitialRunTime] <String>]
- [[-RecurrenceRule] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+New-BurpSuiteScheduleItem [-SiteId] <String> [-ScanConfigurationIds] <String[]> [[-Schedule] <PSObject>]
+ [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,14 +31,16 @@ This example shows how to create a schedule item to scan a site with id 14. The 
 
 ### Example 2
 ```powershell
-PS C:\> New-BurpSuiteScheduleItem -SiteId 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -InitialRunTime (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o)
+PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o) }
+PS C:\> New-BurpSuiteScheduleItem -SiteId 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -Schedule $schedule
 ```
 
 This example shows how to create a schedule item to start a scan over 5 seconds.
 
 ### Example 3
 ```powershell
-PS C:\> New-BurpSuiteScheduleItem -SiteId 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -InitialRunTime (Get-Date -Date ([DateTime]::UtcNow.AddHours(1)) -Format o) -RecurrenceRule 'FREQ=DAILY;INTERVAL=1'
+PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = ([DateTime]::UtcNow.AddHours(1)) -Format o); RRule = 'FREQ=DAILY;INTERVAL=1' }
+PS C:\> New-BurpSuiteScheduleItem -SiteId 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -Schedule $schedule
 ```
 
 This example shows how to create a schedule item to start a scan over 1 hour and repeat every day.
@@ -60,36 +62,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InitialRunTime
-Specifies the initial run time for the scedule.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -RecurrenceRule
-Specifies the recurrence rule for the schedule in RRULE format.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -ScanConfigurationIds
 Specifies the scan configurations for the schedule.
 
@@ -100,6 +72,21 @@ Aliases:
 
 Required: True
 Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Schedule
+Specifies a schedule item input. Supply a PSCustomObject containing the following properties: `InitialRunTime`, `RRule`.
+
+```yaml
+Type: PSObject
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
