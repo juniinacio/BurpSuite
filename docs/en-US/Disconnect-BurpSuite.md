@@ -8,7 +8,7 @@ schema: 2.0.0
 # Disconnect-BurpSuite
 
 ## SYNOPSIS
-Removes current BurpSuite session.
+Disconnects the module from BurpSuite Enterprise.
 
 ## SYNTAX
 
@@ -17,7 +17,7 @@ Disconnect-BurpSuite [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Removes current BurpSuite session.
+Disconnects the module from BurpSuite Enterprise.
 
 ## EXAMPLES
 
