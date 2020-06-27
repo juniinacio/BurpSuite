@@ -61,7 +61,7 @@ function New-BurpSuiteSite {
                     foreach ($emailRecipient in $EmailRecipients) {
                         $email = _getObjectProperty -InputObject $emailRecipient -PropertyName 'Email'
                         if ($null -eq $email) { throw "Property 'Email' is required when specifying email recipient objects." }
-                        $emailRecipientInput += @{ email = $emailRecipient }
+                        $emailRecipientInput += @{ email = $email }
                     }
 
                     $variables.input.email_recipients = $emailRecipientInput

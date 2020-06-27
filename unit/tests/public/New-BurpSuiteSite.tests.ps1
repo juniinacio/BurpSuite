@@ -4,14 +4,16 @@ InModuleScope $env:BHProjectName {
             # arrange
             $name = "Example Site"
             $parentId = 0
-            $scope = [PSCustomObject]@{
+            $scopeInput = [PSCustomObject]@{
                 IncludedUrls = @("http://example.com")
                 ExcludedUrls = @()
             }
-            $emailRecipients = @([PSCustomObject]@{
-                Email = "foo@example.com"
-            })
-            $applicationLogins = @(
+            $emailRecipientInput = @(
+                [PSCustomObject]@{
+                    Email = "foo@example.com"
+                }
+            )
+            $applicationLoginInput = @(
                 [PSCustomObject]@{
                     Label = "Admin"
                     Username = "admin"
@@ -33,7 +35,7 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            New-BurpSuiteSite -Name $name -ParentId $parentId -Scope $scope -ScanConfigurationIds $scanConfigurationIds -EmailRecipients $emailRecipients -ApplicationLogins $applicationLogins -Confirm:$false
+            New-BurpSuiteSite -Name $name -ParentId $parentId -Scope $scopeInput -ScanConfigurationIds $scanConfigurationIds -EmailRecipients $emailRecipientInput -ApplicationLogins $applicationLoginInput -Confirm:$false
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
@@ -42,12 +44,12 @@ InModuleScope $env:BHProjectName {
                     -and $Request.Variables.Input.name -eq $name `
                     -and $Request.Variables.Input.parent_id -eq $parentId `
                     -and ($Request.Variables.Input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
-                    -and $Request.Variables.Input.email_recipients[0].email -eq $emailRecipients[0].email `
-                    -and ($Request.Variables.Input.scope.included_urls -join ',') -eq ($scope.IncludedUrls -join ',') `
-                    -and ($Request.Variables.Input.scope.excluded_urls -join ',') -eq ($scope.ExcludedUrls -join ',') `
-                    -and $Request.Variables.Input.application_logins[0].label -eq $applicationLogins[0].label `
-                    -and $Request.Variables.Input.application_logins[0].username -eq $applicationLogins[0].username `
-                    -and $Request.Variables.Input.application_logins[0].password -eq $applicationLogins[0].password
+                    -and $Request.Variables.Input.email_recipients[0].email -eq $emailRecipientInput[0].email `
+                    -and ($Request.Variables.Input.scope.included_urls -join ',') -eq ($scopeInput.IncludedUrls -join ',') `
+                    -and ($Request.Variables.Input.scope.excluded_urls -join ',') -eq ($scopeInput.ExcludedUrls -join ',') `
+                    -and $Request.Variables.Input.application_logins[0].label -eq $applicationLoginInput[0].label `
+                    -and $Request.Variables.Input.application_logins[0].username -eq $applicationLoginInput[0].username `
+                    -and $Request.Variables.Input.application_logins[0].password -eq $applicationLoginInput[0].password
             }
         }
     }
