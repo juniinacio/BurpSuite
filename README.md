@@ -60,6 +60,35 @@ Builds the module, installs needed dependencies, runs unit tests and also builds
 .\build.ps1 -Bootstrap
 ```
 
+## Using Module
+
+### Getting started with BurpSuite
+
+Before you can start using the cmdlets in this module you will need to create a API key in the BurpSuite Enterprise UI. After getting the API key the first step is to connect the module with BurpSuite, this can be done using the following cmdlet.
+```powershell
+Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+```
+
+After connecting the module with your BurpSuite Enterprise server, you can do a number of actions using the cmdlets available in this module. To list available commands in the module use `Get-Command -Module BurpSuite`.
+
+To list sites and folder on BurpSuite use the following command.
+
+```powershell
+Get-BurpSuiteSiteTree
+```
+
+To list al scan configurations.
+```powershell
+Get-BurpSuiteScanConfiguration
+```
+
+To create a new site.
+```powershell
+$scope = [PSCustomObject]@{
+    IncludedUrls = @("http://example.com")
+}
+New-BurpSuiteSite -Name "www.example.com" -Scope $scope -ScanConfigurationIds '1232asdf23234f'
+```
 
 ## Contributors
 
