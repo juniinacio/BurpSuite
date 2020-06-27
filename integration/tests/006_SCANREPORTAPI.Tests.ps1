@@ -21,7 +21,7 @@ Describe 'Scan Report API' -Tag 'CD' {
         Connect-BurpSuite -APIKey $BURPSUITE_APIKEY -Uri $BURPSUITE_URL
     }
 
-    Context 'Stop-BurpSuiteScan' {
+    Context 'Get-BurpSuiteScanReport' {
         BeforeAll {
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Crawl limit - 10 minutes" }
             $name = 'Pester - {0}' -f [Guid]::NewGuid()
@@ -52,22 +52,22 @@ Describe 'Scan Report API' -Tag 'CD' {
 
 
             # Assert
-            $assert | Should -BeLike '<html>*'
+            $assert.report_html | Should -BeLike '<html>*'
         }
 
-        It 'should download scan report' {
-            # Arrange
-            $outFile = Join-Path -Path $TestDrive -ChildPath 'scan_report.html'
+        # It 'should download scan report' {
+        #     # Arrange
+        #     $outFile = Join-Path -Path $TestDrive -ChildPath 'scan_report.html'
 
-            $scan = Get-BurpSuiteScan -Fields id, site_id, status | Where-Object { $_.site_id -eq $site.id }
+        #     $scan = Get-BurpSuiteScan -Fields id, site_id, status | Where-Object { $_.site_id -eq $site.id }
 
-            # Act
-            $scan | Get-BurpSuiteScanReport -OutFile $outFile
+        #     # Act
+        #     $scan | Get-BurpSuiteScanReport -OutFile $outFile
 
 
-            # Assert
-            $outFile | Should -FileContentMatch '<html>'
-        }
+        #     # Assert
+        #     $outFile | Should -FileContentMatch '^<html>'
+        # }
 
         AfterEach {
             Get-BurpSuiteScan -Fields id, site_id, status | Where-Object { ($_.site_id -eq $site.Id) -and ($_.status -in @("running", "queued")) } | Stop-BurpSuiteScan -Confirm:$false
