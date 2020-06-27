@@ -7,3 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.0.0] Unreleased
 
+## [1.1.0] - 2020-06-27
+### Added
+- Add support for BurpSuite mutations.
