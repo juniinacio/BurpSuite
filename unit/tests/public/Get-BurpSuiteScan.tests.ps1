@@ -5,7 +5,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        scan = [PSCustomObject]@{
+                        scans = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -17,9 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScan" `
-                    -and $GraphRequest.Query -like 'query GetScan($id:ID!) { scan(id:$id) { * } }' `
-                    -and $GraphRequest.Variables.id -eq 1
+                $Request.Query -like "query { scans:scan(id:'1') { * } }"
             }
         }
 
@@ -42,13 +40,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScans" `
-                    -and $GraphRequest.Query -match '^query GetScans\(\$offset:Int,\$limit:Int,\$sort_column:ScansSortColumn,\$sort_order:SortOrder,\$scan_status:\[ScanStatus\]\) { scans\(offset:\$offset,limit:\$limit,sort_column:\$sort_column,sort_order:\$sort_order,scan_status:\$scan_status\) { .+ } }$' `
-                    -and $GraphRequest.Variables.offset -eq 1 `
-                    -and $GraphRequest.Variables.limit -eq 1 `
-                    -and $GraphRequest.Variables.sort_column -eq 'start' `
-                    -and $GraphRequest.Variables.sort_order -eq 'asc' `
-                    -and ($GraphRequest.Variables.scan_status -join ',') -eq (@('queued') -join ',')
+                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:'queued',sort_column:'start',sort_order:'asc') { * } }"
             }
         }
 
@@ -69,7 +61,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        scan = [PSCustomObject]@{
+                        scans = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -83,7 +75,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScan(`$id:ID!) { scan(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query { scans:scan(id:'1') {* $FieldName *} }"
             }
         }
 
@@ -91,7 +83,7 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "schedule_item"; Query = "schedule_item { id }" }
             @{ FieldName = "agent"; Query = "agent { id name }" }
             @{ FieldName = "scan_metrics"; Query = "scan_metrics { crawl_request_count unique_location_count audit_request_count crawl_and_audit_progress_percentage }" }
-            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id name }" }
+            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id }" }
             @{ FieldName = "scan_delta"; Query = "scan_delta { new_issue_count repeated_issue_count regressed_issue_count resolved_issue_count }" }
             @{ FieldName = "issue_types"; Query = "issue_types { type_index confidence severity number_of_children first_child_serial_number novelty }" }
             @{ FieldName = "issue_counts"; Query = "issue_counts { total high { total firm tentative certain } medium { total firm tentative certain } low { total firm tentative certain } info { total firm tentative certain } }" }
@@ -122,7 +114,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScans { scans { *$query* } }"
+                $Request.Query -like "query { scans { *$query* } }"
             }
         }
     }

@@ -3,7 +3,7 @@ function Remove-BurpSuiteScanConfiguration {
         ConfirmImpact = 'High')]
     Param (
         [Parameter(Mandatory = $true,
-        ValueFromPipelineByPropertyName = $true)]
+            ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Id
@@ -14,15 +14,16 @@ function Remove-BurpSuiteScanConfiguration {
 
     process {
 
-        $graphRequest = _buildDeleteScanConfigurationQuery -Parameters $PSBoundParameters
+        $query = _buildMutation -queryName 'DeleteScanConfiguration' -inputType 'DeleteScanConfigurationInput!' -name 'delete_scan_configuration' -returnType 'ScanConfiguration' -returnTypeField
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -GraphRequest $graphRequest
-                $data = _getObjectProperty -InputObject $response -PropertyName 'data'
-                if ($null -ne $data) {
-                    $data.delete_scan_configuration
-                }
+                $variables = @{ input = @{} }
+                $variables.input.id = $Id
+
+                $request = [Request]::new($query, 'DeleteScanConfiguration', $variables)
+
+                $null = _callAPI -Request $Request
             } catch {
                 throw
             }

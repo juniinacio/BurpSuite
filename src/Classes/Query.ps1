@@ -1,4 +1,4 @@
-class Query: IQuery {
+class Query {
     [string] $Name
     [string] $AliasName
     [Dictionary[string, object]] $Arguments = [Dictionary[string, object]]::new()
@@ -10,36 +10,27 @@ class Query: IQuery {
         $this.Name = $newName
     }
 
-    # [Query] Alias([string] $alias) {
-    #     $this.AliasName = $alias
-    #     return $this
-    # }
+    [void] SetAlias([string] $alias) {
+        $this.AliasName = $alias
+    }
 
     [string] Build() {
         $this.QueryStringBuilder.Clear()
         return $this.QueryStringBuilder.Build($this)
     }
 
-    [Query] AddArgument([string] $key, [object] $value) {
+    [void] AddArgument([string] $key, [object] $value) {
         $this.Arguments.Add($key, $value)
-        return $this
     }
 
-    [Query] AddField([string] $field) {
+    [void] AddField([string] $field) {
         $this.Fields.Add($field)
-        return $this
     }
 
-    [Query] AddField($query) {
+    [void] AddField($query) {
         $this.Fields.Add($query)
-        return $this
     }
 
-    # [Query] AddField([string] $field, [Query] $query) {
-    #     $subQuery = [Query]::New($field)
-    #     $subQuery.AddField($query)
-    #     $this.Fields.Add($subQuery)
-    #     return $this
-    # }
+    [string] ToString() { return $this.Build() }
 }
 

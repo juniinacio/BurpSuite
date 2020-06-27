@@ -21,7 +21,7 @@ function _callAPI {
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [object]
-        $GraphRequest
+        $Request
     )
 
     _assertAPIKey
@@ -41,13 +41,25 @@ function _callAPI {
     $convertToJsonArgs = @{}
     if (_testIsPowerShellCore) { $convertToJsonArgs['Compress'] = $true }
 
-    $body = _preProcessRequest -GraphRequest $GraphRequest | ConvertTo-Json @convertToJsonArgs
+    $body = _preProcessRequest -Request $Request | ConvertTo-Json @convertToJsonArgs -Depth 5
 
     $params['body'] = $body
+    Write-Verbose $body
 
     if (_testIsPowerShellCore) { $params.Add('SkipCertificateCheck', $true) }
 
-    Invoke-RestMethod @params
+    $response = Invoke-RestMethod @params
+    if ((_testObjectProperty -InputObject $response -PropertyName 'errors')) {
+        $exceptions = @()
+        foreach ($e in $response.errors) {
+            $exceptions += [Exception]::New($e.message)
+        }
+        $aggregate = [AggregateException]::new("One or more errors occurred while querying BurpSuite.", $exceptions)
+        throw $aggregate
+    } else {
+        Write-Verbose $($response | ConvertTo-Json)
+        $response
+    }
 }
 
 function _removeSession {
@@ -83,7 +95,7 @@ function _uregisterAccelerators {
     )
 
     [ReflectionCache]::TypeAccelerators::Remove(
-        'BurpSuiteGraphRequest')
+        'BurpSuiteRequest')
 }
 
 function _preProcessRequest {
@@ -91,7 +103,7 @@ function _preProcessRequest {
     Param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [Alias('GraphRequest')]
+        [Alias('Request')]
         [object]
         $InputObject
     )

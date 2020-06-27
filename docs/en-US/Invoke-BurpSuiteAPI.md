@@ -14,7 +14,7 @@ Invokes BurpSuite GraphQL API.
 
 ### Default (Default)
 ```
-Invoke-BurpSuiteAPI -GraphRequest <Object> [-WhatIf] [-Confirm] [<CommonParameters>]
+Invoke-BurpSuiteAPI -Request <Object> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### FreeForm
@@ -29,24 +29,24 @@ Invokes BurpSuite GraphQL API.
 
 ### Example 1
 ```powershell
-PS C:\> $graphRequest = [BurpSuiteGraphRequest]::new('query GetAgents { agents { id name state enabled } }')
-PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
+PS C:\> $graphRequest = [BurpSuiteRequest]::new('query GetAgents { agents { id name state enabled } }')
+PS C:\> Invoke-BurpSuiteAPI -Request $graphRequest -Confirm:$false
 ```
 
 This example shows how to use Invoke-BurpSuiteAPI to query BurpSuite agents.
 
 ### Example 2
 ```powershell
-PS C:\> $graphRequest = [BurpSuiteGraphRequest]::new('query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }')
+PS C:\> $graphRequest = [BurpSuiteRequest]::new('query GetAgent($id:ID!) { agent(id:$id) { id name state enabled } }')
 PS C:\> $graphRequest.Variables.id = 1
-PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
+PS C:\> Invoke-BurpSuiteAPI -Request $graphRequest -Confirm:$false
 ```
 
 This example shows how to use Invoke-BurpSuiteAPI to query a specific BurpSuite agent.
 
 ### Example 3
 ```powershell
-PS C:\> $graphRequest = [BurpSuiteGraphRequest]::new()
+PS C:\> $graphRequest = [BurpSuiteRequest]::new()
 PS C:\> $graphRequest.Query = 'query GetScanConfigurations { scan_configurations { id name } }'
 PS C:\> Invoke-BurpSuiteAPI -GraphRequest $graphRequest -Confirm:$false
 ```
@@ -77,21 +77,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -GraphRequest
-Specifies the request to send, use the `[BurpSuiteGraphRequest]` type accelerator to craft your desired query.
-
-```yaml
-Type: Object
-Parameter Sets: Default
-Aliases: Request
-
-Required: True
-Position: Named
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
 ### -Query
 Specifies the query you wish to execute.
 
@@ -104,6 +89,21 @@ Required: True
 Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Request
+{{ Fill Request Description }}
+
+```yaml
+Type: Object
+Parameter Sets: Default
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 

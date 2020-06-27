@@ -1,12 +1,12 @@
 InModuleScope $env:BHProjectName {
-    Describe "GraphRequest" {
+    Describe "Request" {
         Context "Constructors" {
             It "constructor should set query property" {
                 # arrange
                 $query = '{ __schema { queryType { name } } }'
 
                 # act
-                $assert = [GraphRequest]::new($query)
+                $assert = [Request]::new($query)
 
                 # assert
                 $assert.Query | Should -Be $query
@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
                 $operationName = '__schema'
 
                 # act
-                $assert = [GraphRequest]::new($query, $operationName)
+                $assert = [Request]::new($query, $operationName)
 
                 # assert
                 $assert.Query | Should -Be $query
@@ -31,7 +31,7 @@ InModuleScope $env:BHProjectName {
                 $variables = @{Foo = 'Bar' }
 
                 # act
-                $assert = [GraphRequest]::new($query, $variables)
+                $assert = [Request]::new($query, $variables)
 
                 # assert
                 $assert.Query | Should -Be $query
@@ -45,7 +45,7 @@ InModuleScope $env:BHProjectName {
                 $variables = @{Foo = 'Bar' }
 
                 # act
-                $assert = [GraphRequest]::new($query, $operationName, $variables)
+                $assert = [Request]::new($query, $operationName, $variables)
 
                 # assert
                 $assert.Query | Should -Be $query

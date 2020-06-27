@@ -19,15 +19,18 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScanConfigurations" `
-                    -and $GraphRequest.Query -eq "query GetScanConfigurations { scan_configurations { id name } }"
+                $Request.Query -eq "query { scan_configurations { id name } }"
             }
         }
 
-        It "should set scan configurations selection fields" {
+        It "should set scan configurations <FieldName> selection field" -TestCases @(
+            @{ FieldName = "id" }
+            @{ FieldName = "name" }
+            @{ FieldName = "scan_configuration_fragment_json" }
+            @{ FieldName = "built_in" }
+            @{ FieldName = "last_modified_time" }
+        ) {
             # arrange
-            $fields = 'id', 'name', 'scan_configuration_fragment_json', 'built_in', 'last_modified_time'
-
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
@@ -41,12 +44,11 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Get-BurpSuiteScanConfiguration -Fields $fields
+            Get-BurpSuiteScanConfiguration -Fields $FieldName
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScanConfigurations" `
-                    -and $GraphRequest.Query -eq "query GetScanConfigurations { scan_configurations { $($fields -join ' ') } }"
+                $Request.Query -eq "query { scan_configurations { $FieldName } }"
             }
         }
 
@@ -71,7 +73,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScanConfigurations { scan_configurations { *$Query* } }"
+                $Request.Query -like "query { scan_configurations { *$Query* } }"
             }
         }
     }

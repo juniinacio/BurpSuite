@@ -1,89 +1,64 @@
-function _buildCreateScanConfigurationQuery {
-    param([hashtable]$parameters)
+function _buildMutation {
+    param([string]$queryName, [string]$inputType, [string]$name, [string]$returnType, [switch]$returnTypeField)
 
-    $operationName = 'CreateScanConfiguration'
+    $query = [Query]::New($queryName)
+    $query.AddArgument('$input', $inputType)
 
-    $scanConfigurationField = [Query]::New('scan_configuration')
-    $scanConfigurationField.AddField('id') | Out-Null
-    $scanConfigurationField.AddField('name') | Out-Null
-    $scanConfigurationField.AddField('scan_configuration_fragment_json') | Out-Null
-    $scanConfigurationField.AddField('built_in') | Out-Null
-    $scanConfigurationField.AddField((_buildObjectQuery -name 'last_modified_by' -objectType 'User')) | Out-Null
-    $scanConfigurationField.AddField('last_modified_time') | Out-Null
+    switch ($returnType) {
+        ScanConfiguration {
+            $fieldName = 'scan_configuration'
+        }
 
-    $createScanConfigurationField = [Query]::New('create_scan_configuration')
-    $createScanConfigurationField.AddArgument('input', '$input') | Out-Null
-    $createScanConfigurationField.AddField($scanConfigurationField) | Out-Null
+        ScheduleItem {
+            $fieldName = 'schedule_item'
+        }
 
-    $createScanConfigurationQuery = [Query]::New($operationName)
-    $createScanConfigurationQuery.AddArgument('$input', 'CreateScanConfigurationInput!') | Out-Null
-    $createScanConfigurationQuery.AddField($createScanConfigurationField) | Out-Null
+        Scan {
+            $fieldName = 'scan'
+        }
 
-    $query = 'mutation {0}' -f $createScanConfigurationQuery
+        Agent {
+            $fieldName = 'agent'
+        }
 
-    $variables = @{input=@{}}
-    $variables.input.name = $parameters.Name
-    $variables.input.scan_configuration_fragment_json = Get-Content -Raw -Path $parameters.FilePath | Out-String
+        Id {
+            $fieldName = 'Id'
+        }
 
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
+        Folder {
+            $fieldName = 'folder'
+        }
 
-    return $graphRequest
+        Site {
+            $fieldName = 'site'
+        }
+
+        ApplicationLogin {
+            $fieldName = 'application_login'
+        }
+
+        EmailRecipient {
+            $fieldName = 'email_recipient'
+        }
+
+        Scope {
+            $fieldName = 'scope'
+        }
+
+        default {}
+    }
+
+    if ($returnTypeField.IsPresent) {
+        $mutation = _buildQueryField -name $name -objectType $returnType
+        $mutation.AddArgument('input', '$input')
+    } else {
+        $mutation = [Query]::new($name)
+        $mutation.AddArgument('input', '$input')
+        $mutation.AddField((_buildQueryField -name $fieldName -objectType $returnType))
+    }
+
+    $query.AddField($mutation)
+
+    return ('mutation {0}' -f $query)
 }
 
-function _buildUpdateScanConfigurationQuery {
-    param([hashtable]$parameters)
-
-    $operationName = 'UpdateScanConfiguration'
-
-    $scanConfigurationField = [Query]::New('scan_configuration')
-    $scanConfigurationField.AddField('id') | Out-Null
-    $scanConfigurationField.AddField('name') | Out-Null
-    $scanConfigurationField.AddField('scan_configuration_fragment_json') | Out-Null
-    $scanConfigurationField.AddField('built_in') | Out-Null
-    $scanConfigurationField.AddField((_buildObjectQuery -name 'last_modified_by' -objectType 'User')) | Out-Null
-    $scanConfigurationField.AddField('last_modified_time') | Out-Null
-
-    $updateScanConfigurationField = [Query]::New('update_scan_configuration')
-    $updateScanConfigurationField.AddArgument('input', '$input') | Out-Null
-    $updateScanConfigurationField.AddField($scanConfigurationField) | Out-Null
-
-    $updateScanConfigurationQuery = [Query]::New($operationName)
-    $updateScanConfigurationQuery.AddArgument('$input', 'UpdateScanConfigurationInput!') | Out-Null
-    $updateScanConfigurationQuery.AddField($updateScanConfigurationField) | Out-Null
-
-    $query = 'mutation {0}' -f $updateScanConfigurationQuery
-
-    $variables = @{input=@{}}
-
-    $variables.input.id = $parameters.Id
-    if ($parameters.ContainsKey('Name')) { $variables.input.name = $parameters.Name }
-    if ($parameters.ContainsKey('FilePath')) { $variables.input.scan_configuration_fragment_json = Get-Content -Raw -Path $parameters.FilePath | Out-String }
-
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
-
-    return $graphRequest
-}
-
-function _buildDeleteScanConfigurationQuery {
-    param([hashtable]$parameters)
-
-    $operationName = 'DeleteScanConfiguration'
-
-    $deleteScanConfigurationField = [Query]::New('delete_scan_configuration')
-    $deleteScanConfigurationField.AddArgument('input', '$input') | Out-Null
-    $deleteScanConfigurationField.AddField('id') | Out-Null
-
-    $deleteScanConfigurationQuery = [Query]::New($operationName)
-    $deleteScanConfigurationQuery.AddArgument('$input', 'DeleteScanConfigurationInput!') | Out-Null
-    $deleteScanConfigurationQuery.AddField($deleteScanConfigurationField) | Out-Null
-
-    $query = 'mutation {0}' -f $deleteScanConfigurationQuery
-
-    $variables = @{input=@{}}
-
-    $variables.input.id = $parameters.Id
-
-    $graphRequest = [GraphRequest]::new($query, $operationName, $variables)
-
-    return $graphRequest
-}

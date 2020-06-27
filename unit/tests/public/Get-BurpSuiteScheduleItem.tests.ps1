@@ -5,7 +5,7 @@ InModuleScope $env:BHProjectName {
             Mock -CommandName _callAPI -MockWith {
                 [PSCustomObject]@{
                     data = [PSCustomObject]@{
-                        schedule_item = [PSCustomObject]@{
+                        schedule_items = [PSCustomObject]@{
                             id = 1
                         }
                     }
@@ -17,9 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScheduleItem" `
-                    -and $GraphRequest.Query -like 'query GetScheduleItem($id:ID!) { schedule_item(id:$id) { * } }' `
-                    -and $GraphRequest.Variables.id -eq 1
+                $Request.Query -like "query { schedule_items:schedule_item(id:'1') { * } }"
             }
         }
 
@@ -44,14 +42,14 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) {* $FieldName *} }"
+                $Request.Query -like "query { schedule_items:schedule_item(id:'1') {* $FieldName *} }"
             }
         }
 
         It "should add <FieldName> sub selection field" -TestCases @(
-            @{ FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } }" }
+            @{ FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } }" }
             @{ FieldName = "schedule"; Query = "schedule { initial_run_time rrule }" }
-            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id name }" }
+            @{ FieldName = "scan_configurations"; Query = "scan_configurations { id }" }
         ) {
             # arrange
             Mock -CommandName _callAPI -MockWith {
@@ -65,11 +63,11 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Get-BurpSuiteScheduleItem -ID 1 -Fields $FieldName
+            Get-BurpSuiteScheduleItem -Fields $FieldName
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetScheduleItem(`$id:ID!) { schedule_item(id:`$id) { *$Query*} }"
+                $Request.Query -like "query { schedule_items { *$Query*} }"
             }
         }
 
@@ -92,10 +90,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetScheduleItems" `
-                    -and $GraphRequest.Query -like 'query GetScheduleItems($sort_by:String,$sort_order:String) { schedule_items(sort_by:$sort_by,sort_order:$sort_order) { * } }' `
-                    -and $GraphRequest.Variables.sort_by -eq 'site' `
-                    -and $GraphRequest.Variables.sort_order -eq 'asc'
+                $Request.Query -like "query { schedule_items(sort_by:'site',sort_order:'asc') { * } }"
             }
         }
     }

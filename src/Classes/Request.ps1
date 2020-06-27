@@ -1,26 +1,26 @@
-class GraphRequest {
+class Request {
     [string] $Query = [string]::Empty
     [string] $OperationName = [string]::Empty
     [hashtable] $Variables = @{}
 
-    GraphRequest() {
+    Request() {
     }
 
-    GraphRequest([string] $query) {
+    Request([string] $query) {
         $this.Query = $Query
     }
 
-    GraphRequest([string] $query, [string] $operationName) {
+    Request([string] $query, [string] $operationName) {
         $this.Query = $Query
         $this.OperationName = $operationName
     }
 
-    GraphRequest([string] $query, [hashtable] $variables) {
+    Request([string] $query, [hashtable] $variables) {
         $this.Query = $Query
         $this.Variables = $Variables
     }
 
-    GraphRequest([string] $query, [string] $operationName, [hashtable] $variables) {
+    Request([string] $query, [string] $operationName, [hashtable] $variables) {
         $this.Query = $Query
         $this.OperationName = $operationName
         $this.Variables = $Variables

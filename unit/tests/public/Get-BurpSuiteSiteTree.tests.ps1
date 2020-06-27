@@ -7,7 +7,7 @@ InModuleScope $env:BHProjectName {
                     data = [PSCustomObject]@{
                         site_tree = [PSCustomObject]@{
                             folders = @()
-                            sites = @()
+                            sites   = @()
                         }
                     }
                 }
@@ -18,8 +18,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.OperationName -eq "GetSiteTree" `
-                    -and $GraphRequest.Query -like 'query GetSiteTree { site_tree { * } }'
+                $Request.Query -like 'query { site_tree { * } }'
             }
         }
 
@@ -33,7 +32,7 @@ InModuleScope $env:BHProjectName {
                     data = [PSCustomObject]@{
                         site_tree = [PSCustomObject]@{
                             folders = @()
-                            sites = @()
+                            sites   = @()
                         }
                     }
                 }
@@ -44,7 +43,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $GraphRequest.Query -like "query GetSiteTree { site_tree { *$Query* } }"
+                $Request.Query -like "query { site_tree { *$Query* } }"
             }
         }
     }

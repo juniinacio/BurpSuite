@@ -1,6 +1,6 @@
 InModuleScope BurpSuite {
     Describe "Queries" {
-        Context "_buildObjectQuery" {
+        Context "_buildQueryField" {
 
             It "should build <ObjectName> object" -TestCases @(
                 @{ObjectName = "Agent"; FieldName = "agent"; Query = "agent { id name }" }
@@ -20,15 +20,15 @@ InModuleScope BurpSuite {
                 @{ObjectName = "JiraTicket"; FieldName = "jira_ticket"; Query = "jira_ticket { id external_key issue_type summary project status priority }" }
                 @{ObjectName = "Request"; FieldName = "request"; Query = "request { request_index request_count request_segments }" }
                 @{ObjectName = "Response"; FieldName = "response"; Query = "response { response_index response_count response_segments }" }
-                @{ObjectName = "ScanConfiguration"; FieldName = "scan_configuration"; Query = "scan_configuration { id name }" }
+                @{ObjectName = "ScanConfiguration"; FieldName = "scan_configuration"; Query = "scan_configuration { id }" }
                 @{ObjectName = "ScanCountsByStatus"; FieldName = "scan_counts_by_status"; Query = "scan_counts_by_status { scheduled queued running succeeded cancelled failed }" }
                 @{ObjectName = "ScanDelta"; FieldName = "scan_delta"; Query = "scan_delta { new_issue_count repeated_issue_count regressed_issue_count resolved_issue_count }" }
                 @{ObjectName = "ScanProgressMetrics"; FieldName = "scan_progress_metrics"; Query = "scan_progress_metrics { crawl_request_count unique_location_count audit_request_count crawl_and_audit_progress_percentage }" }
                 @{ObjectName = "Schedule"; FieldName = "schedule"; Query = "schedule { initial_run_time rrule }" }
                 @{ObjectName = "ScheduleItem"; FieldName = "schedule_item"; Query = "schedule_item { id }" }
                 @{ObjectName = "Scope"; FieldName = "scope"; Query = "scope { included_urls excluded_urls }" }
-                @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } }" }
-                @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id name } application_logins { id label username } ephemeral email_recipients { id email } } }" }
+                @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } }" }
+                @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } } }" }
                 @{ObjectName = "SnipSegment"; FieldName = "snip_segment"; Query = "snip_segment { snip_length }" }
                 @{ObjectName = "Ticket"; FieldName = "ticket"; Query = "ticket { jira_ticket { id external_key issue_type summary project status priority } link_url link_id }" }
                 @{ObjectName = "User"; FieldName = "user"; Query = "user { username }" }
@@ -36,7 +36,7 @@ InModuleScope BurpSuite {
                 # arrange
 
                 # act
-                $assert = _buildObjectQuery -name $FieldName -objectType $ObjectName
+                $assert = _buildQueryField -name $FieldName -objectType $ObjectName
 
                 # assert
                 "$assert" | Should -BeExactly $Query

@@ -10,10 +10,7 @@ class QueryStringBuilder {
 
     hidden [string] FormatQueryParam([object] $value) {
         switch ($value) {
-            # Pass string as is to prevent cases where it would enclose
-            # ID special cases ex. getAgent(id:ID!)
-            # { $_ -is [string] } { return "`"" + $value + "`"" }
-            { $_ -is [string] } { return $value }
+            { $_ -is [string] } { return "'" + $value + "'" }
             { $_ -is [byte] } { return $value.ToString() }
             { $_ -is [sbyte] } { return $value.ToString() }
             { $_ -is [int16] } { return $value.ToString() }
@@ -42,7 +39,7 @@ class QueryStringBuilder {
         throw ([InvalidDataException]::new("Unsupported query parameter, type found: " + $value.GetType()))
     }
 
-    hidden [void] AddParams([IQuery] $query) {
+    hidden [void] AddParams([Query] $query) {
         foreach ($param in $query.Arguments.GetEnumerator()) {
             $this.QueryString.Append("$($param.Key):$($this.FormatQueryParam($param.Value)),")
         }
@@ -50,11 +47,11 @@ class QueryStringBuilder {
         if ($query.Arguments.Count -gt 0) { $this.QueryString.Length-- }
     }
 
-    hidden [void] AddFields([IQuery] $query) {
+    hidden [void] AddFields([Query] $query) {
         foreach ($item in $query.Fields.GetEnumerator()) {
             switch ($item) {
                 { $_ -is [string] } { $this.QueryString.Append("$item ") }
-                { $_ -is [IQuery] } { $this.QueryString.Append("$($item.Build()) ") }
+                { $_ -is [Query] } { $this.QueryString.Append("$($item.Build()) ") }
                 default {
                     throw ([ArgumentException]::new("Invalid field type specified, must be 'string' or 'Query'"))
                 }
@@ -63,7 +60,7 @@ class QueryStringBuilder {
         if ($query.Fields.Count -gt 0) { $this.QueryString.Length-- }
     }
 
-    [string] Build([IQuery] $query) {
+    [string] Build([Query] $query) {
         if (![string]::IsNullOrEmpty($query.AliasName)) { $this.QueryString.Append("$($query.AliasName):") }
 
         $this.QueryString.Append($query.Name)

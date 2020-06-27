@@ -2,12 +2,12 @@ function Get-BurpSuiteIssue {
     [CmdletBinding(SupportsShouldProcess = $true,
         ConfirmImpact = 'Low')]
     Param (
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $ScanId,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $SerialNumber,
@@ -20,15 +20,20 @@ function Get-BurpSuiteIssue {
     )
 
     begin {
+        if (-not ($PSBoundParameters.ContainsKey('Fields'))) { $Fields = 'confidence', 'serial_number', 'severity', 'novelty' }
     }
 
     process {
+        $arguments = @{}
+        $arguments.scan_id = $ScanId
+        $arguments.serial_number = $SerialNumber
+        $query = _buildQuery -name 'issue' -objectType 'Issue' -fields $Fields -arguments $arguments
 
-        $graphRequest = _buildIssueQuery -Parameters $PSBoundParameters
+        $request = [Request]::new($query)
 
-        if ($PSCmdlet.ShouldProcess("BurpSuite", $graphRequest.Query)) {
+        if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $response = _callAPI -GraphRequest $graphRequest
+                $response = _callAPI -Request $request
                 $data = _getObjectProperty -InputObject $response -PropertyName 'data'
                 if ($null -ne $data) {
                     $data.issue

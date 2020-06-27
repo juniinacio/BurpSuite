@@ -9,7 +9,7 @@
 
 BurpSuite is a PowerShell module with commands for managing [BurpSuite Enterprise](https://portswigger.net/burp/enterprise).
 
-Documentation of the cmdlets can be found in the [docs README](https://github.com/juniinacio/BurpSuite/blob/master/docs/en-US/about_BurpSuite.help.md) or using `Get-Help BurpSuite` once the module is installed.
+Documentation of the functions can be found in the [docs README](https://github.com/juniinacio/BurpSuite/blob/master/docs/en-US/about_BurpSuite.help.md) or using `Get-Help BurpSuite` once the module is installed.
 
 ## Requirements
 
@@ -60,6 +60,54 @@ Builds the module, installs needed dependencies, runs unit tests and also builds
 .\build.ps1 -Bootstrap
 ```
 
+## Using Module
+
+### Getting started with BurpSuite
+
+Before you can start using the functions in this module you will need to create a API key in the BurpSuite Enterprise UI. After getting the API key the first step is to connect the module with BurpSuite, this can be done using the following cmdlet.
+```powershell
+Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org"
+```
+
+After connecting the module with your BurpSuite Enterprise server, you can do a number of actions using the functions available in this module. To list available commands in the module use `Get-Command -Module BurpSuite`.
+
+To list sites and folder on BurpSuite use the following command.
+
+```powershell
+Get-BurpSuiteSiteTree
+```
+
+To list al scan configurations.
+```powershell
+Get-BurpSuiteScanConfiguration
+```
+
+To create a new site.
+```powershell
+$scope = [PSCustomObject]@{
+    IncludedUrls = @("http://example.com")
+}
+New-BurpSuiteSite -Name "www.example.com" -Scope $scope -ScanConfigurationIds '1232asdf23234f'
+```
+
+To initiat a new scan for a site.
+```powershell
+$scope = [PSCustomObject]@{
+    IncludedUrls = @("http://example.com")
+}
+$site = New-BurpSuiteSite -Name "www.example.com" -Scope $scope -ScanConfigurationIds '1232asdf23234f'
+
+New-BurpSuiteScheduleItem -SiteId $site.id -ScanConfigurationIds $site.scan_configurations.id
+```
+
+You can also download scan reports.
+
+```powershell
+$scan = Get-BurpSuiteScan -Fields id, site_id, status | Where-Object { $_.site_id -eq 10 }
+$scan | Get-BurpSuiteScanReport -OutFile "C:\Reports\scan_report.html"
+```
+
+For more example see the examples available througout the module.
 
 ## Contributors
 
