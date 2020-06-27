@@ -30,7 +30,8 @@ function New-BurpSuiteScanConfiguration {
 
                 $request = [Request]::new($query, 'CreateScanConfiguration', $variables)
 
-                $null = _callAPI -Request $Request
+                $response = _callAPI -Request $Request
+                $response.data.create_scan_configuration.scan_configuration
             } catch {
                 throw
             }

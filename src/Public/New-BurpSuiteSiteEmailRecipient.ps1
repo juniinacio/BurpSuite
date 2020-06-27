@@ -25,7 +25,8 @@ function New-BurpSuiteSiteEmailRecipient {
 
                 $request = [Request]::new($query, 'CreateSiteEmailRecipient', $variables)
 
-                $null = _callAPI -Request $request
+                $response = _callAPI -Request $request
+                $response.data.create_site_email_recipient.email_recipient
             } catch {
                 throw
             }

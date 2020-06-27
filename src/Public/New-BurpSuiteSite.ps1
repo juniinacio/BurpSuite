@@ -88,7 +88,8 @@ function New-BurpSuiteSite {
 
                 $request = [Request]::new($query, 'CreateSite', $variables)
 
-                $null = _callAPI -Request $request
+                $response = _callAPI -Request $request
+                $response.data.create_site.site
             } catch {
                 throw
             }

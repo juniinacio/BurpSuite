@@ -36,7 +36,8 @@ function New-BurpSuiteSiteApplicationLogin {
 
                 $request = [Request]::new($query, 'CreateSiteApplicationLogin', $variables)
 
-                $null = _callAPI -Request $request
+                $response = _callAPI -Request $request
+                $response.data.create_site_application_login.application_login
             } catch {
                 throw
             }
