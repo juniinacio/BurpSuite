@@ -293,7 +293,7 @@ Describe 'Site API' -Tag 'CD' {
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
-            $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Username = "admin"; Password = "ChangeMe" }
+            $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force))) }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -ApplicationLogins $applicationLogin
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
