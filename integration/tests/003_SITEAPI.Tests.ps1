@@ -36,9 +36,8 @@ Describe 'Site API' -Tag 'CD' {
             $emailRecipient = [PSCustomObject]@{ Email = "foo@pester.dev" }
 
             $applicationLogin = [PSCustomObject]@{
-                Label = "Admin"
-                Username = "admin"
-                Password = "ChangeMe"
+                Label      = "admin"
+                Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force)))
             }
 
             # Act
@@ -78,12 +77,12 @@ Describe 'Site API' -Tag 'CD' {
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
             New-BurpSuiteFolder -ParentId 0 -Name $folderName
-            $folder = (Get-BurpSuiteSiteTree).folders | Where-Object {$_.Name -eq $folderName}
+            $folder = (Get-BurpSuiteSiteTree).folders | Where-Object { $_.Name -eq $folderName }
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId $folder.id -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761'
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
             Move-BurpSuiteSite -ParentId 0 -SiteId $site.Id
@@ -112,13 +111,13 @@ Describe 'Site API' -Tag 'CD' {
             $emailRecipient = [PSCustomObject]@{ Email = "foo@example.com" }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -EmailRecipients $emailRecipient
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
             Update-BurpSuiteSiteEmailRecipient -Id $site.email_recipients[0].id -Email "bar@example.com"
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
             $site.email_recipients[0].email | Should -Be "bar@example.com"
         }
 
@@ -140,7 +139,7 @@ Describe 'Site API' -Tag 'CD' {
             $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Username = "admin"; Password = "ChangeMe" }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -ApplicationLogins $applicationLogin
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $credentials = New-Object System.Management.Automation.PSCredential ("Admin2", $(ConvertTo-SecureString "changeme2" -AsPlainText -Force))
 
@@ -148,7 +147,7 @@ Describe 'Site API' -Tag 'CD' {
             Update-BurpSuiteSiteApplicationLogin -Id $site.application_logins[0].id -Label "Admin2" -Credential $credentials
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
             $site.application_logins[0].label | Should -Be "Admin2"
             $site.application_logins[0].username | Should -Be "Admin2"
         }
@@ -167,19 +166,19 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object {$_.name -eq "Audit checks - all except JavaScript analysis"}
+            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
-            $newScanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object {$_.name -eq "Audit checks - all except time-based detection methods"}
+            $newScanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except time-based detection methods" }
             Update-BurpSuiteSiteScanConfiguration -Id $site.id -ScanConfigurationIds $newScanConfiguration.id
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
             $site.scan_configurations[0].id | Should -Be $newScanConfiguration.id
         }
 
@@ -197,19 +196,19 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object {$_.name -eq "Audit checks - all except JavaScript analysis"}
+            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester2.dev/") }
             Update-BurpSuiteSiteScope -SiteId $site.id -IncludedUrls "https://pester2.dev/" -ExcludedUrls "https://pester2.dev/foo"
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $site.scope.included_urls[0] | Should -Be "https://pester2.dev/"
             $site.scope.excluded_urls[0] | Should -Be "https://pester2.dev/foo"
@@ -229,12 +228,12 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object {$_.name -eq "Audit checks - all except JavaScript analysis"}
+            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $credentials = New-Object System.Management.Automation.PSCredential ("Admin", $(ConvertTo-SecureString "changeme" -AsPlainText -Force))
 
@@ -242,7 +241,7 @@ Describe 'Site API' -Tag 'CD' {
             New-BurpSuiteSiteApplicationLogin -SiteId $site.id -Label "Admin" -Credential $credentials
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $site.application_logins[0].label | Should -Be "Admin"
             $site.application_logins[0].username | Should -Be "Admin"
@@ -262,19 +261,19 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object {$_.name -eq "Audit checks - all except JavaScript analysis"}
+            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
             $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
 
             # Act
             New-BurpSuiteSiteEmailRecipient -SiteId $site.id -EmailRecipient "foo@example.com"
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $site.email_recipients[0].email | Should -Be "foo@example.com"
         }
@@ -297,13 +296,13 @@ Describe 'Site API' -Tag 'CD' {
             $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Username = "admin"; Password = "ChangeMe" }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -ApplicationLogins $applicationLogin
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
             Remove-BurpSuiteSiteApplicationLogin -Id $site.application_logins[0].id
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
             $site.application_logins[0] | Should -BeNullOrEmpty
         }
 
@@ -325,13 +324,13 @@ Describe 'Site API' -Tag 'CD' {
             $emailRecipient = [PSCustomObject]@{ Email = "foo@example.com" }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -EmailRecipients $emailRecipient
 
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
             Remove-BurpSuiteSiteEmailRecipient -Id $site.email_recipients[0].id
 
             # Assert
-            $site = (Get-BurpSuiteSiteTree).sites | Where-Object {$_.Name -eq $siteName}
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $site.email_recipients[0] | Should -BeNullOrEmpty
         }

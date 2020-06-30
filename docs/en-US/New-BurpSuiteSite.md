@@ -27,7 +27,7 @@ Creates a new site.
 ```powershell
 PS C:\> $scope = [PSCustomObject]@{ IncludedUrls = @("http://example.com"); ExcludedUrls = @() }
 PS C:\> $emailRecipient = [PSCustomObject]@{ Email = "foo@example.com" }
-PS C:\> $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Username = "admin"; Password = "ChangeMe" }
+PS C:\> $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force))) }
 PS C:\> New-BurpSuiteSite -Name "www.example.com" -ParentId 0 -Scope $scope -ScanConfigurationIds '1232asdf23234f' -EmailRecipients $emailRecipient -ApplicationLogins $applicationLogin
 ```
 
@@ -36,7 +36,7 @@ This example shows how to create a new site.
 ## PARAMETERS
 
 ### -ApplicationLogins
-Specifies one or more application login objects. An application login object is a PSCustomObject containing three properties. The first propertie is Label, this is a string that will be use as display name for the login in the BurpSuite UI. The second property is Username, this specifies the username to use for login in if needed. The last property is Password, this specifies the password to use in conjuction with the Username for authenticating to the site.
+Specifies one or more application login objects. An application login object is a PSCustomObject containing two properties. The first propertie is Label, this is a string that will be use as display name for the login in the BurpSuite UI. The second property is Credential, this is a PSCredential object that will be used for authenticating to the site during scans when authentication is needed.
 
 ```yaml
 Type: PSObject[]

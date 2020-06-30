@@ -74,13 +74,12 @@ function New-BurpSuiteSite {
                         $label = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Label'
                         if ($null -eq $label) { throw "Property 'Label' is required when specifying application login objects." }
 
-                        $username = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Username'
-                        if ($null -eq $username) { throw "Property 'Username' is required when specifying application login objects." }
+                        $credential = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Credential'
+                        if ($null -eq $credential) { throw "Property 'Credential' is required when specifying application login objects." }
 
-                        $password = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Password'
-                        if ($null -eq $password) { throw "Property 'Password' is required when specifying application login objects." }
+                        $networkCredential = $credential.GetNetworkCredential()
 
-                        $applicationLoginInput += @{ label = $label; username = $username; password = $password }
+                        $applicationLoginInput += @{ label = $label; username = $networkCredential.UserName; password = $networkCredential.Password }
                     }
 
                     $variables.input.application_logins = $applicationLoginInput
