@@ -13,7 +13,7 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Remove-BurpSuiteSiteEmailRecipient -Id 42
+            Remove-BurpSuiteSiteEmailRecipient -Id 42 -Confirm:$false
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
