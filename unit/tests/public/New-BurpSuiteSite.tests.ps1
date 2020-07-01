@@ -15,9 +15,8 @@ InModuleScope $env:BHProjectName {
             )
             $applicationLoginInput = @(
                 [PSCustomObject]@{
-                    Label = "Admin"
-                    Username = "admin"
-                    Password = "ChangeMe"
+                    Label      = "Admin"
+                    Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force)))
                 }
             )
             $scanConfigurationIds = "1"
@@ -48,8 +47,8 @@ InModuleScope $env:BHProjectName {
                     -and ($Request.Variables.Input.scope.included_urls -join ',') -eq ($scopeInput.IncludedUrls -join ',') `
                     -and ($Request.Variables.Input.scope.excluded_urls -join ',') -eq ($scopeInput.ExcludedUrls -join ',') `
                     -and $Request.Variables.Input.application_logins[0].label -eq $applicationLoginInput[0].label `
-                    -and $Request.Variables.Input.application_logins[0].username -eq $applicationLoginInput[0].username `
-                    -and $Request.Variables.Input.application_logins[0].password -eq $applicationLoginInput[0].password
+                    -and $Request.Variables.Input.application_logins[0].username -eq (($applicationLoginInput[0].Credential).GetNetworkCredential()).username `
+                    -and $Request.Variables.Input.application_logins[0].password -eq (($applicationLoginInput[0].Credential).GetNetworkCredential()).password
             }
         }
     }
