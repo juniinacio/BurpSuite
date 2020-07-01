@@ -299,7 +299,7 @@ Describe 'Site API' -Tag 'CD' {
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
-            Remove-BurpSuiteSiteApplicationLogin -Id $site.application_logins[0].id
+            Remove-BurpSuiteSiteApplicationLogin -Id $site.application_logins[0].id -Confirm:$false
 
             # Assert
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
@@ -327,7 +327,7 @@ Describe 'Site API' -Tag 'CD' {
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
-            Remove-BurpSuiteSiteEmailRecipient -Id $site.email_recipients[0].id
+            Remove-BurpSuiteSiteEmailRecipient -Id $site.email_recipients[0].id -Confirm:$false
 
             # Assert
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }

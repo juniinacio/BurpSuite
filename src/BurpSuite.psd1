@@ -24,13 +24,13 @@
     Author            = 'Juni Inacio'
 
     # Company or vendor of this module
-    CompanyName       = 'Unknown'
+    CompanyName       = 'Playcool'
 
     # Copyright statement for this module
     Copyright         = '(c) Juni Inacio. All rights reserved.'
 
     # Description of the functionality provided by this module
-    Description       = 'PowerShell module for managing your BurpSuite Enterprise server configuration.'
+    Description       = 'BurpSuite is a PowerShell module with commands for managing BurpSuite Enterprise.'
 
     # Minimum version of the PowerShell engine required by this module
     PowerShellVersion = '5.1'
@@ -69,7 +69,50 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = '*-*'
+    FunctionsToExport = @(
+        'Connect-BurpSuite',
+        'Disable-BurpSuiteAgent',
+        'Disconnect-BurpSuite',
+        'Enable-BurpSuiteAgent',
+        'Get-BurpSuiteAgent',
+        'Get-BurpSuiteIssue',
+        'Get-BurpSuiteScan',
+        'Get-BurpSuiteScanConfiguration',
+        'Get-BurpSuiteScanReport',
+        'Get-BurpSuiteScheduleItem',
+        'Get-BurpSuiteSiteTree',
+        'Get-BurpSuiteUnauthorizedAgent',
+        'Grant-BurpSuiteAgent',
+        'Invoke-BurpSuiteAPI',
+        'Move-BurpSuiteFolder',
+        'Move-BurpSuiteSite',
+        'New-BurpSuiteFolder',
+        'New-BurpSuiteScanConfiguration',
+        'New-BurpSuiteScheduleItem',
+        'New-BurpSuiteSite',
+        'New-BurpSuiteSiteApplicationLogin',
+        'New-BurpSuiteSiteEmailRecipient',
+        'Remove-BurpSuiteFolder',
+        'Remove-BurpSuiteScan',
+        'Remove-BurpSuiteScanConfiguration',
+        'Remove-BurpSuiteScheduleItem',
+        'Remove-BurpSuiteSite',
+        'Remove-BurpSuiteSiteApplicationLogin',
+        'Remove-BurpSuiteSiteEmailRecipient',
+        'Rename-BurpSuiteAgent',
+        'Rename-BurpSuiteFolder',
+        'Rename-BurpSuiteSite',
+        'Revoke-BurpSuiteAgent',
+        'Set-BurpSuiteAgentMaxConcurrentScan',
+        'Stop-BurpSuiteScan',
+        'Update-BurpSuiteFalsePositive',
+        'Update-BurpSuiteScanConfiguration',
+        'Update-BurpSuiteScheduleItem',
+        'Update-BurpSuiteSiteApplicationLogin',
+        'Update-BurpSuiteSiteEmailRecipient',
+        'Update-BurpSuiteSiteScanConfiguration',
+        'Update-BurpSuiteSiteScope'
+    )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     # CmdletsToExport = '*'
@@ -78,7 +121,9 @@
     # VariablesToExport = '*'
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-    # AliasesToExport = '*'
+    AliasesToExport = @(
+        'Login-BurpSuite'
+    )
 
     # DSC resources to export from this module
     # DscResourcesToExport = @()
