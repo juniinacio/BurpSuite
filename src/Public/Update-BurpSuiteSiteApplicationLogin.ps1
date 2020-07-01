@@ -1,15 +1,17 @@
 function Update-BurpSuiteSiteApplicationLogin {
-    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    [CmdletBinding(DefaultParameterSetName = 'Credential', SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Id,
 
-        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'Label')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'All')]
         [ValidateNotNullOrEmpty()]
         [string] $Label,
 
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'Credential')]
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true, ParameterSetName = 'All')]
         [ValidateNotNull()]
         [System.Management.Automation.PSCredential]
         [System.Management.Automation.CredentialAttribute()]
@@ -25,13 +27,18 @@ function Update-BurpSuiteSiteApplicationLogin {
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $networkCredential = $Credential.GetNetworkCredential()
-
                 $variables = @{ input = @{} }
                 $variables.input.id = $Id
-                $variables.input.label = $Label
-                $variables.input.username = $networkCredential.UserName
-                $variables.input.password = $networkCredential.Password
+
+                if ($PSBoundParameters.ContainsKey('Label')) {
+                    $variables.input.label = $Label
+                }
+
+                if ($PSBoundParameters.ContainsKey('Credential')) {
+                    $networkCredential = $Credential.GetNetworkCredential()
+                    $variables.input.username = $networkCredential.UserName
+                    $variables.input.password = $networkCredential.Password
+                }
 
                 $request = [Request]::new($query, 'UpdateSiteApplicationLogin', $variables)
 

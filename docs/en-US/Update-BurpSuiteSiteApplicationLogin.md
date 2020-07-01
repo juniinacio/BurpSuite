@@ -12,9 +12,21 @@ Updates an site application login.
 
 ## SYNTAX
 
+### Credential (Default)
 ```
-Update-BurpSuiteSiteApplicationLogin [-Id] <String> [-Label] <String> [-Credential] <PSCredential> [-WhatIf]
+Update-BurpSuiteSiteApplicationLogin -Id <String> -Credential <PSCredential> [-WhatIf] [-Confirm]
+ [<CommonParameters>]
+```
+
+### All
+```
+Update-BurpSuiteSiteApplicationLogin -Id <String> -Label <String> -Credential <PSCredential> [-WhatIf]
  [-Confirm] [<CommonParameters>]
+```
+
+### Label
+```
+Update-BurpSuiteSiteApplicationLogin -Id <String> -Label <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -48,17 +60,17 @@ Accept wildcard characters: False
 ```
 
 ### -Credential
-Specifies the credentials for the site application login.
+Specifies the credentials of the site application login.
 
 ```yaml
 Type: PSCredential
-Parameter Sets: (All)
+Parameter Sets: Credential, All
 Aliases:
 
 Required: True
-Position: 2
+Position: Named
 Default value: None
-Accept pipeline input: True (ByValue)
+Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
@@ -71,22 +83,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -Label
-{{ Fill Label Description }}
+Specifies the new label of the site application login.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: All, Label
 Aliases:
 
 Required: True
-Position: 1
+Position: Named
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
