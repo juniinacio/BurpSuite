@@ -25,10 +25,11 @@ function Update-BurpSuiteSiteScope {
             try {
                 $variables = @{ input = @{} }
                 $variables.input.site_id = $SiteId
+
                 $variables.input.included_urls = $IncludedUrls
-                if ($PSBoundParameters.ContainsKey('ExcludedUrls')) {
-                    $variables.input.excluded_urls = $ExcludedUrls
-                }
+
+                if ($PSBoundParameters.ContainsKey('ExcludedUrls')) { $variables.input.excluded_urls = $ExcludedUrls }
+                else { $variables.input.excluded_urls = @() }
 
                 $request = [Request]::new($query, 'UpdateSiteScope', $variables)
 
