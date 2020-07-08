@@ -51,7 +51,7 @@ Specifies the machine id of the agent.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: Id
+Aliases: machine_id
 
 Required: True
 Position: 0
