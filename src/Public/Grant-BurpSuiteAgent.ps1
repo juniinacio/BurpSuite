@@ -3,6 +3,7 @@ function Grant-BurpSuiteAgent {
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
+        [Alias('machine_id')]
         [string] $MachineId
     )
 

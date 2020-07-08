@@ -168,7 +168,7 @@ stages:
         deploy:
           steps:
           - task: PowerShell@2
-            displayName: 'Set Pipeline Variables'
+            displayName: 'Set Module Path'
             inputs:
               targetType: 'inline'
               script: |
@@ -290,7 +290,7 @@ stages:
         deploy:
           steps:
           - task: PowerShell@2
-            displayName: 'Set Pipeline Variables'
+            displayName: 'Set Module Path'
             inputs:
               targetType: 'inline'
               script: |
