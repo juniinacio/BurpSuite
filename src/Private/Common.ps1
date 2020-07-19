@@ -51,9 +51,7 @@ function _callAPI {
     $response = Invoke-RestMethod @params
     if ((_testObjectProperty -InputObject $response -PropertyName 'errors')) {
         $exceptions = @()
-        foreach ($e in $response.errors) {
-            $exceptions += [Exception]::New($e.message)
-        }
+        foreach ($e in $response.errors) { $exceptions += [Exception]::New($e.message) }
         $aggregate = [AggregateException]::new("One or more errors occurred while querying BurpSuite.", $exceptions)
         throw $aggregate
     } else {
@@ -127,26 +125,4 @@ function _preProcessRequest {
     }
     [PSCustomObject]$properties
 }
-
-# function _createErrorRecord {
-#     [CmdletBinding()]
-#     Param (
-#         [Parameter(Mandatory = $true)]
-#         [ValidateNotNull()]
-#         [object]
-#         $Exception,
-
-#         [Parameter(Mandatory = $true)]
-#         [ValidateNotNull()]
-#         [ErrorCategory]
-#         $ErrorCategory
-#     )
-
-#     [ErrorRecord]::new(
-#         $Exception,
-#         ("BurpSuite.{0}" -f $ErrorCategory),
-#         $ErrorCategory,
-#         $null
-#     )
-# }
 

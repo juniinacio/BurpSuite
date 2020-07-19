@@ -116,7 +116,10 @@ jobs:
                   $tableProperties = 'Result', 'FailedCount', 'FailedBlocksCount', 'FailedContainersCount', 'PassedCount', 'SkippedCount', 'NotRunCount', 'TotalCount', 'Duration'
                   $testResults | Format-Table -AutoSize -Property $tableProperties
 
-                  if ($testResults.FailedCount -gt 0) { throw 'One or more Pester tests failed' }
+                  if ($testResults.FailedCount -gt 0) {
+                    Write-Host "##vso[task.logissue type=error]One or more Pester tests failed."
+                    exit 1
+                  }
                 failOnStderr: true
                 workingDirectory: '$(Pipeline.Workspace)/integration/tests'
                 pwsh: ${{ parameters.pwsh }}
@@ -129,6 +132,6 @@ jobs:
                 testResultsFormat: NUnit
                 testResultsFiles: '**/$(BURPSUITE_MODULENAME)-TestsResults.xml'
                 searchFolder: '$(Pipeline.Workspace)/integration/tests'
-                testRunTitle: '${{ parameters.os }} Tests'
+                testRunTitle: '${{ parameters.os }} Integration Tests'
               continueOnError: true
               condition: succeededOrFailed()

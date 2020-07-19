@@ -31,9 +31,7 @@ function Invoke-BurpSuiteAPI {
     process {
         if ($PSCmdlet.ParameterSetName -eq 'FreeForm') {
             $Request = [Request]::new($Query)
-            if ($PSBoundParameters.ContainsKey('Variables')) {
-                $Request.Variables = $Variables
-            }
+            if ($PSBoundParameters.ContainsKey('Variables')) { $Request.Variables = $Variables }
         }
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $Request.Query)) {

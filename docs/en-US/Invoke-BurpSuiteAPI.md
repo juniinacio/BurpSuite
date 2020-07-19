@@ -93,7 +93,7 @@ Accept wildcard characters: False
 ```
 
 ### -Request
-{{ Fill Request Description }}
+Specifies a BurpSuite Request object, use BurpSuiteRequest type accelerator to create one.
 
 ```yaml
 Type: Object
