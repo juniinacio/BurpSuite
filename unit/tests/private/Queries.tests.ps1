@@ -1,6 +1,6 @@
 InModuleScope BurpSuite {
     Describe "Queries" {
-        Context "_buildQueryField" {
+        Context "_buildField" {
 
             It "should build <ObjectName> object" -TestCases @(
                 @{ObjectName = "Agent"; FieldName = "agent"; Query = "agent { id name }" }
@@ -36,7 +36,7 @@ InModuleScope BurpSuite {
                 # arrange
 
                 # act
-                $assert = _buildQueryField -name $FieldName -objectType $ObjectName
+                $assert = _buildField -name $FieldName -objectType $ObjectName
 
                 # assert
                 "$assert" | Should -BeExactly $Query

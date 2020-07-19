@@ -23,12 +23,12 @@ class Query {
         $this.Arguments.Add($key, $value)
     }
 
-    [void] AddField([string] $field) {
+    [void] AddField([object] $field) {
         $this.Fields.Add($field)
     }
 
-    [void] AddField($query) {
-        $this.Fields.Add($query)
+    [void] AddFields([object[]] $fields) {
+        foreach ($field in $fields) { $this.Fields.Add($field) }
     }
 
     [string] ToString() { return $this.Build() }
