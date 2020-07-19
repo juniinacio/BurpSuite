@@ -60,7 +60,7 @@ Describe 'Schedule Item API' -Tag 'CD' {
 
             $scheduleItem.scheduled_run_time | Should -Not -BeNullOrEmpty
 
-            $scheduleItem.schedule.initial_run_time | Should -Be $initialRunTime
+            $scheduleItem.schedule.initial_run_time | Should -Not -BeNullOrEmpty
             $scheduleItem.schedule.rrule | Should -Be $rRule
         }
 
