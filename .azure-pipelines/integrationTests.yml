@@ -132,6 +132,6 @@ jobs:
                 testResultsFormat: NUnit
                 testResultsFiles: '**/$(BURPSUITE_MODULENAME)-TestsResults.xml'
                 searchFolder: '$(Pipeline.Workspace)/integration/tests'
-                testRunTitle: '${{ parameters.os }} Tests'
+                testRunTitle: '${{ parameters.os }} Integration Tests'
               continueOnError: true
               condition: succeededOrFailed()
