@@ -44,7 +44,9 @@ Describe 'Schedule Item API' -Tag 'CD' {
 
         It 'should create recurrent time schedule item' {
             # Arrange
-            $schedule = [PSCustomObject]@{ InitialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o); RRule = 'FREQ=DAILY;INTERVAL=1' }
+            $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o)
+            $rRule = 'FREQ=DAILY;INTERVAL=1'
+            $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime; RRule = $rRule }
 
             # Act
             $scheduleItem = New-BurpSuiteScheduleItem -SiteId $site.id -ScanConfigurationIds $site.scan_configurations.id -Schedule $schedule
@@ -58,8 +60,8 @@ Describe 'Schedule Item API' -Tag 'CD' {
 
             $scheduleItem.scheduled_run_time | Should -Not -BeNullOrEmpty
 
-            $scheduleItem.schedule.initial_run_time | Should -Not -BeNullOrEmpty
-            $scheduleItem.schedule.rrule | Should -Be 'FREQ=DAILY;INTERVAL=1'
+            $scheduleItem.schedule.initial_run_time | Should -Be $initialRunTime
+            $scheduleItem.schedule.rrule | Should -Be $rRule
         }
 
         AfterEach {

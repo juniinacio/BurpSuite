@@ -36,7 +36,9 @@ Describe 'Scan Configuration API' -Tag 'CD' {
             New-BurpSuiteScanConfiguration -Name $name -FilePath $filePath
 
             # Assert
-            Get-BurpSuiteScanConfiguration -Fields id, name, scan_configuration_fragment_json | Where-Object { $_.name -eq $name } | Should -Not -BeNullOrEmpty
+            $scanConfiguration = Get-BurpSuiteScanConfiguration -Fields id,name,scan_configuration_fragment_json | Where-Object { $_.name -eq $name }
+            $scanConfiguration | Should -Not -BeNullOrEmpty
+            $scanConfiguration.name | Should -Be $name
         }
 
         AfterEach {
@@ -84,7 +86,8 @@ Describe 'Scan Configuration API' -Tag 'CD' {
             Update-BurpSuiteScanConfiguration -Id $scanConfiguration.id -Name $newName -Confirm:$false
 
             # Assert
-            Get-BurpSuiteScanConfiguration -Fields id | Where-Object { $_.name -eq $newName } | Should -BeNullOrEmpty
+            $scanConfiguration = Get-BurpSuiteScanConfiguration -Fields id,name | Where-Object { $_.name -eq $newName }
+            $scanConfiguration | Should -Not -BeNullOrEmpty
         }
 
         AfterEach {
