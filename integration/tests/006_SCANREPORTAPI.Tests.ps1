@@ -12,7 +12,7 @@ Set-StrictMode -Version Latest
 #     THESE TEST ARE DESTRUCTIVE. USE A CLEAN BURPSUITE.     #
 ##############################################################
 
-Describe 'Scan Report API' -Tag 'CD' {
+Describe 'Scan Report API' -Tag 'CD' -Skip:$true {
     BeforeAll {
         $BURPSUITE_APIKEY = $env:BURPSUITE_APIKEY
         $BURPSUITE_APIVERSION = $env:BURPSUITE_APIVERSION
