@@ -1,3 +1,9 @@
+parameters:
+- name: publishToGallery
+  displayName: Set to true to publish the module to PSGallery
+  type: boolean
+  default: true
+
 name: $(Build.BuildID)
 
 trigger:
@@ -272,12 +278,13 @@ stages:
 
 - stage: PSGallery_Stage
   displayName: PowerShell Gallery
-  dependsOn: Build_Stage
+  dependsOn: Testing_Stage
   condition: |
     and
     (
       succeeded(),
-      eq(variables['Build.SourceBranchName'], 'master')
+      eq(variables['Build.SourceBranchName'], 'master'),
+      eq(parameters['publishToGallery'], true)
     )
   jobs:
   - deployment: Release
