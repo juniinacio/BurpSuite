@@ -284,7 +284,7 @@ stages:
     (
       succeeded(),
       eq(variables['Build.SourceBranchName'], 'master'),
-      eq(parameters.publishToGallery, true)
+      eq(${{ parameters.publishToGallery }}, true)
     )
   jobs:
   - deployment: Release
