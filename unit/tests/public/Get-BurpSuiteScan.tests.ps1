@@ -44,6 +44,29 @@ InModuleScope $env:BHProjectName {
             }
         }
 
+        It "should get site scans" {
+            # arrange
+            Mock -CommandName _callAPI -MockWith {
+                [PSCustomObject]@{
+                    data = [PSCustomObject]@{
+                        scans = @(
+                            [PSCustomObject]@{
+                                id = 1
+                            }
+                        )
+                    }
+                }
+            }
+
+            # act
+            Get-BurpSuiteScan -Offset 1 -Limit 1 -SortColumn 'start' -SortOrder 'asc' -ScanStatus 'queued' -SiteId 1
+
+            # assert
+            Should -Invoke _callAPI -ParameterFilter {
+                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:'queued',site_id:'1',sort_column:'start',sort_order:'asc') { * } }"
+            }
+        }
+
         It "should add <FieldName> selection field" -TestCases @(
             @{ FieldName = "id" }
             @{ FieldName = "site_id" }

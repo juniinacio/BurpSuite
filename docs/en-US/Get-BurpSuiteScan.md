@@ -15,12 +15,12 @@ Gets BurpSuite scans.
 ### List (Default)
 ```
 Get-BurpSuiteScan [-Offset <Int32>] [-Limit <Int32>] [-SortColumn <String>] [-SortOrder <String>]
- [-ScanStatus <String[]>] [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+ [-ScanStatus <String[]>] [-SiteId <String>] [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ### Specific
 ```
-Get-BurpSuiteScan -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScan -Id <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -75,7 +75,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ID
+### -Id
 Specifies the ID of the scan to retrieve.
 
 ```yaml
@@ -128,6 +128,21 @@ Type: String[]
 Parameter Sets: List
 Aliases:
 Accepted values: queued, running, succeeded, cancelled, failed
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SiteId
+Specifies the site id to retrieve issues for.
+
+```yaml
+Type: String
+Parameter Sets: List
+Aliases:
 
 Required: False
 Position: Named
