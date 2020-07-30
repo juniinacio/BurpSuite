@@ -15,6 +15,11 @@ function Connect-BurpSuite {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
+        [string]
+        $UriPath,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
         [switch]
         $PassThru
     )
@@ -22,6 +27,8 @@ function Connect-BurpSuite {
     begin {
         $uriBuilder = New-Object -TypeName System.UriBuilder -ArgumentList $Uri
         $uriBuilder.Path = '/graphql/v1'
+
+        if ($PSBoundParameters.ContainsKey('UriPath')) { $uriBuilder.Path = $UriPath }
 
         $apiUrl = $uriBuilder.ToString()
     }

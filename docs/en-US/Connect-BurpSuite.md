@@ -13,7 +13,8 @@ Connects BurpSuite to BurpSuite Enterprise.
 ## SYNTAX
 
 ```
-Connect-BurpSuite [-Uri] <String> [-APIKey] <String> [-PassThru] [-WhatIf] [-Confirm] [<CommonParameters>]
+Connect-BurpSuite [-Uri] <String> [-APIKey] <String> [[-UriPath] <String>] [-PassThru] [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,6 +28,13 @@ PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https:
 ```
 
 This example shows how to connect the module with BurpSuite Enterprise.
+
+### EXAMPLE 2
+```
+PS /> Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org" -UriPath "virtualdir/graphql/v1"
+```
+
+This example shows how to connect the module with BurpSuite Enterprise using a custom Uri path, this results into the following url 'https://burpsuite.example.org/virtualdir/graphql/v1' to the GraphQL endpoint.
 
 ## PARAMETERS
 
@@ -85,6 +93,21 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UriPath
+Specifies the URL path to BurpSuite GraphQL endpoint, default is '/graphql/v1'.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

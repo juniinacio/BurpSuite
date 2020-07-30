@@ -62,5 +62,21 @@ InModuleScope $env:BHProjectName {
                 Should -Invoke _removeSession
             }
         }
+
+        Context "Uri" {
+            It "should support custom uri" {
+                # arrange
+                Mock -CommandName _createSession
+                Mock -CommandName _callAPI
+
+                # act
+                Connect-BurpSuite -APIKey 'd0D99S3Strkcdd8oALICjmPtwJuLbFtKX' -Uri "https://burpsuite.example.org" -UriPath 'foo/graphql/v1'
+
+                # assert
+                Should -Invoke _createSession -ParameterFilter {
+                    $APIUrl -eq 'https://burpsuite.example.org:443/foo/graphql/v1'
+                }
+            }
+        }
     }
 }
