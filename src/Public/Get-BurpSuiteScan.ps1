@@ -39,6 +39,12 @@ function Get-BurpSuiteScan {
         [string[]]
         $ScanStatus,
 
+        [Parameter(Mandatory = $false,
+            ParameterSetName = 'List')]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $SiteId,
+
         [Parameter(Mandatory = $false)]
         [ValidateSet('id', 'schedule_item', 'site_id', 'site_name', 'start_time', 'end_time', 'duration_in_seconds', 'status', 'agent', 'scan_metrics',
             'scan_failure_message', 'generated_by', 'scanner_version', 'scan_configurations', 'scan_delta', 'jira_ticket_count', 'issue_types', 'issue_counts',
@@ -67,6 +73,7 @@ function Get-BurpSuiteScan {
         if ($PSBoundParameters.ContainsKey('SortColumn')) { $arguments.sort_column = $SortColumn }
         if ($PSBoundParameters.ContainsKey('SortOrder')) { $arguments.sort_order = $SortOrder }
         if ($PSBoundParameters.ContainsKey('ScanStatus')) { $arguments.scan_status = $ScanStatus }
+        if ($PSBoundParameters.ContainsKey('SiteId')) { $arguments.site_id = $SiteId }
 
         if ($PSCmdlet.ParameterSetName -eq 'List') {
             $query = _buildQuery -name 'scans' -objectType 'Scan' -fields $Fields -arguments $arguments
