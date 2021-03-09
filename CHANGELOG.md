@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.2.2] - 2021-03-09
+## [1.3.0] - 2021-03-09
 
 ### Added
 
-- Renamed *-BurpSuiteSiteApplicationLogin to *-BurpSuiteSiteLoginCredential.
-- Added aliases for renamed *-BurpSuiteSiteApplicationLogin.
+- Implemented new BurpSuite site login credentials type.
+- Added cmdlets for importing site recorded logins.
+- Minor updates and improvements.
 
 ## [1.2.1] - 2020-07-30
 

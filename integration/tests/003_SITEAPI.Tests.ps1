@@ -56,8 +56,8 @@ Describe 'Site API' -Tag 'CD' {
 
             $site.email_recipients[0].email | Should -Be "foo@pester.dev"
 
-            $site.application_logins[0].label | Should -Be "admin"
-            $site.application_logins[0].username | Should -Be "admin"
+            $site.application_logins.login_credentials[0].label | Should -Be "admin"
+            $site.application_logins.login_credentials[0].username | Should -Be "admin"
         }
 
         AfterEach {
@@ -144,12 +144,12 @@ Describe 'Site API' -Tag 'CD' {
             $credentials = New-Object System.Management.Automation.PSCredential ("Admin2", $(ConvertTo-SecureString "changeme2" -AsPlainText -Force))
 
             # Act
-            Update-BurpSuiteSiteApplicationLogin -Id $site.application_logins[0].id -Label "Admin2" -Credential $credentials
+            Update-BurpSuiteSiteApplicationLogin -Id $site.application_logins.login_credentials[0].id -Label "Admin2" -Credential $credentials
 
             # Assert
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
-            $site.application_logins[0].label | Should -Be "Admin2"
-            $site.application_logins[0].username | Should -Be "Admin2"
+            $site.application_logins.login_credentials[0].label | Should -Be "Admin2"
+            $site.application_logins.login_credentials[0].username | Should -Be "Admin2"
         }
 
         AfterEach {
@@ -243,8 +243,8 @@ Describe 'Site API' -Tag 'CD' {
             # Assert
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
-            $site.application_logins[0].label | Should -Be "Admin"
-            $site.application_logins[0].username | Should -Be "Admin"
+            $site.application_logins.login_credentials[0].label | Should -Be "Admin"
+            $site.application_logins.login_credentials[0].username | Should -Be "Admin"
         }
 
         AfterEach {
@@ -299,11 +299,11 @@ Describe 'Site API' -Tag 'CD' {
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
-            Remove-BurpSuiteSiteApplicationLogin -Id $site.application_logins[0].id -Confirm:$false
+            Remove-BurpSuiteSiteApplicationLogin -Id $site.application_logins.login_credentials[0].id -Confirm:$false
 
             # Assert
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
-            $site.application_logins[0] | Should -BeNullOrEmpty
+            $site.application_logins.login_credentials[0] | Should -BeNullOrEmpty
         }
 
         AfterEach {
@@ -333,6 +333,66 @@ Describe 'Site API' -Tag 'CD' {
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             $site.email_recipients[0] | Should -BeNullOrEmpty
+        }
+
+        AfterEach {
+            (Get-BurpSuiteSiteTree).sites | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteSite -Confirm:$false
+        }
+    }
+
+    Context 'New-BurpSuiteSiteRecordedLogin' {
+        BeforeEach {
+            (Get-BurpSuiteSiteTree).sites | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteSite -Confirm:$false
+        }
+
+        It 'should add site recorded login' {
+            # Arrange
+            $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
+
+            $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
+
+            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
+
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
+
+            $filePath = Join-Path -Path $PSScriptRoot -ChildPath 'artifacts\recorded_login.json'
+
+            # Act
+            New-BurpSuiteSiteRecordedLogin -SiteId $site.id -Label "PortainerLogin" -FilePath $filePath
+
+            # Assert
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
+
+            $site.application_logins.recorded_logins[0].label | Should -Be "PortainerLogin"
+        }
+
+        AfterEach {
+            (Get-BurpSuiteSiteTree).sites | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteSite -Confirm:$false
+        }
+    }
+
+    Context 'Remove-BurpSuiteSiteRecordedLogin' {
+        BeforeEach {
+            (Get-BurpSuiteSiteTree).sites | Where-Object { $_.name -like 'Pester - *' } | Remove-BurpSuiteSite -Confirm:$false
+        }
+
+        It 'should remove site application login' {
+            # Arrange
+            $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
+
+            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $recordedLogin = [PSCustomObject]@{ Label = "Admin"; FilePath = (Join-Path -Path $PSScriptRoot -ChildPath 'artifacts\recorded_login.json') }
+            New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -RecordedLogins $recordedLogin
+
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
+
+            # Act
+            Remove-BurpSuiteSiteRecordedLogin -Id $site.application_logins.recorded_logins[0].id -Confirm:$false
+
+            # Assert
+            $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
+            $site.application_logins.recorded_logins[0] | Should -BeNullOrEmpty
         }
 
         AfterEach {

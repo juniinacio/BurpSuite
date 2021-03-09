@@ -113,8 +113,8 @@ InModuleScope $env:BHProjectName {
             @{ FieldName = "audit_items"; Query = "audit_items { id host path error_types issue_counts { total high { total firm tentative certain } medium { total firm tentative certain } low { total firm tentative certain } info { total firm tentative certain } } number_of_requests number_of_errors number_of_insertion_points issue_types { type_index confidence severity number_of_children first_child_serial_number novelty } }" }
             @{ FieldName = "audit_item"; Query = "audit_item { id host path error_types issue_counts { total high { total firm tentative certain } medium { total firm tentative certain } low { total firm tentative certain } info { total firm tentative certain } } number_of_requests number_of_errors number_of_insertion_points issue_types { type_index confidence severity number_of_children first_child_serial_number novelty } }" }
             @{ FieldName = "scope"; Query = "scope { included_urls excluded_urls }" }
-            @{ FieldName = "site_application_logins"; Query = "site_application_logins { id label username }" }
-            @{ FieldName = "schedule_item_application_logins"; Query = "schedule_item_application_logins { id label username }" }
+            @{ FieldName = "site_application_logins"; Query = "site_application_logins { login_credentials { id label username } recorded_logins { id label } }" }
+            @{ FieldName = "schedule_item_application_logins"; Query = "schedule_item_application_logins { login_credentials { id label username } recorded_logins { id label } }" }
             @{ FieldName = "issues"; Query = "issues { confidence serial_number severity novelty }" }
         ) {
             # arrange

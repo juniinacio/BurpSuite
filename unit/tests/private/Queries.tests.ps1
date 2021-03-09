@@ -4,7 +4,7 @@ InModuleScope BurpSuite {
 
             It "should build <ObjectName> object" -TestCases @(
                 @{ObjectName = "Agent"; FieldName = "agent"; Query = "agent { id name }" }
-                @{ObjectName = "ApplicationLogin"; FieldName = "application_login"; Query = "application_login { id label username }" }
+                @{ObjectName = "ApplicationLogin"; FieldName = "application_login"; Query = "application_login { login_credentials { id label username } recorded_logins { id label } }" }
                 @{ObjectName = "LoginCredential"; FieldName = "login_credential"; Query = "login_credential { id label username }" }
                 @{ObjectName = "AgentError"; FieldName = "error"; Query = "error { code error }" }
                 @{ObjectName = "AuditItem"; FieldName = "audit_item"; Query = "audit_item { id host path error_types issue_counts { total high { total firm tentative certain } medium { total firm tentative certain } low { total firm tentative certain } info { total firm tentative certain } } number_of_requests number_of_errors number_of_insertion_points issue_types { type_index confidence severity number_of_children first_child_serial_number novelty } }" }
@@ -28,8 +28,8 @@ InModuleScope BurpSuite {
                 @{ObjectName = "Schedule"; FieldName = "schedule"; Query = "schedule { initial_run_time rrule }" }
                 @{ObjectName = "ScheduleItem"; FieldName = "schedule_item"; Query = "schedule_item { id }" }
                 @{ObjectName = "Scope"; FieldName = "scope"; Query = "scope { included_urls excluded_urls }" }
-                @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } }" }
-                @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { id label username } ephemeral email_recipients { id email } } }" }
+                @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } }" }
+                @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } } }" }
                 @{ObjectName = "SnipSegment"; FieldName = "snip_segment"; Query = "snip_segment { snip_length }" }
                 @{ObjectName = "Ticket"; FieldName = "ticket"; Query = "ticket { jira_ticket { id external_key issue_type summary project status priority } link_url link_id }" }
                 @{ObjectName = "User"; FieldName = "user"; Query = "user { username }" }

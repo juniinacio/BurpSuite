@@ -12,7 +12,7 @@
     RootModule        = 'BurpSuite.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.2.2'
+    ModuleVersion     = '1.3.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -91,6 +91,7 @@
         'New-BurpSuiteScheduleItem',
         'New-BurpSuiteSite',
         'New-BurpSuiteSiteLoginCredential',
+        'New-BurpSuiteSiteRecordedLogin',
         'New-BurpSuiteSiteEmailRecipient',
         'Remove-BurpSuiteFolder',
         'Remove-BurpSuiteScan',
@@ -98,6 +99,7 @@
         'Remove-BurpSuiteScheduleItem',
         'Remove-BurpSuiteSite',
         'Remove-BurpSuiteSiteLoginCredential',
+        'Remove-BurpSuiteSiteRecordedLogin',
         'Remove-BurpSuiteSiteEmailRecipient',
         'Rename-BurpSuiteAgent',
         'Rename-BurpSuiteFolder',
