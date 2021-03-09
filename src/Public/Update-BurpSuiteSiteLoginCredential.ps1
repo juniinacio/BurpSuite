@@ -1,4 +1,4 @@
-function Update-BurpSuiteSiteApplicationLogin {
+function Update-BurpSuiteSiteLoginCredential {
     [CmdletBinding(DefaultParameterSetName = 'Credential', SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
@@ -23,7 +23,7 @@ function Update-BurpSuiteSiteApplicationLogin {
 
     process {
 
-        $query = _buildMutation -queryName 'UpdateSiteApplicationLogin' -inputType 'UpdateSiteApplicationLoginInput!' -name 'update_site_application_login' -returnType 'ApplicationLogin'
+        $query = _buildMutation -queryName 'UpdateSiteLoginCredential' -inputType 'UpdateSiteLoginCredentialInput!' -name 'update_site_login_credential' -returnType 'LoginCredential'
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
@@ -40,7 +40,7 @@ function Update-BurpSuiteSiteApplicationLogin {
                     $variables.input.password = $networkCredential.Password
                 }
 
-                $request = [Request]::new($query, 'UpdateSiteApplicationLogin', $variables)
+                $request = [Request]::new($query, 'UpdateSiteLoginCredential', $variables)
 
                 $null = _callAPI -Request $request
             } catch {

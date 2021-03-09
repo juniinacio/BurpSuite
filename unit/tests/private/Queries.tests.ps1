@@ -5,6 +5,7 @@ InModuleScope BurpSuite {
             It "should build <ObjectName> object" -TestCases @(
                 @{ObjectName = "Agent"; FieldName = "agent"; Query = "agent { id name }" }
                 @{ObjectName = "ApplicationLogin"; FieldName = "application_login"; Query = "application_login { id label username }" }
+                @{ObjectName = "LoginCredential"; FieldName = "login_credential"; Query = "login_credential { id label username }" }
                 @{ObjectName = "AgentError"; FieldName = "error"; Query = "error { code error }" }
                 @{ObjectName = "AuditItem"; FieldName = "audit_item"; Query = "audit_item { id host path error_types issue_counts { total high { total firm tentative certain } medium { total firm tentative certain } low { total firm tentative certain } info { total firm tentative certain } } number_of_requests number_of_errors number_of_insertion_points issue_types { type_index confidence severity number_of_children first_child_serial_number novelty } }" }
                 @{ObjectName = "CountsByConfidence"; FieldName = "counts_by_confidence"; Query = "counts_by_confidence { total firm tentative certain }" }

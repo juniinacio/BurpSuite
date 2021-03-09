@@ -5,28 +5,30 @@ online version:
 schema: 2.0.0
 ---
 
-# Remove-BurpSuiteSiteApplicationLogin
+# New-BurpSuiteSiteLoginCredential
 
 ## SYNOPSIS
-Removes a site application login.
+Creates an site application login.
 
 ## SYNTAX
 
 ```
-Remove-BurpSuiteSiteApplicationLogin [-Id] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+New-BurpSuiteSiteLoginCredential [-SiteId] <String> [-Label] <String> [-Credential] <PSCredential> [-WhatIf]
+ [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Removes a site application login.
+Creates an site application login.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> Remove-BurpSuiteSiteApplicationLogin -Id 1
+PS C:\> $credentials = New-Object System.Management.Automation.PSCredential ("administrator", $(ConvertTo-SecureString "changeme" -AsPlainText -Force))
+PS C:\> New-BurpSuiteSiteApplicationLogin -SiteId 1 -Label "admin" -Credential $credentials
 ```
 
-This example shows how to remove a login.
+This example shows how to create a new site application login.
 
 ## PARAMETERS
 
@@ -45,8 +47,38 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Id
-Specifies the id of the site application login to remove.
+### -Credential
+Specifies the credential for the login.
+
+```yaml
+Type: PSCredential
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -Label
+Specifies the label for the login.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SiteId
+Specifies the site where the login is used.
 
 ```yaml
 Type: String

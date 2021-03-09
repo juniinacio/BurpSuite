@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Update-BurpSuiteSiteApplicationLogin
+# Update-BurpSuiteSiteLoginCredential
 
 ## SYNOPSIS
 Updates an site application login.
@@ -14,19 +14,19 @@ Updates an site application login.
 
 ### Credential (Default)
 ```
-Update-BurpSuiteSiteApplicationLogin -Id <String> -Credential <PSCredential> [-WhatIf] [-Confirm]
+Update-BurpSuiteSiteLoginCredential -Id <String> -Credential <PSCredential> [-WhatIf] [-Confirm]
  [<CommonParameters>]
 ```
 
 ### All
 ```
-Update-BurpSuiteSiteApplicationLogin -Id <String> -Label <String> -Credential <PSCredential> [-WhatIf]
+Update-BurpSuiteSiteLoginCredential -Id <String> -Label <String> -Credential <PSCredential> [-WhatIf]
  [-Confirm] [<CommonParameters>]
 ```
 
 ### Label
 ```
-Update-BurpSuiteSiteApplicationLogin -Id <String> -Label <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+Update-BurpSuiteSiteLoginCredential -Id <String> -Label <String> [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION

@@ -10,6 +10,7 @@ function _buildField {
         Agent { $fields = 'id', 'name' }
         AgentError { $fields = 'code', 'error' }
         ApplicationLogin { $fields = 'id', 'label', 'username' }
+        LoginCredential { $fields = 'id', 'label', 'username' }
         AuditItem { $fields = 'id', 'host', 'path', 'error_types', (_buildField -name 'issue_counts' -objectType 'IssueCounts'), 'number_of_requests', 'number_of_errors', 'number_of_insertion_points', (_buildField -name 'issue_types' -objectType 'IssueType') }
         CountsByConfidence { $fields = 'total', 'firm', 'tentative', 'certain' }
         DataSegment { $fields = 'data_html' }

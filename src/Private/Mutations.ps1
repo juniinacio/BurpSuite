@@ -14,6 +14,7 @@ function _buildMutation {
         Folder { $fieldName = 'folder' }
         Site { $fieldName = 'site' }
         ApplicationLogin { $fieldName = 'application_login' }
+        LoginCredential { $fieldName = 'login_credential' }
         EmailRecipient { $fieldName = 'email_recipient' }
         Scope { $fieldName = 'scope' }
         default {}
