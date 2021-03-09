@@ -55,7 +55,7 @@ function _callAPI {
         $aggregate = [AggregateException]::new("One or more errors occurred while querying BurpSuite.", $exceptions)
         throw $aggregate
     } else {
-        Write-Verbose $($response | ConvertTo-Json)
+        Write-Verbose $($response | ConvertTo-Json -Depth 99)
         $response
     }
 }
