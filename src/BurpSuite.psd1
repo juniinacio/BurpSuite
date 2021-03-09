@@ -90,14 +90,14 @@
         'New-BurpSuiteScanConfiguration',
         'New-BurpSuiteScheduleItem',
         'New-BurpSuiteSite',
-        'New-BurpSuiteSiteApplicationLogin',
+        'New-BurpSuiteSiteLoginCredential',
         'New-BurpSuiteSiteEmailRecipient',
         'Remove-BurpSuiteFolder',
         'Remove-BurpSuiteScan',
         'Remove-BurpSuiteScanConfiguration',
         'Remove-BurpSuiteScheduleItem',
         'Remove-BurpSuiteSite',
-        'Remove-BurpSuiteSiteApplicationLogin',
+        'Remove-BurpSuiteSiteLoginCredential',
         'Remove-BurpSuiteSiteEmailRecipient',
         'Rename-BurpSuiteAgent',
         'Rename-BurpSuiteFolder',
@@ -108,7 +108,7 @@
         'Update-BurpSuiteFalsePositive',
         'Update-BurpSuiteScanConfiguration',
         'Update-BurpSuiteScheduleItem',
-        'Update-BurpSuiteSiteApplicationLogin',
+        'Update-BurpSuiteSiteLoginCredential',
         'Update-BurpSuiteSiteEmailRecipient',
         'Update-BurpSuiteSiteScanConfiguration',
         'Update-BurpSuiteSiteScope'
@@ -122,7 +122,10 @@
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport = @(
-        'Login-BurpSuite'
+        'Login-BurpSuite',
+        'New-BurpSuiteSiteApplicationLogin',
+        'Update-BurpSuiteSiteApplicationLogin',
+        'Remove-BurpSuiteSiteApplicationLogin'
     )
 
     # DSC resources to export from this module

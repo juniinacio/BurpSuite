@@ -1,5 +1,6 @@
 function Update-BurpSuiteSiteLoginCredential {
     [CmdletBinding(DefaultParameterSetName = 'Credential', SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    [Alias('Update-BurpSuiteSiteApplicationLogin')]
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]

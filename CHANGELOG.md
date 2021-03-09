@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - Renamed *-BurpSuiteSiteApplicationLogin to *-BurpSuiteSiteLoginCredential.
+- Added aliases for renamed *-BurpSuiteSiteApplicationLogin.
 
 ## [1.2.1] - 2020-07-30
 

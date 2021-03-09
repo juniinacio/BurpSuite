@@ -1,5 +1,6 @@
 function Remove-BurpSuiteSiteLoginCredential {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
+    [Alias('Remove-BurpSuiteSiteApplicationLogin')]
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
