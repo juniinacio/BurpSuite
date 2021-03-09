@@ -1,5 +1,5 @@
 InModuleScope $env:BHProjectName {
-    Describe "Remove-BurpSuiteSiteApplicationLogin" {
+    Describe "Remove-BurpSuiteSiteRecordedLogin" {
         It "should remove site" {
             # arrange
             Mock -CommandName _callAPI -MockWith {
@@ -13,12 +13,12 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Remove-BurpSuiteSiteApplicationLogin -Id 1 -Confirm:$false
+            Remove-BurpSuiteSiteRecordedLogin -Id 1 -Confirm:$false
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "DeleteSiteApplicationLogin" `
-                    -and $Request.Query -eq 'mutation DeleteSiteApplicationLogin($input:''DeleteSiteApplicationLoginInput!'') { delete_site_application_login(input:''$input'') { id } }' `
+                $Request.OperationName -eq "DeleteSiteRecordedLogin" `
+                    -and $Request.Query -eq 'mutation DeleteSiteRecordedLogin($input:''DeleteSiteRecordedLoginInput!'') { delete_site_recorded_login(input:''$input'') { id } }' `
                     -and $Request.Variables.Input.id -eq 1
             }
         }

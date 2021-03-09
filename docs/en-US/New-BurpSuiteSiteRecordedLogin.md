@@ -5,28 +5,29 @@ online version:
 schema: 2.0.0
 ---
 
-# Remove-BurpSuiteSiteApplicationLogin
+# New-BurpSuiteSiteRecordedLogin
 
 ## SYNOPSIS
-Removes a site application login.
+Creates an site recorded login.
 
 ## SYNTAX
 
 ```
-Remove-BurpSuiteSiteApplicationLogin [-Id] <String> [-WhatIf] [-Confirm] [<CommonParameters>]
+New-BurpSuiteSiteRecordedLogin [-SiteId] <String> [-Label] <String> [-FilePath] <String> [-WhatIf] [-Confirm]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Removes a site application login.
+Creates an site recorded login.
 
 ## EXAMPLES
 
 ### Example 1
 ```powershell
-PS C:\> Remove-BurpSuiteSiteApplicationLogin -Id 1
+PS C:\> New-BurpSuiteSiteRecordedLogin -SiteId 42 -Label "PortainerLogin" -FilePath -FilePath C:\BurpSuite\recorded_login.json
 ```
 
-This example shows how to remove a login.
+This example shows how to create a recorded login.
 
 ## PARAMETERS
 
@@ -45,8 +46,38 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Id
-Specifies the id of the site application login to remove.
+### -FilePath
+Specifies the path to the recorded login json file.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Label
+Specifies the label for the login.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SiteId
+Specifies the site where the login is used.
 
 ```yaml
 Type: String

@@ -33,3 +33,4 @@ function Remove-BurpSuiteScanConfiguration {
     end {
     }
 }
+

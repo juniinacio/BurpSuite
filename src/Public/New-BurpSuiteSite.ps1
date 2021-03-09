@@ -23,7 +23,12 @@ function New-BurpSuiteSite {
 
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
-        [psobject[]] $ApplicationLogins
+        [Alias('ApplicationLogins')]
+        [psobject[]] $LoginCredentials,
+
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+        [ValidateNotNullOrEmpty()]
+        [psobject[]] $RecordedLogins
     )
 
     begin {
@@ -67,23 +72,37 @@ function New-BurpSuiteSite {
                     $variables.input.email_recipients = $emailRecipientInput
                 }
 
-                if ($PSBoundParameters.ContainsKey('ApplicationLogins')) {
-                    $applicationLoginInput = @()
+                $applicationLoginInput = @{}
+                $applicationLoginInput.login_credentials = @()
+                $applicationLoginInput.recorded_logins = @()
 
-                    foreach ($applicationLogin in $ApplicationLogins) {
-                        $label = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Label'
-                        if ($null -eq $label) { throw "Property 'Label' is required when specifying application login objects." }
+                if ($PSBoundParameters.ContainsKey('LoginCredentials')) {
+                    foreach ($loginCredential in $LoginCredentials) {
+                        $label = _getObjectProperty -InputObject $loginCredential -PropertyName 'Label'
+                        if ($null -eq $label) { throw "Property 'Label' is required when specifying login credential objects." }
 
-                        $credential = _getObjectProperty -InputObject $applicationLogin -PropertyName 'Credential'
-                        if ($null -eq $credential) { throw "Property 'Credential' is required when specifying application login objects." }
+                        $credential = _getObjectProperty -InputObject $loginCredential -PropertyName 'Credential'
+                        if ($null -eq $credential) { throw "Property 'Credential' is required when specifying login credential objects." }
 
                         $networkCredential = $credential.GetNetworkCredential()
 
-                        $applicationLoginInput += @{ label = $label; username = $networkCredential.UserName; password = $networkCredential.Password }
+                        $applicationLoginInput.login_credentials += @{ label = $label; username = $networkCredential.UserName; password = $networkCredential.Password }
                     }
-
-                    $variables.input.application_logins = $applicationLoginInput
                 }
+
+                if ($PSBoundParameters.ContainsKey('RecordedLogins')) {
+                    foreach ($recordedLogin in $RecordedLogins) {
+                        $label = _getObjectProperty -InputObject $recordedLogin -PropertyName 'Label'
+                        if ($null -eq $label) { throw "Property 'Label' is required when specifying recorded login objects." }
+
+                        $filePath = _getObjectProperty -InputObject $recordedLogin -PropertyName 'FilePath'
+                        if ($null -eq $filePath) { throw "Property 'FilePath' is required when specifying recorded login objects." }
+
+                        $applicationLoginInput.recorded_logins += @{ label = $label; script = Get-Content -Raw -Path $filePath | Out-String }
+                    }
+                }
+
+                $variables.input.application_logins = $applicationLoginInput
 
                 $request = [Request]::new($query, 'CreateSite', $variables)
 

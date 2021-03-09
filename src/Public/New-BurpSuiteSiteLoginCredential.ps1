@@ -1,5 +1,6 @@
-function New-BurpSuiteSiteApplicationLogin {
+function New-BurpSuiteSiteLoginCredential {
     [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    [Alias('New-BurpSuiteSiteApplicationLogin')]
     Param (
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
@@ -21,7 +22,7 @@ function New-BurpSuiteSiteApplicationLogin {
 
     process {
 
-        $query = _buildMutation -queryName 'CreateSiteApplicationLogin' -inputType 'CreateSiteApplicationLoginInput!' -name 'create_site_application_login' -returnType 'ApplicationLogin'
+        $query = _buildMutation -queryName 'CreateSiteLoginCredential' -inputType 'CreateSiteLoginCredentialInput!' -name 'create_site_login_credential' -returnType 'LoginCredential'
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
@@ -29,15 +30,15 @@ function New-BurpSuiteSiteApplicationLogin {
 
                 $variables = @{ input = @{} }
                 $variables.input.site_id = $SiteId
-                $variables.input.application_login = @{}
-                $variables.input.application_login.label = $Label
-                $variables.input.application_login.username = $networkCredential.UserName
-                $variables.input.application_login.password = $networkCredential.Password
+                $variables.input.login_credential = @{}
+                $variables.input.login_credential.label = $Label
+                $variables.input.login_credential.username = $networkCredential.UserName
+                $variables.input.login_credential.password = $networkCredential.Password
 
-                $request = [Request]::new($query, 'CreateSiteApplicationLogin', $variables)
+                $request = [Request]::new($query, 'CreateSiteLoginCredential', $variables)
 
                 $response = _callAPI -Request $request
-                $response.data.create_site_application_login.application_login
+                $response.data.create_site_login_credential.login_credential
             } catch {
                 throw
             }
