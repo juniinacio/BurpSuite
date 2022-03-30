@@ -40,7 +40,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { agents:agent(id:'1') { * } }"
+                $Request.Query -like "query { agents:agent(id:1) { * } }"
             }
         }
 
@@ -70,7 +70,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { agents:agent(id:'1') {* $FieldName *} }"
+                $Request.Query -like "query { agents:agent(id:1) {* $FieldName *} }"
             }
         }
 

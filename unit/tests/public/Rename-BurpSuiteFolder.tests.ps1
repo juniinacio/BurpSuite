@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "RenameFolder" `
-                    -and $Request.Query -eq 'mutation RenameFolder($input:''RenameFolderInput!'') { rename_folder(input:''$input'') { folder { id name parent_id } } }' `
+                    -and $Request.Query -eq 'mutation RenameFolder($input:RenameFolderInput!) { rename_folder(input:$input) { folder { id name parent_id } } }' `
                     -and $Request.Variables.Input.name -eq "Production" `
                     -and $Request.Variables.Input.id -eq "1"
             }

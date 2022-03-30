@@ -22,7 +22,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateSiteLoginCredential" `
-                    -and $Request.Query -eq 'mutation UpdateSiteLoginCredential($input:''UpdateSiteLoginCredentialInput!'') { update_site_login_credential(input:''$input'') { login_credential { id label username } } }' `
+                    -and $Request.Query -eq 'mutation UpdateSiteLoginCredential($input:UpdateSiteLoginCredentialInput!) { update_site_login_credential(input:$input) { login_credential { id label username } } }' `
                     -and $Request.Variables.Input.id -eq 42 `
                     -and $Request.Variables.Input.label -eq "admin" `
                     -and $Request.Variables.Input.username -eq "administrator" `
@@ -51,7 +51,7 @@ InModuleScope $env:BHProjectName {
                 # assert
                 Should -Invoke _callAPI -ParameterFilter {
                     $Request.OperationName -eq "UpdateSiteLoginCredential" `
-                        -and $Request.Query -eq 'mutation UpdateSiteLoginCredential($input:''UpdateSiteLoginCredentialInput!'') { update_site_login_credential(input:''$input'') { login_credential { id label username } } }' `
+                        -and $Request.Query -eq 'mutation UpdateSiteLoginCredential($input:UpdateSiteLoginCredentialInput!) { update_site_login_credential(input:$input) { login_credential { id label username } } }' `
                         -and $Request.Variables.Input.id -eq 42 `
                         -and $Request.Variables.Input.label -eq "admin" `
                         -and $Request.Variables.Input.ContainsKey('username') -eq $false `
@@ -83,7 +83,7 @@ InModuleScope $env:BHProjectName {
                 # assert
                 Should -Invoke _callAPI -ParameterFilter {
                     $Request.OperationName -eq "UpdateSiteLoginCredential" `
-                        -and $Request.Query -eq 'mutation UpdateSiteLoginCredential($input:''UpdateSiteLoginCredentialInput!'') { update_site_login_credential(input:''$input'') { login_credential { id label username } } }' `
+                        -and $Request.Query -eq 'mutation UpdateSiteLoginCredential($input:UpdateSiteLoginCredentialInput!) { update_site_login_credential(input:$input) { login_credential { id label username } } }' `
                         -and $Request.Variables.Input.id -eq 42 `
                         -and $Request.Variables.Input.ContainsKey('label') -eq $false `
                         -and $Request.Variables.Input.username -eq "administrator" `

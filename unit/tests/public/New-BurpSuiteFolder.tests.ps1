@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateFolder" `
-                    -and $Request.Query -eq 'mutation CreateFolder($input:''CreateFolderInput!'') { create_folder(input:''$input'') { folder { id name parent_id } } }' `
+                    -and $Request.Query -eq 'mutation CreateFolder($input:CreateFolderInput!) { create_folder(input:$input) { folder { id name parent_id } } }' `
                     -and $Request.Variables.Input.name -eq "Production" `
                     -and $Request.Variables.Input.parent_id -eq "0"
             }

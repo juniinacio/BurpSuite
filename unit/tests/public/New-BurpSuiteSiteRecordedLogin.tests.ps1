@@ -22,7 +22,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateSiteRecordedLogin" `
-                    -and $Request.Query -eq 'mutation CreateSiteRecordedLogin($input:''CreateSiteRecordedLoginInput!'') { create_site_recorded_login(input:''$input'') { recorded_login { id label } } }' `
+                    -and $Request.Query -eq 'mutation CreateSiteRecordedLogin($input:CreateSiteRecordedLoginInput!) { create_site_recorded_login(input:$input) { recorded_login { id label } } }' `
                     -and $Request.Variables.Input.site_id -eq 42 `
                     -and $Request.Variables.Input.recorded_login.label -eq "login_with_admin_account" `
                     -and $Request.Variables.Input.recorded_login.script -eq (Get-Content -Raw -Path $filePath | Out-String)

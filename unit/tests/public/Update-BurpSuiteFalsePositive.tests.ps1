@@ -21,7 +21,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "UpdateFalsePositive" `
-                    -and $Request.Query -eq 'mutation UpdateFalsePositive($input:''UpdateFalsePositiveInput!'') { update_false_positive(input:''$input'') { successful } }' `
+                    -and $Request.Query -eq 'mutation UpdateFalsePositive($input:UpdateFalsePositiveInput!) { update_false_positive(input:$input) { successful } }' `
                     -and $Request.Variables.input.scan_id -eq $scanId `
                     -and $Request.Variables.input.serial_number -eq $serialNumber `
                     -and $Request.Variables.input.is_false_positive -eq 'true' `

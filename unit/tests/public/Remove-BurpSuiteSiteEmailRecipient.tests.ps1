@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "DeleteSiteEmailRecipient" `
-                    -and $Request.Query -eq 'mutation DeleteSiteEmailRecipient($input:''DeleteSiteEmailRecipientInput!'') { delete_site_email_recipient(input:''$input'') { id } }' `
+                    -and $Request.Query -eq 'mutation DeleteSiteEmailRecipient($input:DeleteSiteEmailRecipientInput!) { delete_site_email_recipient(input:$input) { id } }' `
                     -and $Request.Variables.Input.id -eq 42
             }
         }

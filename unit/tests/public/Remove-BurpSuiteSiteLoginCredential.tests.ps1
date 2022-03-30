@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "DeleteSiteLoginCredential" `
-                    -and $Request.Query -eq 'mutation DeleteSiteLoginCredential($input:''DeleteSiteLoginCredentialInput!'') { delete_site_login_credential(input:''$input'') { id } }' `
+                    -and $Request.Query -eq 'mutation DeleteSiteLoginCredential($input:DeleteSiteLoginCredentialInput!) { delete_site_login_credential(input:$input) { id } }' `
                     -and $Request.Variables.Input.id -eq 1
             }
         }
