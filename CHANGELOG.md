@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.1] - 2022-03-31
+
+### Fixed
+
+- Fixed issue with quoted input values when generating graphql queries.
+
 ## [1.3.0] - 2021-03-09
 
 ### Added

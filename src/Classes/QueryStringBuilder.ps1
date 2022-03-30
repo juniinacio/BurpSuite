@@ -41,7 +41,8 @@ class QueryStringBuilder {
 
     hidden [void] AddParams([Query] $query) {
         foreach ($param in $query.Arguments.GetEnumerator()) {
-            $this.QueryString.Append("$($param.Key):$($this.FormatQueryParam($param.Value)),")
+            $queryString2 = "$($param.Key):$($this.FormatQueryParam($param.Value))," -replace '''',''
+            $this.QueryString.Append($queryString2)
         }
 
         if ($query.Arguments.Count -gt 0) { $this.QueryString.Length-- }
