@@ -15,7 +15,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { issue(scan_id:'1',serial_number:'314276827364273645') { * } }"
+                $Request.Query -like "query { issue(scan_id:1,serial_number:314276827364273645) { * } }"
             }
         }
 
@@ -46,7 +46,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { issue(scan_id:'1',serial_number:'314276827364273645') {* $FieldName *} }"
+                $Request.Query -like "query { issue(scan_id:1,serial_number:314276827364273645) {* $FieldName *} }"
             }
         }
 
@@ -67,7 +67,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { issue(scan_id:'1',serial_number:'314276827364273645') { *$FieldName* } }"
+                $Request.Query -like "query { issue(scan_id:1,serial_number:314276827364273645) { *$FieldName* } }"
             }
         }
     }

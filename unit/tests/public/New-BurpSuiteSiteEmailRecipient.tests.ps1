@@ -20,7 +20,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateSiteEmailRecipient" `
-                    -and $Request.Query -eq 'mutation CreateSiteEmailRecipient($input:''CreateSiteEmailRecipientInput!'') { create_site_email_recipient(input:''$input'') { email_recipient { id email } } }' `
+                    -and $Request.Query -eq 'mutation CreateSiteEmailRecipient($input:CreateSiteEmailRecipientInput!) { create_site_email_recipient(input:$input) { email_recipient { id email } } }' `
                     -and $Request.Variables.Input.site_id -eq 42 `
                     -and $Request.Variables.Input.email_recipient.email -eq "mail@example.com"
             }

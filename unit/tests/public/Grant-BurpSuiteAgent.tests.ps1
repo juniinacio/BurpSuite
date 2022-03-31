@@ -22,7 +22,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "AuthorizeAgent" `
-                    -and $Request.Query -eq 'mutation AuthorizeAgent($input:''AuthorizeAgentInput!'') { authorize_agent(input:''$input'') { agent { id name } } }' `
+                    -and $Request.Query -eq 'mutation AuthorizeAgent($input:AuthorizeAgentInput!) { authorize_agent(input:$input) { agent { id name } } }' `
                     -and $Request.Variables.input.machine_id -eq $machineId
             }
         }

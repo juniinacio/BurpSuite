@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "DeleteFolder" `
-                    -and $Request.Query -eq 'mutation DeleteFolder($input:''DeleteFolderInput!'') { delete_folder(input:''$input'') { id } }' `
+                    -and $Request.Query -eq 'mutation DeleteFolder($input:DeleteFolderInput!) { delete_folder(input:$input) { id } }' `
                     -and $Request.Variables.Input.id -eq 1
             }
         }

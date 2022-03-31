@@ -23,7 +23,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateScheduleItem" `
-                    -and $Request.Query -eq 'mutation CreateScheduleItem($input:''CreateScheduleItemInput!'') { create_schedule_item(input:''$input'') { schedule_item { id } } }' `
+                    -and $Request.Query -eq 'mutation CreateScheduleItem($input:CreateScheduleItemInput!) { create_schedule_item(input:$input) { schedule_item { id } } }' `
                     -and $Request.Variables.input.site_id -eq $siteId `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
             }
@@ -55,7 +55,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateScheduleItem" `
-                    -and $Request.Query -eq 'mutation CreateScheduleItem($input:''CreateScheduleItemInput!'') { create_schedule_item(input:''$input'') { schedule_item { id } } }' `
+                    -and $Request.Query -eq 'mutation CreateScheduleItem($input:CreateScheduleItemInput!) { create_schedule_item(input:$input) { schedule_item { id } } }' `
                     -and $Request.Variables.input.site_id -eq $siteId `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
                     -and $Request.Variables.input.schedule.initial_run_time -eq $initialRunTime
@@ -88,7 +88,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "CreateScheduleItem" `
-                    -and $Request.Query -eq 'mutation CreateScheduleItem($input:''CreateScheduleItemInput!'') { create_schedule_item(input:''$input'') { schedule_item { id } } }' `
+                    -and $Request.Query -eq 'mutation CreateScheduleItem($input:CreateScheduleItemInput!) { create_schedule_item(input:$input) { schedule_item { id } } }' `
                     -and $Request.Variables.input.site_id -eq $siteId `
                     -and $Request.Variables.input.schedule.rrule -eq $recurrenceRule `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')

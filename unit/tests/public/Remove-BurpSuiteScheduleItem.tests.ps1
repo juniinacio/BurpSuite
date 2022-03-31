@@ -18,7 +18,7 @@ InModuleScope $env:BHProjectName {
             # assert
             Should -Invoke _callAPI -ParameterFilter {
                 $Request.OperationName -eq "DeleteScheduleItem" `
-                    -and $Request.Query -eq 'mutation DeleteScheduleItem($input:''DeleteScheduleItemInput!'') { delete_schedule_item(input:''$input'') { id } }' `
+                    -and $Request.Query -eq 'mutation DeleteScheduleItem($input:DeleteScheduleItemInput!) { delete_schedule_item(input:$input) { id } }' `
                     -and $Request.Variables.Input.id -eq 1
             }
         }

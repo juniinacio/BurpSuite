@@ -17,7 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -eq "query { scan_report(report_type:'detailed',scan_id:'1',severities:['info','low','medium','high'],timezone_offset:2) { report_html } }"
+                $Request.Query -eq "query { scan_report(report_type:detailed,scan_id:1,severities:[info,low,medium,high],timezone_offset:2) { report_html } }"
             }
         }
 
@@ -38,7 +38,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -eq "query { scan_report(include_false_positives:true,report_type:'detailed',scan_id:'1',severities:['info','low','medium','high'],timezone_offset:2) { report_html } }"
+                $Request.Query -eq "query { scan_report(include_false_positives:true,report_type:detailed,scan_id:1,severities:[info,low,medium,high],timezone_offset:2) { report_html } }"
             }
         }
 
@@ -59,7 +59,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -eq "query { scan_report(include_false_positives:false,report_type:'detailed',scan_id:'1',severities:['info','low','medium','high'],timezone_offset:2) { report_html } }"
+                $Request.Query -eq "query { scan_report(include_false_positives:false,report_type:detailed,scan_id:1,severities:[info,low,medium,high],timezone_offset:2) { report_html } }"
             }
         }
 

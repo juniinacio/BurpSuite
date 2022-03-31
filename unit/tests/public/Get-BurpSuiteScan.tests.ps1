@@ -17,7 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { scans:scan(id:'1') { * } }"
+                $Request.Query -like "query { scans:scan(id:1) { * } }"
             }
         }
 
@@ -40,7 +40,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:'queued',sort_column:'start',sort_order:'asc') { * } }"
+                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:queued,sort_column:start,sort_order:asc) { * } }"
             }
         }
 
@@ -63,7 +63,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:'queued',site_id:'1',sort_column:'start',sort_order:'asc') { * } }"
+                $Request.Query -like "query { scans(limit:1,offset:1,scan_status:queued,site_id:1,sort_column:start,sort_order:asc) { * } }"
             }
         }
 
@@ -98,7 +98,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { scans:scan(id:'1') {* $FieldName *} }"
+                $Request.Query -like "query { scans:scan(id:1) {* $FieldName *} }"
             }
         }
 

@@ -17,7 +17,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { schedule_items:schedule_item(id:'1') { * } }"
+                $Request.Query -like "query { schedule_items:schedule_item(id:1) { * } }"
             }
         }
 
@@ -42,7 +42,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { schedule_items:schedule_item(id:'1') {* $FieldName *} }"
+                $Request.Query -like "query { schedule_items:schedule_item(id:1) {* $FieldName *} }"
             }
         }
 
@@ -90,7 +90,7 @@ InModuleScope $env:BHProjectName {
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.Query -like "query { schedule_items(sort_by:'site',sort_order:'asc') { * } }"
+                $Request.Query -like "query { schedule_items(sort_by:site,sort_order:asc) { * } }"
             }
         }
     }
