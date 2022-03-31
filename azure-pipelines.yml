@@ -3,363 +3,369 @@ parameters:
   displayName: Set to true to publish the module to PSGallery
   type: boolean
   default: true
+- name: publishToGithub
+  displayName: Set to true to publish the module to GitHub
+  type: boolean
+  default: true
 
-name: $(Build.BuildID)
+  name: $(Build.BuildID)
 
-trigger:
-  batch: true
-  branches:
-    include:
-    - develop
-    - feature/*
-    - hotfix/*
-    - bugfix/*
-    exclude:
-    - master
-  paths:
-    include:
-    - .azure-pipelines/*
-    - src/*
-    - integration/*
-    - unit/*
-    - azure-pipelines.yml
+  trigger:
+    batch: true
+    branches:
+      include:
+      - develop
+      - feature/*
+      - hotfix/*
+      - bugfix/*
+      exclude:
+      - master
+    paths:
+      include:
+      - .azure-pipelines/*
+      - src/*
+      - integration/*
+      - unit/*
+      - azure-pipelines.yml
 
-resources:
-- repo: self
+  resources:
+  - repo: self
 
-variables:
-- group: BurpSuite
-- name: ModuleName
-  value: BurpSuite
+  variables:
+  - group: BurpSuite
+  - name: ModuleName
+    value: BurpSuite
 
-stages:
-- stage: Build_Stage
-  displayName: BurpSuite
+  stages:
+  - stage: Build_Stage
+    displayName: BurpSuite
 
-  jobs:
-  - job: macOS_Linux_Phase
-    displayName: Build Linux (Pwsh)
-    pool:
-      vmImage: ubuntu-latest
+    jobs:
+    - job: macOS_Linux_Phase
+      displayName: Build Linux (Pwsh)
+      pool:
+        vmImage: ubuntu-latest
 
-    steps:
-    - template: .azure-pipelines/unitTests.yml
-      parameters:
-        os: 'Linux'
+      steps:
+      - template: .azure-pipelines/unitTests.yml
+        parameters:
+          os: 'Linux'
 
-  - job: Windows_Phase
-    displayName: Build Windows (PowerShell.exe)
-    pool:
-      vmImage: windows-latest
+    - job: Windows_Phase
+      displayName: Build Windows (PowerShell.exe)
+      pool:
+        vmImage: windows-latest
 
-    steps:
-    - template: .azure-pipelines/unitTests.yml
-      parameters:
-        os: 'Windows'
-        pwsh: false
+      steps:
+      - template: .azure-pipelines/unitTests.yml
+        parameters:
+          os: 'Windows'
+          pwsh: false
 
-  - job: Windows_PowerShellCore_Phase
-    displayName: Build Windows (Pwsh.exe)
-    dependsOn:
-      - macOS_Linux_Phase
-      - Windows_Phase
+    - job: Windows_PowerShellCore_Phase
+      displayName: Build Windows (Pwsh.exe)
+      dependsOn:
+        - macOS_Linux_Phase
+        - Windows_Phase
+      condition: |
+        and
+        (
+          in(dependencies.macOS_Linux_Phase.result, 'Succeeded', 'Skipped'),
+          in(dependencies.Windows_Phase.result, 'Succeeded', 'Skipped')
+        )
+      pool:
+        vmImage: 'windows-latest'
+
+      steps:
+      - template: .azure-pipelines/unitTests.yml
+        parameters:
+          os: 'Windows'
+          pwsh: true
+
+      - task: PowerShell@2
+        displayName: 'Run Static Code Analysis'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $r = Invoke-ScriptAnalyzer –Path ./.out/$(ModuleName) –Recurse | Where-Object severity -ne "Information"
+            $r | ForEach-Object {Write-Host "##vso[task.logissue type=$($_.Severity);sourcepath=$($_.ScriptPath);linenumber=$($_.Line);columnnumber=$($_.Column);]$($_.Message)"}
+          pwsh: true
+
+      # - task: CredScan@2
+      #   displayName: 'Run CredScan'
+      #   inputs:
+      #     toolMajorVersion: 'V2'
+      #     suppressionsFile: '$(Build.SourcesDirectory)/pipelines/credscan-supression.json'
+
+      # - task: SdtReport@1
+      #   displayName: 'Create Security Analysis Report'
+      #   inputs:
+      #     AllTools: false
+      #     CredScan: true
+
+      # - task: PublishSecurityAnalysisLogs@2
+      #   displayName: 'Publish Security Analysis Logs'
+
+      # - task: PostAnalysis@1
+      #   displayName: 'Post Analysis'
+      #   inputs:
+      #     AllTools: false
+      #     CredScan: true
+
+      - task: PowerShell@2
+        displayName: 'Copy Module to Artifacts Folder'
+        inputs:
+          targetType: 'inline'
+          script: |
+            New-Item -Path $(Build.ArtifactStagingDirectory)\module -ItemType Directory -Force
+            Move-Item -Path $(Build.SourcesDirectory)\.out\$(ModuleName)\ -Destination $(Build.ArtifactStagingDirectory)\module\$(ModuleName) -Force
+          pwsh: true
+
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Module $(ModuleName)'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/module'
+          artifact: 'module'
+        condition: |
+          and
+          (
+            succeeded(),
+            in(variables['Build.Reason'], 'PullRequest', 'Manual')
+          )
+
+      - task: CopyFiles@2
+        displayName: 'Copy Integration Tests to Artifacts Folder'
+        inputs:
+          Contents: |
+            integration/**
+          TargetFolder: '$(build.artifactstagingdirectory)/'
+        condition: |
+          and
+          (
+            succeeded(),
+            in(variables['Build.Reason'], 'PullRequest', 'Manual')
+          )
+
+      - task: PublishPipelineArtifact@1
+        displayName: 'Publish Integration Tests'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/integration'
+          artifact: 'integration'
+        condition: |
+          and
+          (
+            succeeded(),
+            in(variables['Build.Reason'], 'PullRequest', 'Manual')
+          )
+
+  - stage: AzureDevOps_Stage
+    displayName: Azure DevOps
+    dependsOn: Build_Stage
     condition: |
       and
       (
-        in(dependencies.macOS_Linux_Phase.result, 'Succeeded', 'Skipped'),
-        in(dependencies.Windows_Phase.result, 'Succeeded', 'Skipped')
+        succeeded(),
+        in(variables['Build.Reason'], 'PullRequest', 'Manual')
       )
-    pool:
-      vmImage: 'windows-latest'
+    jobs:
+    - deployment: Artifacts
+      displayName: Artifacts
+      pool:
+        vmImage: 'ubuntu-latest'
+      environment: 'Artifacts'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: PowerShell@2
+              displayName: 'Set Module Path'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                  Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
+                pwsh: true
 
-    steps:
-    - template: .azure-pipelines/unitTests.yml
+            - task: NuGetToolInstaller@0
+              displayName: 'Install NuGet 5.2.0'
+              inputs:
+                versionSpec: 5.2.0
+
+            # - task: PowerShell@2
+            #   displayName: 'Install Module Dependencies'
+            #   inputs:
+            #     targetType: 'inline'
+            #     script: |
+            #       # Load the psd1 file so you can read the required modules and install them
+            #       $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
+
+            #       # Install each module
+            #       $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
+            #     workingDirectory: '$(Pipeline.Workspace)/module'
+
+            - task: PowerShell@2
+              displayName: 'Compute Version Number'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Load the psd1 file so you can read the version
+                  $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
+                  Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion).$(Build.BuildId)"
+                workingDirectory: '$(Pipeline.Workspace)/module'
+                pwsh: true
+
+            - task: PowerShell@2
+              displayName: 'Create NuSpec from PSD1'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
+                  ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
+                workingDirectory: '$(Pipeline.Workspace)/module'
+                pwsh: true
+
+            - task: NuGetCommand@2
+              displayName: 'Pack Module $(ModuleName)'
+              inputs:
+                command: pack
+                packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
+                packDestination: '$(Pipeline.Workspace)/module/dist'
+                versioningScheme: byEnvVar
+                versionEnvVar: 'PACKAGE_VERSION'
+
+            - task: NuGetCommand@2
+              displayName: 'Push Module $(ModuleName)'
+              inputs:
+                command: push
+                packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
+                nuGetFeedType: 'internal'
+                publishVstsFeed: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8/5ed74c16-db4e-4e0b-9af0-3af6937d0d49'
+                allowPackageConflicts: true
+
+  - stage: Testing_Stage
+    displayName: Testing
+    dependsOn: AzureDevOps_Stage
+    jobs:
+
+    - template: .azure-pipelines/integrationTests.yml
       parameters:
+        name: 'Linux'
+        displayName: Linux (Pwsh)
+        pool: 'ubuntu-latest'
+        environment: Linux
+        apiVersion: '$(BurpSuiteAPIVersion)'
+        apiUrl: '$(BurpSuiteAPIUri)'
+        apiKey: '$(BurpSuiteAPIKey)'
+        os: 'Linux'
+        moduleName: '$(ModuleName)'
+        artifactsUrl: '$(ArtifactsUrl)'
+        artifactsEmail: '$(ArtifactsEmail)'
+        artifactsPAT: '$(ArtifactsPAT)'
+        pwsh: true
+
+    - template: .azure-pipelines/integrationTests.yml
+      parameters:
+        name: 'Windows'
+        displayName: Windows (PowerShell.exe)
+        pool: 'windows-latest'
+        environment: Windows
+        apiVersion: '$(BurpSuiteAPIVersion)'
+        apiUrl: '$(BurpSuiteAPIUri)'
+        apiKey: '$(BurpSuiteAPIKey)'
         os: 'Windows'
-        pwsh: true
+        depends: 'Linux'
+        moduleName: '$(ModuleName)'
+        artifactsUrl: '$(ArtifactsUrl)'
+        artifactsEmail: '$(ArtifactsEmail)'
+        artifactsPAT: '$(ArtifactsPAT)'
+        pwsh: false
 
-    - task: PowerShell@2
-      displayName: 'Run Static Code Analysis'
-      inputs:
-        targetType: 'inline'
-        script: |
-          $r = Invoke-ScriptAnalyzer –Path ./.out/$(ModuleName) –Recurse | Where-Object severity -ne "Information"
-          $r | ForEach-Object {Write-Host "##vso[task.logissue type=$($_.Severity);sourcepath=$($_.ScriptPath);linenumber=$($_.Line);columnnumber=$($_.Column);]$($_.Message)"}
-        pwsh: true
+  - stage: PSGallery_Stage
+    displayName: PowerShell Gallery
+    dependsOn: Testing_Stage
+    condition: |
+      and
+      (
+        succeeded(),
+        eq(variables['Build.SourceBranchName'], 'master'),
+        or(eq(${{ parameters.publishToGallery }}, true), eq(${{ parameters.publishToGithub }}, true))
+      )
+    jobs:
+    - deployment: Release
+      displayName: PowerShell Gallery / GitHub Release
+      pool:
+        vmImage: 'windows-latest'
+      environment: 'PowerShell Gallery'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: PowerShell@2
+              displayName: 'Set Module Path'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
+                  Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
 
-    # - task: CredScan@2
-    #   displayName: 'Run CredScan'
-    #   inputs:
-    #     toolMajorVersion: 'V2'
-    #     suppressionsFile: '$(Build.SourcesDirectory)/pipelines/credscan-supression.json'
+            - task: NuGetToolInstaller@0
+              displayName: 'Install NuGet 5.2.0'
+              inputs:
+                versionSpec: 5.2.0
 
-    # - task: SdtReport@1
-    #   displayName: 'Create Security Analysis Report'
-    #   inputs:
-    #     AllTools: false
-    #     CredScan: true
+            # - task: PowerShell@2
+            #   displayName: 'Install Module Dependencies'
+            #   inputs:
+            #     targetType: 'inline'
+            #     script: |
+            #       # Load the psd1 file so you can read the required modules and install them
+            #       $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
-    # - task: PublishSecurityAnalysisLogs@2
-    #   displayName: 'Publish Security Analysis Logs'
+            #       # Install each module
+            #       $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
+            #     workingDirectory: '$(Pipeline.Workspace)/module'
 
-    # - task: PostAnalysis@1
-    #   displayName: 'Post Analysis'
-    #   inputs:
-    #     AllTools: false
-    #     CredScan: true
+            - task: PowerShell@2
+              displayName: 'Create NuSpec from PSD1'
+              inputs:
+                targetType: 'inline'
+                script: |
+                  Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
+                  ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
-    - task: PowerShell@2
-      displayName: 'Copy Module to Artifacts Folder'
-      inputs:
-        targetType: 'inline'
-        script: |
-          New-Item -Path $(Build.ArtifactStagingDirectory)\module -ItemType Directory -Force
-          Move-Item -Path $(Build.SourcesDirectory)\.out\$(ModuleName)\ -Destination $(Build.ArtifactStagingDirectory)\module\$(ModuleName) -Force
-        pwsh: true
+                  # Load the psd1 file so you can read the version
+                  $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
 
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Module $(ModuleName)'
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/module'
-        artifact: 'module'
-      condition: |
-        and
-        (
-          succeeded(),
-          in(variables['Build.Reason'], 'PullRequest', 'Manual')
-        )
+                  Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion)"
+                workingDirectory: '$(Pipeline.Workspace)/module'
 
-    - task: CopyFiles@2
-      displayName: 'Copy Integration Tests to Artifacts Folder'
-      inputs:
-        Contents: |
-          integration/**
-        TargetFolder: '$(build.artifactstagingdirectory)/'
-      condition: |
-        and
-        (
-          succeeded(),
-          in(variables['Build.Reason'], 'PullRequest', 'Manual')
-        )
+            - task: NuGetCommand@2
+              displayName: 'Pack Module $(ModuleName)'
+              inputs:
+                command: pack
+                packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
+                packDestination: '$(Pipeline.Workspace)/module/dist'
+                # versioningScheme: byEnvVar
+                # versionEnvVar: 'PACKAGE_VERSION'
 
-    - task: PublishPipelineArtifact@1
-      displayName: 'Publish Integration Tests'
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/integration'
-        artifact: 'integration'
-      condition: |
-        and
-        (
-          succeeded(),
-          in(variables['Build.Reason'], 'PullRequest', 'Manual')
-        )
+            - task: NuGetCommand@2
+              displayName: 'Push Module $(ModuleName)'
+              condition: eq(${{ parameters.publishToGallery }}, true)
+              inputs:
+                command: push
+                packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
+                nuGetFeedType: external
+                publishFeedCredentials: 'PowerShellGallery'
 
-- stage: AzureDevOps_Stage
-  displayName: Azure DevOps
-  dependsOn: Build_Stage
-  condition: |
-    and
-    (
-      succeeded(),
-      in(variables['Build.Reason'], 'PullRequest', 'Manual')
-    )
-  jobs:
-  - deployment: Artifacts
-    displayName: Artifacts
-    pool:
-      vmImage: 'ubuntu-latest'
-    environment: 'Artifacts'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: PowerShell@2
-            displayName: 'Set Module Path'
-            inputs:
-              targetType: 'inline'
-              script: |
-                $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
-                Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
-              pwsh: true
-
-          - task: NuGetToolInstaller@0
-            displayName: 'Install NuGet 5.2.0'
-            inputs:
-              versionSpec: 5.2.0
-
-          # - task: PowerShell@2
-          #   displayName: 'Install Module Dependencies'
-          #   inputs:
-          #     targetType: 'inline'
-          #     script: |
-          #       # Load the psd1 file so you can read the required modules and install them
-          #       $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-
-          #       # Install each module
-          #       $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
-          #     workingDirectory: '$(Pipeline.Workspace)/module'
-
-          - task: PowerShell@2
-            displayName: 'Compute Version Number'
-            inputs:
-              targetType: 'inline'
-              script: |
-                # Load the psd1 file so you can read the version
-                $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-                Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion).$(Build.BuildId)"
-              workingDirectory: '$(Pipeline.Workspace)/module'
-              pwsh: true
-
-          - task: PowerShell@2
-            displayName: 'Create NuSpec from PSD1'
-            inputs:
-              targetType: 'inline'
-              script: |
-                Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
-                ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-              workingDirectory: '$(Pipeline.Workspace)/module'
-              pwsh: true
-
-          - task: NuGetCommand@2
-            displayName: 'Pack Module $(ModuleName)'
-            inputs:
-              command: pack
-              packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
-              packDestination: '$(Pipeline.Workspace)/module/dist'
-              versioningScheme: byEnvVar
-              versionEnvVar: 'PACKAGE_VERSION'
-
-          - task: NuGetCommand@2
-            displayName: 'Push Module $(ModuleName)'
-            inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
-              nuGetFeedType: 'internal'
-              publishVstsFeed: '94a7dd00-be62-477a-8e5a-0abc01d3f9c8/5ed74c16-db4e-4e0b-9af0-3af6937d0d49'
-              allowPackageConflicts: true
-
-- stage: Testing_Stage
-  displayName: Testing
-  dependsOn: AzureDevOps_Stage
-  jobs:
-
-  - template: .azure-pipelines/integrationTests.yml
-    parameters:
-      name: 'Linux'
-      displayName: Linux (Pwsh)
-      pool: 'ubuntu-latest'
-      environment: Linux
-      apiVersion: '$(BurpSuiteAPIVersion)'
-      apiUrl: '$(BurpSuiteAPIUri)'
-      apiKey: '$(BurpSuiteAPIKey)'
-      os: 'Linux'
-      moduleName: '$(ModuleName)'
-      artifactsUrl: '$(ArtifactsUrl)'
-      artifactsEmail: '$(ArtifactsEmail)'
-      artifactsPAT: '$(ArtifactsPAT)'
-      pwsh: true
-
-  - template: .azure-pipelines/integrationTests.yml
-    parameters:
-      name: 'Windows'
-      displayName: Windows (PowerShell.exe)
-      pool: 'windows-latest'
-      environment: Windows
-      apiVersion: '$(BurpSuiteAPIVersion)'
-      apiUrl: '$(BurpSuiteAPIUri)'
-      apiKey: '$(BurpSuiteAPIKey)'
-      os: 'Windows'
-      depends: 'Linux'
-      moduleName: '$(ModuleName)'
-      artifactsUrl: '$(ArtifactsUrl)'
-      artifactsEmail: '$(ArtifactsEmail)'
-      artifactsPAT: '$(ArtifactsPAT)'
-      pwsh: false
-
-- stage: PSGallery_Stage
-  displayName: PowerShell Gallery
-  dependsOn: Testing_Stage
-  condition: |
-    and
-    (
-      succeeded(),
-      eq(variables['Build.SourceBranchName'], 'master'),
-      eq(${{ parameters.publishToGallery }}, true)
-    )
-  jobs:
-  - deployment: Release
-    displayName: PowerShell Gallery / GitHub Release
-    pool:
-      vmImage: 'windows-latest'
-    environment: 'PowerShell Gallery'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: PowerShell@2
-            displayName: 'Set Module Path'
-            inputs:
-              targetType: 'inline'
-              script: |
-                $outputModVerDir = Split-Path -Path (Resolve-Path -Path "$(Pipeline.Workspace)/module/$(ModuleName)/*/*.psd1")
-                Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
-
-          - task: NuGetToolInstaller@0
-            displayName: 'Install NuGet 5.2.0'
-            inputs:
-              versionSpec: 5.2.0
-
-          # - task: PowerShell@2
-          #   displayName: 'Install Module Dependencies'
-          #   inputs:
-          #     targetType: 'inline'
-          #     script: |
-          #       # Load the psd1 file so you can read the required modules and install them
-          #       $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-
-          #       # Install each module
-          #       $manifest.RequiredModules | ForEach-Object { Install-Module -Name $_ -Repository PSGallery -F -Scope CurrentUser }
-          #     workingDirectory: '$(Pipeline.Workspace)/module'
-
-          - task: PowerShell@2
-            displayName: 'Create NuSpec from PSD1'
-            inputs:
-              targetType: 'inline'
-              script: |
-                Install-Module -Name Trackyon.Nuget -Scope CurrentUser -Force -Verbose
-                ConvertTo-NuSpec -Path $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-
-                # Load the psd1 file so you can read the version
-                $manifest = Import-PowerShellDataFile $env:OUTPUTMODVERDIR/$(ModuleName).psd1
-
-                Write-Host "##vso[task.setvariable variable=PACKAGE_VERSION;isOutput=false]$($manifest.ModuleVersion)"
-              workingDirectory: '$(Pipeline.Workspace)/module'
-
-          - task: NuGetCommand@2
-            displayName: 'Pack Module $(ModuleName)'
-            inputs:
-              command: pack
-              packagesToPack: '$(outputModVerDir)/$(ModuleName).nuspec'
-              packDestination: '$(Pipeline.Workspace)/module/dist'
-              # versioningScheme: byEnvVar
-              # versionEnvVar: 'PACKAGE_VERSION'
-
-          - task: NuGetCommand@2
-            displayName: 'Push Module $(ModuleName)'
-            inputs:
-              command: push
-              packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
-              nuGetFeedType: external
-              publishFeedCredentials: 'PowerShellGallery'
-
-          - task: GithubRelease@0
-            displayName: 'Create GitHub Release'
-            inputs:
-              gitHubConnection: GitHub
-              repositoryName: juniinacio/$(ModuleName)
-              tagSource: manual
-              tag: v$(PACKAGE_VERSION)
-              addChangeLog: true
-              compareWith: 'lastFullRelease'
-              assets: |
-                $(Pipeline.Workspace)/module/dist/*.nupkg
+            - task: GithubRelease@0
+              displayName: 'Create GitHub Release'
+              condition: eq(${{ parameters.publishToGithub }}, true)
+              inputs:
+                gitHubConnection: GitHub
+                repositoryName: juniinacio/$(ModuleName)
+                tagSource: manual
+                tag: v$(PACKAGE_VERSION)
+                addChangeLog: true
+                compareWith: 'lastFullRelease'
+                assets: |
+                  $(Pipeline.Workspace)/module/dist/*.nupkg
