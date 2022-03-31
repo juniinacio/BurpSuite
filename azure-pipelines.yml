@@ -1,6 +1,10 @@
 parameters:
 - name: publishToGallery
-  displayName: Set to true to publish the module to PSGallery
+  displayName: Publish the module to PSGallery
+  type: boolean
+  default: true
+- name: publishToGithub
+  displayName: Publish the module to GitHub
   type: boolean
   default: true
 
@@ -284,7 +288,7 @@ stages:
     (
       succeeded(),
       eq(variables['Build.SourceBranchName'], 'master'),
-      eq(${{ parameters.publishToGallery }}, true)
+      or(eq(${{ parameters.publishToGallery }}, true), eq(${{ parameters.publishToGithub }}, true))
     )
   jobs:
   - deployment: Release
@@ -346,6 +350,7 @@ stages:
 
           - task: NuGetCommand@2
             displayName: 'Push Module $(ModuleName)'
+            condition: eq(${{ parameters.publishToGallery }}, true)
             inputs:
               command: push
               packagesToPush: '$(Pipeline.Workspace)/module/dist/*.nupkg'
@@ -354,6 +359,7 @@ stages:
 
           - task: GithubRelease@0
             displayName: 'Create GitHub Release'
+            condition: eq(${{ parameters.publishToGithub }}, true)
             inputs:
               gitHubConnection: GitHub
               repositoryName: juniinacio/$(ModuleName)
