@@ -1,10 +1,10 @@
 parameters:
 - name: publishToGallery
-  displayName: Set to true to publish the module to PSGallery
+  displayName: Publish the module to PSGallery
   type: boolean
   default: true
 - name: publishToGithub
-  displayName: Set to true to publish the module to GitHub
+  displayName: Publish the module to GitHub
   type: boolean
   default: true
 
