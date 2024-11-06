@@ -40,13 +40,13 @@ function Update-BurpSuiteScheduleItem {
                     $initialRunTime = _getObjectProperty -InputObject $Schedule -PropertyName 'InitialRunTime'
                     if ($null -ne $initialRunTime) {
                         $scheduleInput.initial_run_time = $initialRunTime
-                        $scheduleInput.initial_run_time_is_set = "true"
+                        $scheduleInput.initial_run_time_is_set = $true
                     }
 
                     $recurrenceRule = _getObjectProperty -InputObject $Schedule -PropertyName 'RRule'
                     if ($null -ne $recurrenceRule) {
                         $scheduleInput.rrule = $recurrenceRule
-                        $scheduleInput.rrule_is_set = "true"
+                        $scheduleInput.rrule_is_set = $true
                     }
 
                     $variables.input.schedule = $scheduleInput
@@ -54,7 +54,8 @@ function Update-BurpSuiteScheduleItem {
 
                 $request = [Request]::new($query, 'UpdateScheduleItem', $variables)
 
-                $null = _callAPI -Request $request
+                $response = _callAPI -Request $request
+                $response.data.update_schedule_item.schedule_item
             } catch {
                 throw
             }

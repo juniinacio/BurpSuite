@@ -24,7 +24,7 @@ Updates site scopes.
 
 ### Example 1
 ```powershell
-PS C:\> Update-BurpSuiteSiteScope -SiteId 42 -IncludedUrls "http://example.com" -ExcludedUrls "http://example.com/foo"
+PS C:\> Update-BurpSuiteSiteScope -SiteId 42 -StartUrls "http://example.com" -OutOfScopeUrlPrefixes "http://example.com/foo"
 ```
 
 This example shows how to update a site scope.

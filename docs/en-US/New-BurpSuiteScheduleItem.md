@@ -31,7 +31,8 @@ This example shows how to create a schedule item to scan a site with id 14. The 
 
 ### Example 2
 ```powershell
-PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o) }
+PS C:\> $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)))
+PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") }
 PS C:\> New-BurpSuiteScheduleItem -SiteId 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -Schedule $schedule
 ```
 
@@ -39,7 +40,8 @@ This example shows how to create a schedule item to start a scan over 5 seconds.
 
 ### Example 3
 ```powershell
-PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o); RRule = 'FREQ=DAILY;INTERVAL=1' }
+PS C:\> $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddHours(1)))
+PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); RRule = 'FREQ=DAILY;INTERVAL=1' }
 PS C:\> New-BurpSuiteScheduleItem -SiteId 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -Schedule $schedule
 ```
 

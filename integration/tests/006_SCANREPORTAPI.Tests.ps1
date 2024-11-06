@@ -25,7 +25,7 @@ Describe 'Scan Report API' -Tag 'CD' -Skip:$true {
         BeforeAll {
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Crawl limit - 10 minutes" }
             $name = 'Pester - {0}' -f [Guid]::NewGuid()
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://github.com/juniinacio/BurpSuite/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://github.com/juniinacio/BurpSuite/") }
             New-BurpSuiteSite -Name $name -Scope $scope -ScanConfigurationIds $scanConfiguration.id
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $name }
 

@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Added new scope v2 object.
 
+### Updated
+
+- Updated some Cmdlets to new API schema.
+
 ## [1.3.1] - 2022-03-31
 
 ### Fixed

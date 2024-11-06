@@ -29,8 +29,8 @@ Describe 'Site API' -Tag 'CD' {
         It 'should create site' {
             # Arrange
             $scope = [PSCustomObject]@{
-                IncludedUrls = @("https://pester.dev/")
-                ExcludedUrls = @("https://pester.dev/login")
+                StartUrls = @("https://pester.dev/")
+                OutOfScopeUrlPrefixes = @("https://pester.dev/login")
             }
 
             $emailRecipient = [PSCustomObject]@{ Email = "foo@pester.dev" }
@@ -49,8 +49,8 @@ Describe 'Site API' -Tag 'CD' {
 
             $site | Should -Not -BeNullOrEmpty
 
-            $site.scope.included_urls[0] | Should -Be "https://pester.dev/"
-            $site.scope.excluded_urls[0] | Should -Be "https://pester.dev/login"
+            $site.scope_v2.start_urls[0] | Should -Be "https://pester.dev/"
+            $site.scope_v2.out_of_scope_url_prefixes[0] | Should -Be "https://pester.dev/login"
 
             $site.scan_configurations[0].id | Should -Be "a469d9d4-20ee-4d99-b727-c8072066f761"
 
@@ -79,7 +79,7 @@ Describe 'Site API' -Tag 'CD' {
             New-BurpSuiteFolder -ParentId 0 -Name $folderName
             $folder = (Get-BurpSuiteSiteTree).folders | Where-Object { $_.Name -eq $folderName }
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId $folder.id -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761'
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
@@ -107,7 +107,7 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             $emailRecipient = [PSCustomObject]@{ Email = "foo@example.com" }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -EmailRecipients $emailRecipient
 
@@ -135,7 +135,7 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force))) }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -ApplicationLogins $applicationLogin
 
@@ -168,7 +168,7 @@ Describe 'Site API' -Tag 'CD' {
 
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
@@ -198,20 +198,20 @@ Describe 'Site API' -Tag 'CD' {
 
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
             # Act
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester2.dev/") }
-            Update-BurpSuiteSiteScope -SiteId $site.id -IncludedUrls "https://pester2.dev/" -ExcludedUrls "https://pester2.dev/foo"
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester2.dev/") }
+            Update-BurpSuiteSiteScope -SiteId $site.id -StartUrls "https://pester2.dev/" -OutOfScopeUrlPrefixes "https://pester2.dev/foo"
 
             # Assert
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
 
-            $site.scope.included_urls[0] | Should -Be "https://pester2.dev/"
-            $site.scope.excluded_urls[0] | Should -Be "https://pester2.dev/foo"
+            $site.scope_v2.start_urls[0] | Should -Be "https://pester2.dev/"
+            $site.scope_v2.out_of_scope_url_prefixes[0] | Should -Be "https://pester2.dev/foo"
         }
 
         AfterEach {
@@ -230,7 +230,7 @@ Describe 'Site API' -Tag 'CD' {
 
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
@@ -263,7 +263,7 @@ Describe 'Site API' -Tag 'CD' {
 
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
@@ -292,7 +292,7 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force))) }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -ApplicationLogins $applicationLogin
 
@@ -320,7 +320,7 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             $emailRecipient = [PSCustomObject]@{ Email = "foo@example.com" }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -EmailRecipients $emailRecipient
 
@@ -351,7 +351,7 @@ Describe 'Site API' -Tag 'CD' {
 
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Audit checks - all except JavaScript analysis" }
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds $scanConfiguration.id
 
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $siteName }
@@ -381,7 +381,7 @@ Describe 'Site API' -Tag 'CD' {
             # Arrange
             $siteName = 'Pester - {0}' -f [Guid]::NewGuid()
 
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://pester.dev/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://pester.dev/") }
             $recordedLogin = [PSCustomObject]@{ Label = "Admin"; FilePath = (Join-Path -Path $PSScriptRoot -ChildPath 'artifacts\recorded_login.json') }
             New-BurpSuiteSite -ParentId 0 -Name $siteName -Scope $scope -ScanConfigurationIds 'a469d9d4-20ee-4d99-b727-c8072066f761' -RecordedLogins $recordedLogin
 

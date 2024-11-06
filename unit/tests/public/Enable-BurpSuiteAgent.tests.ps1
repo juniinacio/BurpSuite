@@ -24,7 +24,7 @@ InModuleScope $env:BHProjectName {
                 $Request.OperationName -eq "EnableAgent" `
                     -and $Request.Query -eq 'mutation EnableAgent($input:EnableAgentInput!) { enable_agent(input:$input) { agent { id name } } }' `
                     -and $Request.Variables.input.id -eq $id `
-                    -and $Request.Variables.input.enabled -eq "true"
+                    -and $Request.Variables.input.enabled -eq $true
             }
         }
     }
