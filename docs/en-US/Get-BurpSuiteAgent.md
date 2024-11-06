@@ -19,7 +19,7 @@ Get-BurpSuiteAgent [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>
 
 ### Specific
 ```
-Get-BurpSuiteAgent [-Fields <String[]>] [-ID <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteAgent [-Fields <String[]>] [-Id <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -81,7 +81,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ID
+### -Id
 Specifies the ID of the agent to retrieve.
 
 ```yaml

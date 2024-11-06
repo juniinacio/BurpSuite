@@ -33,8 +33,9 @@ function _buildField {
         ScanProgressMetrics { $fields = 'crawl_request_count', 'unique_location_count', 'audit_request_count', 'crawl_and_audit_progress_percentage' }
         Schedule { $fields = 'initial_run_time', 'rrule' }
         ScheduleItem { $fields = 'id' }
-        Scope { $fields = 'included_urls', 'excluded_urls' }
-        Site { $fields = 'id', 'name', 'parent_id', (_buildField -name 'scope' -objectType 'Scope'), (_buildField -name 'scan_configurations' -objectType 'ScanConfiguration'), (_buildField -name 'application_logins' -objectType 'ApplicationLogin'), 'ephemeral', (_buildField -name 'email_recipients' -objectType 'EmailRecipient') }
+        # Scope { $fields = 'included_urls', 'excluded_urls' } # Deprecated
+        { ($_ -eq "Scope") -or ($_ -eq "ScopeV2") } { $fields = 'start_urls', 'in_scope_url_prefixes', 'out_of_scope_url_prefixes', 'protocol_options' }
+        Site { $fields = 'id', 'name', 'parent_id', (_buildField -name 'scope_v2' -objectType 'ScopeV2'), (_buildField -name 'scan_configurations' -objectType 'ScanConfiguration'), (_buildField -name 'application_logins' -objectType 'ApplicationLogin'), 'ephemeral', (_buildField -name 'email_recipients' -objectType 'EmailRecipient') }
         SiteTree { $fields = (_buildField -name 'folders' -objectType 'Folder'), (_buildField -name 'sites' -objectType 'Site') }
         SnipSegment { $fields = 'snip_length' }
         Ticket { $fields = (_buildField -name 'jira_ticket' -objectType 'JiraTicket'), 'link_url', 'link_id' }
@@ -64,7 +65,7 @@ function _buildQuery {
         }
 
         Scan {
-            $subFields = 'schedule_item', 'agent', 'scan_metrics', 'scan_configurations', 'scan_delta', 'issue_types', 'issue_counts', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues'
+            $subFields = 'schedule_item', 'agent', 'scan_metrics', 'scan_configurations', 'scan_delta', 'issue_types', 'issue_counts', 'audit_items', 'audit_item', 'scope_v2', 'site_application_logins', 'schedule_item_application_logins', 'issues'
             $fields | Where-Object { $_ -notin $subFields } | ForEach-Object { $query.AddField($_) }
 
             if ($fields -contains 'schedule_item') { $query.AddField((_buildField -name 'schedule_item' -objectType 'ScheduleItem')) }
@@ -76,7 +77,7 @@ function _buildQuery {
             if ($fields -contains 'issue_types') { $query.AddField((_buildField -name 'issue_types' -objectType 'IssueType')) }
             if ($fields -contains 'issue_counts') { $query.AddField((_buildField -name 'issue_counts' -objectType 'IssueCounts')) }
             if ($fields -contains 'audit_item') { $query.AddField((_buildField -name 'audit_item' -objectType 'AuditItem')) }
-            if ($fields -contains 'scope') { $query.AddField((_buildField -name 'scope' -objectType 'Scope')) }
+            if (($fields -contains 'scope') -or ($fields -contains 'scope_v2')) { $query.AddField((_buildField -name 'scope_v2' -objectType 'ScopeV2')) }
             if ($fields -contains 'audit_items') { $query.AddField((_buildField -name 'audit_items' -objectType 'AuditItem')) }
             if ($fields -contains 'site_application_logins') { $query.AddField((_buildField -name 'site_application_logins' -objectType 'ApplicationLogin')) }
             if ($fields -contains 'schedule_item_application_logins') { $query.AddField((_buildField -name 'schedule_item_application_logins' -objectType 'ApplicationLogin')) }

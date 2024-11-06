@@ -13,7 +13,7 @@ Creates a new site.
 ## SYNTAX
 
 ```
-New-BurpSuiteSite [-Name] <String> [[-ParentId] <String>] [-Scope] <PSObject>
+New-BurpSuiteSite [-Name] <String> [[-ParentId] <String>] [-ScopeV2] <PSObject>
  [-ScanConfigurationIds] <String[]> [[-EmailRecipients] <PSObject[]>] [[-LoginCredentials] <PSObject[]>]
  [[-RecordedLogins] <PSObject[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
@@ -25,7 +25,7 @@ Creates a new site.
 
 ### Example 1
 ```powershell
-PS C:\> $scope = [PSCustomObject]@{ IncludedUrls = @("http://example.com"); ExcludedUrls = @() }
+PS C:\> $scope = [PSCustomObject]@{ StartUrls = @("http://example.com"); InScopeUrlPrefixes = @(); OutOfScopeUrlPrefixes = @(); ProtocolOptions = 'USE_HTTP_AND_HTTPS' }
 PS C:\> $emailRecipient = [PSCustomObject]@{ Email = "foo@example.com" }
 PS C:\> $applicationLogin = [PSCustomObject]@{ Label = "Admin"; Credential = (New-Object System.Management.Automation.PSCredential ("admin", $(ConvertTo-SecureString "ChangeMe" -AsPlainText -Force))) }
 PS C:\> $recordedLogin = [PSCustomObject]@{ Label = "Admin"; FilePath = 'C:\MyScript.json' }
@@ -141,13 +141,13 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Scope
-Specifies a scope object. A scope object is a PSCustomObject containing two array properties. The first propertie is called IncludedUrls, this is an array specifying the Urls to include in scans. The second property is ExcludedUrls, this is an array specifying Urls to exclude from scans, this can be omited.
+### -ScopeV2
+Specifies a scope object. A scope object is a PSCustomObject containing four properties. The first propertie is called StartUrls, this is an array that specifies the URLs that Burp Scanner begins the scan from. The second property is InScopeUrlPrefixes, this is an array of URLs that Burp Scanner is allowed to scan. If the list is empty, the site scope is automatically derived from the start URLs. The third OutOfScopeUrlPrefixes is an array of URLs that will be skipped during scans of this site. For example, if a particular subdirectory contains sensitive data, you can enter its URL here to exclude it from scans. All subdirectories of an excluded URL will also be skipped. The forth and last propery is a string options to determine which protocols are used when scanning your site's URLs, can be one of 'USE_SPECIFIED_PROTOCOLS' or 'USE_HTTP_AND_HTTPS'.
 
 ```yaml
 Type: PSObject
 Parameter Sets: (All)
-Aliases:
+Aliases: Scope
 
 Required: True
 Position: 2

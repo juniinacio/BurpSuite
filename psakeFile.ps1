@@ -23,7 +23,7 @@ properties {
     if (-not (Get-Module -Name Pester)) { Import-Module -Name Pester -ErrorAction Stop }
 
     $PesterPreference = [PesterConfiguration]::Default
-    $PesterPreference.Run.Path = Join-Path -Path $projectRoot -ChildPath 'unit\tests\*.Tests.ps1'
+    $PesterPreference.Run.Path = Join-Path -Path $projectRoot -ChildPath 'unit\tests\*\*.Tests.ps1'
     $PesterPreference.Run.PassThru = $true
     $PesterPreference.TestResult.Enabled = $true
     $PesterPreference.TestResult.OutputPath = Join-Path -Path $outputDir -ChildPath "$($env:BHProjectName)-TestsResults.xml"

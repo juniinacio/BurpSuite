@@ -11,7 +11,8 @@ function New-BurpSuiteSite {
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
-        [psobject] $Scope,
+        [Alias('Scope')]
+        [psobject] $ScopeV2,
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
@@ -45,17 +46,23 @@ function New-BurpSuiteSite {
                 $variables.input.name = $Name
                 $variables.input.parent_id = $ParentId
 
-                if ($PSBoundParameters.ContainsKey('Scope')) {
-                    $scopeInput = @{ included_urls = @(); excluded_urls = @() }
+                if ($PSBoundParameters.ContainsKey('ScopeV2')) {
+                    $scopeInput = @{ start_urls = @(); in_scope_url_prefixes = @(); out_of_scope_url_prefixes = @(); protocol_options = 'USE_HTTP_AND_HTTPS' }
 
-                    $includedUrls = _getObjectProperty -InputObject $Scope -PropertyName 'IncludedUrls'
-                    if ($null -eq $includedUrls) { throw "Property 'IncludedUrls' is required when specifying scope object." }
-                    $scopeInput.included_urls = @($includedUrls)
+                    $startUrls = _getObjectProperty -InputObject $ScopeV2 -PropertyName 'StartUrls'
+                    if ($null -eq $startUrls) { throw "Property 'StartUrls' is required when specifying scope object." }
+                    $scopeInput.start_urls = @($startUrls)
 
-                    $excludedUrls = _getObjectProperty -InputObject $Scope -PropertyName 'ExcludedUrls'
-                    if ($null -ne $excludedUrls) { $scopeInput.excluded_urls = @($excludedUrls) }
+                    $inScopeUrlPrefixes = _getObjectProperty -InputObject $ScopeV2 -PropertyName 'InScopeUrlPrefixes'
+                    if ($null -ne $inScopeUrlPrefixes) { $scopeInput.in_scope_url_prefixes = @($inScopeUrlPrefixes) }
 
-                    $variables.input.scope = $scopeInput
+                    $outOfScopeUrlPrefixes = _getObjectProperty -InputObject $ScopeV2 -PropertyName 'OutOfScopeUrlPrefixes'
+                    if ($null -ne $outOfScopeUrlPrefixes) { $scopeInput.out_of_scope_url_prefixes = @($outOfScopeUrlPrefixes) }
+
+                    $protocolOptions = _getObjectProperty -InputObject $ScopeV2 -PropertyName 'ProtocolOptions'
+                    if ($null -ne $protocolOptions) { $scopeInput.protocol_options = [ValidateSet('USE_SPECIFIED_PROTOCOLS', 'USE_HTTP_AND_HTTPS')]$protocolOptions }
+
+                    $variables.input.scope_v2 = $scopeInput
                 }
 
                 $variables.input.scan_configuration_ids = $ScanConfigurationIds

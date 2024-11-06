@@ -66,7 +66,7 @@ Specifies the scan fields to retrieve.
 Type: String[]
 Parameter Sets: (All)
 Aliases:
-Accepted values: id, schedule_item, site_id, site_name, start_time, end_time, duration_in_seconds, status, agent, scan_metrics, scan_failure_message, generated_by, scanner_version, scan_configurations, scan_delta, jira_ticket_count, issue_types, issue_counts, audit_items, audit_item, scope, site_application_logins, schedule_item_application_logins, issues
+Accepted values: id, schedule_item, site_id, site_name, start_time, end_time, duration_in_seconds, status, agent, scan_metrics, scan_failure_message, generated_by, scanner_version, scan_configurations, scan_delta, jira_ticket_count, issue_types, issue_counts, audit_items, audit_item, scope_v2, site_application_logins, schedule_item_application_logins, issues
 
 Required: False
 Position: Named

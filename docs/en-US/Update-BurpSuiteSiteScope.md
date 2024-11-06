@@ -13,8 +13,8 @@ Updates site scopes.
 ## SYNTAX
 
 ```
-Update-BurpSuiteSiteScope [-SiteId] <String> [-IncludedUrls] <String[]> [[-ExcludedUrls] <String[]>] [-WhatIf]
- [-Confirm] [<CommonParameters>]
+Update-BurpSuiteSiteScope [-SiteId] <String> [-StartUrls] <String[]> [[-InScopeUrlPrefixes] <String[]>]
+ [[-OutOfScopeUrlPrefixes] <String[]>] [[-ProtocolOptions] <String>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -46,8 +46,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ExcludedUrls
-Specifies the Urls to not crawl during scans.
+### -InScopeUrlPrefixes
+Specifies a list of URLs that Burp Scanner is allowed to scan. If the list is empty, the site scope is automatically derived from the start URLs.
 
 ```yaml
 Type: String[]
@@ -61,16 +61,32 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -IncludedUrls
-Specifies the Urls to crawl during scans.
+### -OutOfScopeUrlPrefixes
+Specifies a list of URLs that will be skipped during scans of this site. For example, if a particular subdirectory contains sensitive data, you can enter its URL here to exclude it from scans. All subdirectories of an excluded URL will also be skipped.
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
 Aliases:
 
-Required: True
-Position: 1
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -ProtocolOptions
+Specifies options to determine which protocols are used when scanning your site's URLs. Can be one of 'USE_SPECIFIED_PROTOCOLS' or 'USE_HTTP_AND_HTTPS'
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: USE_SPECIFIED_PROTOCOLS, USE_HTTP_AND_HTTPS
+
+Required: False
+Position: 4
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
@@ -86,6 +102,21 @@ Aliases:
 
 Required: True
 Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -StartUrls
+Specifies the URLs that Burp Scanner begins the scan from.
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 1
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
