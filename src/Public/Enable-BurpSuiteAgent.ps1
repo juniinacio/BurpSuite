@@ -17,7 +17,7 @@ function Enable-BurpSuiteAgent {
             try {
                 $variables = @{ input = @{} }
                 $variables.input.id = $Id
-                $variables.input.enabled = "true"
+                $variables.input.enabled = $true
 
                 $request = [Request]::new($query, 'EnableAgent', $variables)
 

@@ -48,14 +48,14 @@ function Get-BurpSuiteScan {
         [Parameter(Mandatory = $false)]
         [ValidateSet('id', 'schedule_item', 'site_id', 'site_name', 'start_time', 'end_time', 'duration_in_seconds', 'status', 'agent', 'scan_metrics',
             'scan_failure_message', 'generated_by', 'scanner_version', 'scan_configurations', 'scan_delta', 'jira_ticket_count', 'issue_types', 'issue_counts',
-            'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues')]
+            'audit_items', 'audit_item', 'scope_v2', 'site_application_logins', 'schedule_item_application_logins', 'issues')]
         [string[]]
         $Fields
     )
 
     begin {
         if ($PSBoundParameters.ContainsKey('Fields')) {
-            $unsupportedFields = @('site_name', 'agent', 'scan_configurations', 'jira_ticket_count', 'issue_types', 'audit_items', 'audit_item', 'scope', 'site_application_logins', 'schedule_item_application_logins', 'issues')
+            $unsupportedFields = @('site_name', 'agent', 'scan_configurations', 'jira_ticket_count', 'issue_types', 'audit_items', 'audit_item', 'scope_v2', 'site_application_logins', 'schedule_item_application_logins', 'issues')
             $equalFields = Compare-Object -ReferenceObject $unsupportedFields -DifferenceObject $Fields -IncludeEqual -ExcludeDifferent -PassThru
             if ($null -ne $equalFields) {
                 Write-Warning "Fetching fields ('$($unsupportedFields -join ", '")') is not yet supported."

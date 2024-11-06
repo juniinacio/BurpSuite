@@ -85,7 +85,7 @@ Get-BurpSuiteScanConfiguration
 To create a new site.
 ```powershell
 $scope = [PSCustomObject]@{
-    IncludedUrls = @("http://example.com")
+    StartUrls = @("http://example.com")
 }
 New-BurpSuiteSite -Name "www.example.com" -Scope $scope -ScanConfigurationIds '1232asdf23234f'
 ```
@@ -93,7 +93,7 @@ New-BurpSuiteSite -Name "www.example.com" -Scope $scope -ScanConfigurationIds '1
 To initiat a new scan for a site.
 ```powershell
 $scope = [PSCustomObject]@{
-    IncludedUrls = @("http://example.com")
+    StartUrls = @("http://example.com")
 }
 $site = New-BurpSuiteSite -Name "www.example.com" -Scope $scope -ScanConfigurationIds '1232asdf23234f'
 

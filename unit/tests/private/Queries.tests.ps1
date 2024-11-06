@@ -27,9 +27,9 @@ InModuleScope BurpSuite {
                 @{ObjectName = "ScanProgressMetrics"; FieldName = "scan_progress_metrics"; Query = "scan_progress_metrics { crawl_request_count unique_location_count audit_request_count crawl_and_audit_progress_percentage }" }
                 @{ObjectName = "Schedule"; FieldName = "schedule"; Query = "schedule { initial_run_time rrule }" }
                 @{ObjectName = "ScheduleItem"; FieldName = "schedule_item"; Query = "schedule_item { id }" }
-                @{ObjectName = "Scope"; FieldName = "scope"; Query = "scope { included_urls excluded_urls }" }
-                @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } }" }
-                @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope { included_urls excluded_urls } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } } }" }
+                @{ObjectName = "ScopeV2"; FieldName = "scope_v2"; Query = "scope_v2 { start_urls in_scope_url_prefixes out_of_scope_url_prefixes protocol_options }" }
+                @{ObjectName = "Site"; FieldName = "site"; Query = "site { id name parent_id scope_v2 { start_urls in_scope_url_prefixes out_of_scope_url_prefixes protocol_options } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } }" }
+                @{ObjectName = "SiteTree"; FieldName = "site_tree"; Query = "site_tree { folders { id name parent_id } sites { id name parent_id scope_v2 { start_urls in_scope_url_prefixes out_of_scope_url_prefixes protocol_options } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } } }" }
                 @{ObjectName = "SnipSegment"; FieldName = "snip_segment"; Query = "snip_segment { snip_length }" }
                 @{ObjectName = "Ticket"; FieldName = "ticket"; Query = "ticket { jira_ticket { id external_key issue_type summary project status priority } link_url link_id }" }
                 @{ObjectName = "User"; FieldName = "user"; Query = "user { username }" }

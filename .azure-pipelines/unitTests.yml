@@ -19,7 +19,7 @@ steps:
       Write-Host  "##vso[task.setvariable variable=outputModVerDir]$outputModVerDir"
     pwsh: ${{ parameters.pwsh }}
 
-- task: PublishCodeCoverageResults@1
+- task: PublishCodeCoverageResults@2
   displayName: 'Publish Code Coverage'
   inputs:
     summaryFileLocation: '**/$(ModuleName)-Coverage.xml'

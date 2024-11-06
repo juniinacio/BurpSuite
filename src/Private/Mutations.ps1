@@ -17,7 +17,7 @@ function _buildMutation {
         LoginCredential { $fieldName = 'login_credential' }
         RecordedLogin { $fieldName = 'recorded_login' }
         EmailRecipient { $fieldName = 'email_recipient' }
-        Scope { $fieldName = 'scope' }
+        { ($_ -eq 'Scope') -or ($_ -eq 'ScopeV2') } { $fieldName = 'scope_v2' }
         default {}
     }
 

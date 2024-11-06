@@ -25,7 +25,7 @@ Describe 'Schedule Item API' -Tag 'CD' {
         BeforeEach {
             $scanConfiguration = Get-BurpSuiteScanConfiguration | Where-Object { $_.name -eq "Crawl limit - 10 minutes" }
             $name = 'Pester - {0}' -f [Guid]::NewGuid()
-            $scope = [PSCustomObject]@{ IncludedUrls = @("https://github.com/juniinacio/BurpSuite/") }
+            $scope = [PSCustomObject]@{ StartUrls = @("https://github.com/juniinacio/BurpSuite/") }
             New-BurpSuiteSite -Name $name -Scope $scope -ScanConfigurationIds $scanConfiguration.id
             $site = (Get-BurpSuiteSiteTree).sites | Where-Object { $_.Name -eq $name }
         }
@@ -44,9 +44,9 @@ Describe 'Schedule Item API' -Tag 'CD' {
 
         It 'should create recurrent time schedule item' {
             # Arrange
-            $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o)
+            $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddMinutes(5)))
             $rRule = 'FREQ=DAILY;INTERVAL=1'
-            $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime; RRule = $rRule }
+            $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); RRule = $rRule }
 
             # Act
             $scheduleItem = New-BurpSuiteScheduleItem -SiteId $site.id -ScanConfigurationIds $site.scan_configurations.id -Schedule $schedule
@@ -60,7 +60,35 @@ Describe 'Schedule Item API' -Tag 'CD' {
 
             $scheduleItem.scheduled_run_time | Should -Not -BeNullOrEmpty
 
-            $scheduleItem.schedule.initial_run_time | Should -Not -BeNullOrEmpty
+            ([datetime]$scheduleItem.schedule.initial_run_time).ToString("dd-MM-yyyy HH:mm:ss") | Should -Be $initialRunTime.ToString("dd-MM-yyyy HH:mm:ss")
+            $scheduleItem.schedule.rrule | Should -Be $rRule
+        }
+
+        It 'should update schedule item' {
+            # Arrange
+            $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddMinutes(5)))
+            $rRule = 'FREQ=DAILY;INTERVAL=1'
+            $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); RRule = $rRule }
+
+            # Act
+            $scheduleItem = New-BurpSuiteScheduleItem -SiteId $site.id -ScanConfigurationIds $site.scan_configurations.id -Schedule $schedule
+            $scheduleItem = Get-BurpSuiteScheduleItem -Id $scheduleItem.id
+            $scheduleItem | Should -Not -BeNullOrEmpty
+
+            $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddMinutes(5))).ToUniversalTime()
+            $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); RRule = $rRule }
+
+            $scheduleItem = Update-BurpSuiteScheduleItem -Id $scheduleItem.id -SiteId $site.id -ScanConfigurationIds $site.scan_configurations.id -Schedule $schedule
+            $scheduleItem = Get-BurpSuiteScheduleItem -Id $scheduleItem.id
+
+            # Assert
+            $scheduleItem | Should -Not -BeNullOrEmpty
+
+            $scheduleItem.id | Should -Not -BeNullOrEmpty
+
+            $scheduleItem.scheduled_run_time | Should -Not -BeNullOrEmpty
+
+            ([datetime]$scheduleItem.schedule.initial_run_time).ToString("dd-MM-yyyy HH:mm:ss") | Should -Be $initialRunTime.ToString("dd-MM-yyyy HH:mm:ss")
             $scheduleItem.schedule.rrule | Should -Be $rRule
         }
 

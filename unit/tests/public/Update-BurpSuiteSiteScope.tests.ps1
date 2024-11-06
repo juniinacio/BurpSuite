@@ -15,15 +15,17 @@ InModuleScope $env:BHProjectName {
             }
 
             # act
-            Update-BurpSuiteSiteScope -SiteId 42 -IncludedUrls "http://example.com" -ExcludedUrls "http://example.com/foo"
+            Update-BurpSuiteSiteScope -SiteId 42 -StartUrls "http://example.com" -InScopeUrlPrefixes "http://example.com/foo" -OutOfScopeUrlPrefixes "http://example.com/admin" -ProtocolOptions "USE_HTTP_AND_HTTPS"
 
             # assert
             Should -Invoke _callAPI -ParameterFilter {
-                $Request.OperationName -eq "UpdateSiteScope" `
-                    -and $Request.Query -eq 'mutation UpdateSiteScope($input:UpdateSiteScopeInput!) { update_site_scope(input:$input) { scope { included_urls excluded_urls } } }' `
+                $Request.OperationName -eq "UpdateSiteScopeV2" `
+                    -and $Request.Query -eq 'mutation UpdateSiteScopeV2($input:UpdateSiteScopeV2Input!) { update_site_scope_v2(input:$input) { site { id name parent_id scope_v2 { start_urls in_scope_url_prefixes out_of_scope_url_prefixes protocol_options } scan_configurations { id } application_logins { login_credentials { id label username } recorded_logins { id label } } ephemeral email_recipients { id email } } } }' `
                     -and $Request.Variables.Input.site_id -eq 42 `
-                    -and $Request.Variables.Input.included_urls[0] -eq "http://example.com" `
-                    -and $Request.Variables.Input.excluded_urls[0] -eq "http://example.com/foo"
+                    -and $Request.Variables.Input.scope_v2.start_urls[0] -eq "http://example.com" `
+                    -and $Request.Variables.Input.scope_v2.in_scope_url_prefixes[0] -eq "http://example.com/foo" `
+                    -and $Request.Variables.Input.scope_v2.out_of_scope_url_prefixes[0] -eq "http://example.com/admin" `
+                    -and $Request.Variables.Input.scope_v2.protocol_options -eq "USE_HTTP_AND_HTTPS"
             }
         }
     }

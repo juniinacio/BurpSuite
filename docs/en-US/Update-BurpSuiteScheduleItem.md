@@ -31,7 +31,8 @@ This example shows how to update a schedule item scan configuration.
 
 ### Example 2
 ```powershell
-PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(5)) -Format o) }
+PS C:\> $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddSeconds(1)))
+PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") }
 PS C:\> Update-BurpSuiteScheduleItem -Id 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -Schedule $schedule
 ```
 
@@ -39,7 +40,8 @@ This example shows how to update a schedule item scan configuration and initial 
 
 ### Example 3
 ```powershell
-PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = ([DateTime]::UtcNow.AddHours(1)) -Format o); RRule = 'FREQ=DAILY;INTERVAL=1' }
+PS C:\> $initialRunTime = (Get-Date -Date ([DateTime]::UtcNow.AddHours(1)))
+PS C:\> $schedule = [PSCustomObject]@{ InitialRunTime = $initialRunTime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); RRule = 'FREQ=DAILY;INTERVAL=1' }
 PS C:\> Update-BurpSuiteScheduleItem -Id 14 -ScanConfigurationIds b31dea7c-c03e-4f66-8f5c-083c0bc14e05 -Schedule $schedule
 ```
 

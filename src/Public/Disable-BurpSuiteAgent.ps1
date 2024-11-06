@@ -17,7 +17,7 @@ function Disable-BurpSuiteAgent {
             try {
                 $variables = @{ input = @{} }
                 $variables.input.id = $Id
-                $variables.input.enabled = "false"
+                $variables.input.enabled = $false
 
                 $request = [Request]::new($query, 'EnableAgent', $variables)
 

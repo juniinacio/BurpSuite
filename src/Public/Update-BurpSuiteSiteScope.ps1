@@ -7,11 +7,19 @@ function Update-BurpSuiteSiteScope {
 
         [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateNotNullOrEmpty()]
-        [string[]] $IncludedUrls,
+        [string[]] $StartUrls,
 
         [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
         [AllowEmptyCollection()]
-        [string[]] $ExcludedUrls
+        [string[]] $InScopeUrlPrefixes,
+
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+        [AllowEmptyCollection()]
+        [string[]] $OutOfScopeUrlPrefixes,
+
+        [Parameter(Mandatory = $false, ValueFromPipelineByPropertyName = $true)]
+        [ValidateSet("USE_SPECIFIED_PROTOCOLS", "USE_HTTP_AND_HTTPS")]
+        [string] $ProtocolOptions
     )
 
     begin {
@@ -19,19 +27,25 @@ function Update-BurpSuiteSiteScope {
 
     process {
 
-        $query = _buildMutation -queryName 'UpdateSiteScope' -inputType 'UpdateSiteScopeInput!' -name 'update_site_scope' -returnType 'Scope'
+        $query = _buildMutation -queryName 'UpdateSiteScopeV2' -inputType 'UpdateSiteScopeV2Input!' -name 'update_site_scope_v2' -returnType 'Site'
 
         if ($PSCmdlet.ShouldProcess("BurpSuite", $query)) {
             try {
-                $variables = @{ input = @{} }
+                $variables = @{ input = @{ scope_v2 = @{} } }
                 $variables.input.site_id = $SiteId
 
-                $variables.input.included_urls = $IncludedUrls
+                $variables.input.scope_v2.start_urls = $StartUrls
 
-                if ($PSBoundParameters.ContainsKey('ExcludedUrls')) { $variables.input.excluded_urls = $ExcludedUrls }
-                else { $variables.input.excluded_urls = @() }
+                if ($PSBoundParameters.ContainsKey('InScopeUrlPrefixes')) { $variables.input.scope_v2.in_scope_url_prefixes = $InScopeUrlPrefixes }
+                else { $variables.input.scope_v2.in_scope_url_prefixes = @() }
 
-                $request = [Request]::new($query, 'UpdateSiteScope', $variables)
+                if ($PSBoundParameters.ContainsKey('OutOfScopeUrlPrefixes')) { $variables.input.scope_v2.out_of_scope_url_prefixes = $OutOfScopeUrlPrefixes }
+                else { $variables.input.scope_v2.out_of_scope_url_prefixes = @() }
+
+                if ($PSBoundParameters.ContainsKey('ProtocolOptions')) { $variables.input.scope_v2.protocol_options = $ProtocolOptions }
+                else { $variables.input.scope_v2.protocol_options = 'USE_HTTP_AND_HTTPS' }
+
+                $request = [Request]::new($query, 'UpdateSiteScopeV2', $variables)
 
                 $null = _callAPI -Request $request
             } catch {

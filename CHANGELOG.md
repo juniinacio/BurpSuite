@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.0] - 2022-11-06
+
+### Removed
+
+- Remove deprecated scope object.
+
+### Added
+
+- Added new scope v2 object.
+
+### Updated
+
+- Updated some Cmdlets to new API schema.
+
 ## [1.3.1] - 2022-03-31
 
 ### Fixed

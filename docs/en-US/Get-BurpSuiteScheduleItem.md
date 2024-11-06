@@ -20,7 +20,7 @@ Get-BurpSuiteScheduleItem [-SortBy <String>] [-SortOrder <String>] [-Fields <Str
 
 ### Specific
 ```
-Get-BurpSuiteScheduleItem -ID <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
+Get-BurpSuiteScheduleItem -Id <String> [-Fields <String[]>] [-WhatIf] [-Confirm] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -68,7 +68,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ID
+### -Id
 Specifies the report ID to retrieve.
 
 ```yaml

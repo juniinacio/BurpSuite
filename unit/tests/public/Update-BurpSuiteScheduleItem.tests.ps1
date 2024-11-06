@@ -90,7 +90,7 @@ InModuleScope $env:BHProjectName {
                     -and $Request.Variables.input.id -eq $id `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',') `
                     -and $Request.Variables.input.schedule.initial_run_time -eq $initialRunTime `
-                    -and $Request.Variables.input.schedule.initial_run_time_is_set -eq "true"
+                    -and $Request.Variables.input.schedule.initial_run_time_is_set -eq $true
             }
         }
 
@@ -123,7 +123,7 @@ InModuleScope $env:BHProjectName {
                     -and $Request.Query -eq 'mutation UpdateScheduleItem($input:UpdateScheduleItemInput!) { update_schedule_item(input:$input) { schedule_item { id } } }' `
                     -and $Request.Variables.input.id -eq $id `
                     -and $Request.Variables.input.schedule.rrule -eq $recurrenceRule `
-                    -and $Request.Variables.input.schedule.rrule_is_set -eq "true" `
+                    -and $Request.Variables.input.schedule.rrule_is_set -eq $true `
                     -and ($Request.Variables.input.scan_configuration_ids -join ',') -eq ($scanConfigurationIds -join ',')
             }
         }
